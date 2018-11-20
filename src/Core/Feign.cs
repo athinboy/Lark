@@ -168,21 +168,29 @@ namespace Feign.Core
             methodILGenerator.Emit(OpCodes.Ldtoken, interfacetype);
             methodILGenerator.Emit(OpCodes.Ldloc, arglistlocal.LocalIndex);
             methodILGenerator.Emit(OpCodes.Ldloc, methodlocal.LocalIndex);
-            methodILGenerator.Emit(OpCodes.Call, typeof(Feign).GetMethod("ProxyInvoke", new Type[] { typeof(Type),typeof(MethodInfo), typeof(List<object>) }));
+            methodILGenerator.Emit(OpCodes.Call, typeof(Feign).GetMethod("ProxyInvoke", new Type[] { typeof(Type), typeof(MethodInfo), typeof(List<object>) }));
 
+            if (typeof(void) == methodInfo.ReturnType)
+            {
+                methodILGenerator.Emit(OpCodes.Pop);
+            }
+            else
+            {
+                methodILGenerator.Emit(OpCodes.Castclass, methodInfo.ReturnType);
+            }
 
 
             //methodILGenerator.Emit(OpCodes.Ldloc_0);// push this object
 
             //methodILGenerator.Emit(OpCodes.Pop);
-            methodILGenerator.Emit(OpCodes.Pop);
+
             methodILGenerator.Emit(OpCodes.Ret);
 
             typeBuilder.DefineMethodOverride(methodBuilder, methodInfo);
 
 
         }
-        
+
         private static void EmitArgInsertList(ILGenerator iLGenerator, Type argType, int argIndex)
         {
             iLGenerator.Emit(OpCodes.Ldarg, argIndex + 1);
@@ -198,7 +206,7 @@ namespace Feign.Core
 
         }
 
-        public static object ProxyInvoke(Type interfacetype,MethodInfo methodInfo, List<Object> args)
+        public static object ProxyInvoke(Type interfacetype, MethodInfo methodInfo, List<Object> args)
         {
 
             for (int i = 0; i < args.Count; i++)
@@ -207,7 +215,7 @@ namespace Feign.Core
             }
             System.Console.WriteLine("hahhahahahhahahhahahha");
 
-            return null;
+            return "44444444444444";
         }
 
 

@@ -18,7 +18,7 @@ namespace TestClient.Test.AttributeTest
         }
 
 
- 
+
 
 
 
@@ -33,6 +33,7 @@ namespace TestClient.Test.AttributeTest
                 student = Feign.Core.Feign.Wrap<IStudent>();
                 student.A();
                 student.C("CCCCCCCCCC");
+                System.Console.WriteLine(student.B("BBB"));
             }
 
 
@@ -43,7 +44,7 @@ namespace TestClient.Test.AttributeTest
             System.Console.WriteLine("ffff");
         }
 
-        public void C<T>(int i,string s,object o)
+        public void C<T>(int i, string s, object o)
         {
 
             Type t = typeof(T);
@@ -55,15 +56,17 @@ namespace TestClient.Test.AttributeTest
             List<object> fwe = new List<object> { i, s, o };
 
 
+            string dd = (string)o;
 
-            D(t,index,fwe);
+
+            D(t, index, fwe);
 
 
 
 
         }
 
-        public object D( Type t, int i,List<object> d)
+        public object D(Type t, int i, List<object> d)
         {
 
             return null;
