@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Reflection.Emit;
 using System.Reflection;
-
+using System.Net.Http;
 
 namespace Feign.Core
 {
@@ -52,6 +52,9 @@ namespace Feign.Core
 
             Assembly assembly = interfacetype.Assembly;
             Module module = interfacetype.Module;
+
+
+            object[] interfaceAttibuts = interfacetype.GetCustomAttributes(true);
 
 
             AssemblyBuilder assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName(assembly.FullName), AssemblyBuilderAccess.Run);
@@ -149,7 +152,7 @@ namespace Feign.Core
 
 
             LocalBuilder arglistlocal = methodILGenerator.DeclareLocal(typeof(List<object>));
-            LocalBuilder methodlocal = methodILGenerator.DeclareLocal(typeof(MethodInfo));
+            //LocalBuilder methodlocal = methodILGenerator.DeclareLocal(typeof(MethodInfo));
 
 
             methodILGenerator.Emit(OpCodes.Stloc, arglistlocal.LocalIndex);// move  list of argument   to  local variable 
@@ -157,17 +160,21 @@ namespace Feign.Core
 
 
 
-            // save method info 
-            methodILGenerator.Emit(OpCodes.Ldtoken, methodInfo);
-            methodILGenerator.Emit(OpCodes.Stloc, methodlocal.LocalIndex);// move  methodinfo   to  local variable 
+            //// save method info 
+            //methodILGenerator.Emit(OpCodes.Ldtoken, methodInfo);
+            //methodILGenerator.Emit(OpCodes.Stloc, methodlocal.LocalIndex);// move  methodinfo   to  local variable 
+
 
 
 
 
             //call proxyinvoke
             methodILGenerator.Emit(OpCodes.Ldtoken, interfacetype);
+            methodILGenerator.EmitCall(OpCodes.Call, typeof(Type).GetMethod("GetTypeFromHandle"), null);
+            methodILGenerator.Emit(OpCodes.Ldtoken, methodInfo);
+            methodILGenerator.EmitCall(OpCodes.Call, typeof(MethodBase).GetMethod("GetMethodFromHandle", new Type[] { typeof(RuntimeMethodHandle) }), null);
             methodILGenerator.Emit(OpCodes.Ldloc, arglistlocal.LocalIndex);
-            methodILGenerator.Emit(OpCodes.Ldloc, methodlocal.LocalIndex);
+
             methodILGenerator.Emit(OpCodes.Call, typeof(Feign).GetMethod("ProxyInvoke", new Type[] { typeof(Type), typeof(MethodInfo), typeof(List<object>) }));
 
             if (typeof(void) == methodInfo.ReturnType)
@@ -209,13 +216,27 @@ namespace Feign.Core
         public static object ProxyInvoke(Type interfacetype, MethodInfo methodInfo, List<Object> args)
         {
 
-            for (int i = 0; i < args.Count; i++)
-            {
-                System.Console.WriteLine(args[i].ToString());
-            }
-            System.Console.WriteLine("hahhahahahhahahhahahha");
 
-            return "44444444444444";
+
+
+
+            //for (int i = 0; i < args.Count; i++)
+            //{
+            //    System.Console.WriteLine(args[i].ToString());
+            //}
+            //System.Console.WriteLine("hahhahahahhahahhahahha");
+
+            //return "44444444444444";
+
+            if (typeof(void) == methodInfo.ReturnType)
+            {
+                return null;
+            }
+            HttpClient httpClient = new HttpClient();
+
+
+
+            return null;
         }
 
 

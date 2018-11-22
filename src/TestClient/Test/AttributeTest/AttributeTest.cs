@@ -44,7 +44,7 @@ namespace TestClient.Test.AttributeTest
             System.Console.WriteLine("ffff");
         }
 
-        public void C<T>(int i, string s, object o)
+        public void C<T>(int i, string s, object o,Type type)
         {
 
             Type t = typeof(T);
@@ -58,8 +58,11 @@ namespace TestClient.Test.AttributeTest
 
             string dd = (string)o;
 
+            Type otype = o.GetType();
 
-            D(t, index, fwe);
+
+            D(type, index, fwe);
+            D(otype, index, fwe);
 
 
 
