@@ -8,12 +8,16 @@ namespace TestClient.Test.AttributeTest
     public class AttributeTest
     {
 
-        [HeaderAttribute("myheader: hello")]
+        [Header("myheader: hello")]
         public interface IStudent
         {
+            [URL("fwefwe")]
             void A();
 
+            [URL("fwefwe")]
             string B(string name);
+            
+            [URL("fwefwe")]
             void C(string name);
         }
 
@@ -24,13 +28,13 @@ namespace TestClient.Test.AttributeTest
 
 
         [NUnit.Framework.Test]
-        public void HeaderAttributeTest_one()
+        public void WrapTest_One()
         {
-            IStudent student = Feign.Core.Feign.Wrap<IStudent>();
+            IStudent student = Feign.Core.Feign.Wrap<IStudent>("");
 
             for (int i = 0; i < 1; i++)
             {
-                student = Feign.Core.Feign.Wrap<IStudent>();
+                student = Feign.Core.Feign.Wrap<IStudent>("");
                 student.A();
                 student.C("CCCCCCCCCC");
                 System.Console.WriteLine(student.B("BBB"));

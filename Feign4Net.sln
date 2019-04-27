@@ -10,7 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestClient", "src\TestClient\TestClient.csproj", "{E0D8F3AC-6308-4C32-BACB-1C3146CA0A00}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestClient", "src\TestClient\TestClient.csproj", "{E0D8F3AC-6308-4C32-BACB-1C3146CA0A00}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestAspNet", "src\TestAspNet\TestAspNet.csproj", "{B1719EE5-64B7-4535-83B2-ED6E9A6D1A95}"
 EndProject
