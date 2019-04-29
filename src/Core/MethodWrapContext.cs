@@ -44,10 +44,10 @@ namespace Feign.Core {
 
                 if (typeof (HeaderAttribute).IsInstanceOfType (ca)) {
                     headerAttribute = ca as HeaderAttribute;
-                    if (headers.Contains (headerAttribute.Header)) {
-                        throw new FeignException ("重复的Header:" + headerAttribute.Header);
+                    if (headers.Contains (headerAttribute.Name)) {
+                        throw new FeignException ("重复的Header Name:" + headerAttribute.Name);
                     } else {
-                        headers.Add (headerAttribute.Header);
+                        headers.Add (headerAttribute.Name);
                         methodWrapContext.HeaderAttributes.Add (headerAttribute);
                         continue;
                     }
@@ -58,10 +58,10 @@ namespace Feign.Core {
 
             for (int i = 0; i < interfaceWrapContext.HeaderAttributes.Count; i++) {
                 headerAttribute = interfaceWrapContext.HeaderAttributes[i];
-                if (headers.Contains (headerAttribute.Header)) {
+                if (headers.Contains (headerAttribute.Name)) {
 
                 } else {
-                    headers.Add (headerAttribute.Header);
+                    headers.Add (headerAttribute.Name);
                     methodWrapContext.HeaderAttributes.Add (headerAttribute);
                 }
             }

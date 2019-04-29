@@ -40,13 +40,13 @@ namespace Feign.Core
                 {
                     HeaderAttribute newHeader = o as HeaderAttribute;
 
-                    if (headers.Contains(newHeader.Header))
+                    if (headers.Contains(newHeader.Name))
                     {
-                        throw new FeignException("重复的Header:" + headers);
+                        throw new FeignException("重复的Header Name:" + headers);
                     }
                     else
                     {
-                        headers.Add(newHeader.Header);
+                        headers.Add(newHeader.Name);
 
                     }
                     interfaceWrapContext.HeaderAttributes.Add(newHeader);

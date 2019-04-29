@@ -15,7 +15,7 @@ namespace Feign.Core {
 
         }
 
-//todo 会有多线程访问的问题 System.Collections.Concurrent.ConcurrentDictionary
+        //todo 会有多线程访问的问题 System.Collections.Concurrent.ConcurrentDictionary
         private static Dictionary<Type, InterfaceItem> wrapCache = new Dictionary<Type, InterfaceItem> ();
 
         /// <summary>
@@ -52,7 +52,17 @@ namespace Feign.Core {
 
             AssemblyBuilder assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly (new AssemblyName (assembly.FullName), AssemblyBuilderAccess.Run);
             ModuleBuilder moduleBuilder = assemblyBuilder.DefineDynamicModule (module.Name);
-            TypeBuilder typeBuilder = moduleBuilder.DefineType (interfacetype.Name + "$1", TypeAttributes.Class | TypeAttributes.Public, null, new Type[] { interfacetype });
+
+            // Console.WriteLine ("11111111");
+            // Console.WriteLine ("11111111");
+            // Console.WriteLine ("11111111");
+            // Console.WriteLine (interfacetype.FullName + "$1");
+            // Console.WriteLine (interfacetype.Namespace+"."+interfacetype.Name + "$1");
+            // Console.WriteLine ("11111111");
+            // Console.WriteLine ("11111111");
+            // Console.WriteLine ("11111111");
+
+            TypeBuilder typeBuilder = moduleBuilder.DefineType (interfacetype.Namespace+"."+interfacetype.Name + "$1", TypeAttributes.Class | TypeAttributes.Public, null, new Type[] { interfacetype });
 
             ConstructorBuilder constructorBuilder = typeBuilder.DefineDefaultConstructor (MethodAttributes.Public);
             //constructorBuilder.GetILGenerator().Emit(OpCodes.Ret);
@@ -102,19 +112,26 @@ namespace Feign.Core {
 
             ILGenerator methodILGenerator = methodBuilder.GetILGenerator ();
 
-            //todo test
-            methodILGenerator.Emit (OpCodes.Ldarg_0);
-            methodILGenerator.Emit (OpCodes.Callvirt, typeof (Object).GetMethod ("ToString", new Type[] { }));
-            methodILGenerator.Emit (OpCodes.Call, typeof (Console).GetMethod ("WriteLine",
-                new Type[] { typeof (string) }));
+            if (InternalConfig.EmitTestCode) {
 
-            //todo test
-            methodILGenerator.EmitWriteLine ("current method is " + methodInfo.Name);
+                // output the clas name of the  proxy class  
+                methodILGenerator.Emit (OpCodes.Ldstr, "the name of the current proxy class is: ");
+                methodILGenerator.Emit (OpCodes.Call, typeof (Console).GetMethod ("Write",
+                    new Type[] { typeof (string) }));
+                methodILGenerator.Emit (OpCodes.Ldarg_0);
+                methodILGenerator.Emit (OpCodes.Callvirt, typeof (Object).GetMethod ("GetType", new Type[] { }));
+                methodILGenerator.Emit (OpCodes.Callvirt, typeof (Type).GetMethod ("get_FullName", new Type[] { }));
+                methodILGenerator.Emit (OpCodes.Call, typeof (Console).GetMethod ("WriteLine",
+                    new Type[] { typeof (string) }));
 
-            //test
-            //methodILGenerator.Emit(OpCodes.Ldstr, "The I.M implementation of C");
-            //methodILGenerator.Emit(OpCodes.Call, typeof(Console).GetMethod("WriteLine",
-            //    new Type[] { typeof(string) }));
+                //
+                methodILGenerator.EmitWriteLine ("current method is " + methodInfo.Name);
+
+                //test
+                //methodILGenerator.Emit(OpCodes.Ldstr, "The I.M implementation of C");
+                //methodILGenerator.Emit(OpCodes.Call, typeof(Console).GetMethod("WriteLine",
+                //    new Type[] { typeof(string) }));
+            }
 
             // begin
 
@@ -189,22 +206,17 @@ namespace Feign.Core {
                 throw new FeignException ("运行时异常：MethodCache不存在！");
             }
 
-            MethodItem methodItem=interfaceItem.MethodCache[methodInfo];
-
-             
-            
-
-
+            MethodItem methodItem = interfaceItem.MethodCache[methodInfo];
 
             //todo not implete
 
-            //for (int i = 0; i < args.Count; i++)
-            //{
-            //    System.Console.WriteLine(args[i].ToString());
-            //}
-            //System.Console.WriteLine("hahhahahahhahahhahahha");
+            for (int i = 0; i < args.Count; i++)
+            {
+               System.Console.WriteLine(args[i].ToString());
+            }
+            System.Console.WriteLine("hahhahahahhahahhahahha");
 
-            //return "44444444444444";
+             
 
             if (typeof (void) == methodInfo.ReturnType) {
                 return null;
