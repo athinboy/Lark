@@ -66,18 +66,16 @@ namespace Feign.Core {
                 }
             }
 
-            Validate (methodWrapContext);
+            methodWrapContext.Validate ();
 
             return methodWrapContext;
 
         }
 
-        private static void Validate (MethodWrapContext methodWrapContext) {
-            if (methodWrapContext.MethodURLAttribute == null && methodWrapContext.InterfaceURLAttribute == null) {
-                throw new FeignException ("方法和接口都没有定义URL！");
-            }
-            if(null==methodWrapContext.MethodURLAttribute){
-                throw new FeignException("方法没有定义URL！");
+        private void Validate () {
+
+            if (this.MethodURLAttribute == null && this.InterfaceURLAttribute == null) {
+                throw new FeignException ("Miss URL Attribute ！");
             }
 
         }
@@ -87,9 +85,8 @@ namespace Feign.Core {
         private string GetUrl () {
 
             if (url == null) {
-                if(null==this.MethodURLAttribute){
-                }
-                if(this.InterfaceURLAttribute==null){
+                if (null == this.MethodURLAttribute) { }
+                if (this.InterfaceURLAttribute == null) {
 
                 }
             }

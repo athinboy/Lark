@@ -7,7 +7,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <Compile Update="Resources\Resources.Designer.cs">
@@ -25,5 +25,6 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-18618-05" PrivateAssets="All"/>
     <PackageReference Include="log4net" Version="2.0.8"/>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1"/>
   </ItemGroup>
 </Project>

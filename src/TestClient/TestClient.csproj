@@ -22,5 +22,10 @@
       <HintPath>C:\Users\fenggqc\.nuget\packages\nunit\3.11.0\lib\netstandard2.0\nunit.framework.dll</HintPath>
     </Reference>
   </ItemGroup>
+  <ItemGroup>
+
+    <PackageReference Include="log4net" Version="2.0.8"/>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1"/>
+  </ItemGroup>
 
 </Project>

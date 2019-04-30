@@ -1,20 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Text;
 using Feign.Core.Attributes;
 using NUnit.Framework;
+using Microsoft.AspNetCore.Mvc;
+ 
 
 /// <summary>
 /// 整体的Attribute测试。
 /// </summary>
 namespace TestClient.Test.AttributeTest {
 
+
+
     [TestFixture]
     public class AttributeTest {
 
         [Header ("myheader", "hello")]
+        [Method ("GET")]        
         public interface IStudent {
+
             [URL ("fwefwe")]
+            [HttpGet("fwef")]
             void A ();
 
             [URL ("fwefwe")]
