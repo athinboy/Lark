@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2041
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29102.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "src\core\Core.csproj", "{52287594-C49E-4BF1-9DC7-2C43BC92EE01}"
 EndProject
@@ -10,9 +10,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestClient", "src\TestClient\TestClient.csproj", "{E0D8F3AC-6308-4C32-BACB-1C3146CA0A00}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestClient", "src\TestClient\TestClient.csproj", "{E0D8F3AC-6308-4C32-BACB-1C3146CA0A00}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestAspNet", "src\TestAspNet\TestAspNet.csproj", "{B1719EE5-64B7-4535-83B2-ED6E9A6D1A95}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestAspNet", "src\TestAspNet\TestAspNet.csproj", "{B1719EE5-64B7-4535-83B2-ED6E9A6D1A95}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestInterface", "TestInterface\TestInterface.csproj", "{8E9CAC63-0439-4902-A3AE-C016492D67D3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,6 +34,10 @@ Global
 		{B1719EE5-64B7-4535-83B2-ED6E9A6D1A95}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B1719EE5-64B7-4535-83B2-ED6E9A6D1A95}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B1719EE5-64B7-4535-83B2-ED6E9A6D1A95}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E9CAC63-0439-4902-A3AE-C016492D67D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E9CAC63-0439-4902-A3AE-C016492D67D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E9CAC63-0439-4902-A3AE-C016492D67D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E9CAC63-0439-4902-A3AE-C016492D67D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

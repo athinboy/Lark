@@ -4,8 +4,19 @@ a feign project corresponding to Feign(https://github.com/OpenFeign/feign).
 
 
 
-## Attribute
+## Feigh4Net Attribute
 
-| Name | Academy | score | 
-| - | :-: | -: | 
-| Header | Gryffindor| 90 | 
+
+
+
+## Supported Asp MVC Attribute
++ FromFormAttribute
++ FromBodyAttribute
++ FromHeaderAttribute
++ FromQueryAttribute
++  HttpDeleteAttribute
++  HttpGetAttribute
++  HttpHeadAttribute  
++  HttpPostAttribute
++  HttpPutAttribute
++  

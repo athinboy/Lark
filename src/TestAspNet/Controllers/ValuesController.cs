@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Feign.Core.Attributes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace TestAspNet.Controllers
