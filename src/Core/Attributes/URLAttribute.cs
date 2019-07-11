@@ -4,6 +4,9 @@ using System.Text;
 
 namespace Feign.Core.Attributes
 {
+    /// <summary>
+    /// URL路径。
+    /// </summary>
     [System.AttributeUsage(AttributeTargets.Method | AttributeTargets.Interface | AttributeTargets.Class,
     Inherited = true, AllowMultiple = false)]
     public class URLAttribute : Attribute
