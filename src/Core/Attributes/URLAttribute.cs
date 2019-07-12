@@ -13,9 +13,9 @@ namespace Feign.Core.Attributes
     {
         public URLAttribute(string url)
         {
-            this.Url = url;
+            this.Url = url ?? "";
         }
-        
+
         public string Url { get; set; }
 
 

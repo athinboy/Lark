@@ -6,8 +6,28 @@ namespace Feign.Core.Exception
 {
     public class FeignException : System.Exception
     {
+
+        private string[] args;
+
         public FeignException(string message) : base(message)
         {
+        }
+        public FeignException(string message, params string[] args) : base(message)
+        {
+            this.args = args;
+        }
+
+        public override string Message
+        {
+
+            get
+            {
+                if (args == null || args.Length == 0)
+                {
+                    return base.Message;
+                }
+                return string.Format(base.Message, args);
+            }
         }
     }
 }

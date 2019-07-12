@@ -79,7 +79,7 @@ namespace Core.ProxyFactory {
             methodILGenerator.EmitCall (OpCodes.Call, typeof (MethodBase).GetMethod ("GetMethodFromHandle", new Type[] { typeof (RuntimeMethodHandle) }), null);
             methodILGenerator.Emit (OpCodes.Ldloc, arglistlocal.LocalIndex);
 
-            methodILGenerator.Emit (OpCodes.Call, typeof (Feign.Core.Feign).GetMethod ("ProxyInvoke", new Type[] { typeof (Type), typeof (MethodInfo), typeof (List<object>) }));
+            methodILGenerator.Emit (OpCodes.Call, typeof (Feign.Core.InvokeProxy).GetMethod ("Invoke", new Type[] { typeof (Type), typeof (MethodInfo), typeof (List<object>) }));
 
             if (typeof (void) == methodInfo.ReturnType) {
                 methodILGenerator.Emit (OpCodes.Pop);

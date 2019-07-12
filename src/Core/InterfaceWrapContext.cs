@@ -4,56 +4,73 @@ using System.Text;
 using Feign.Core.Attributes;
 using Feign.Core.Exception;
 
-namespace Feign.Core {
-    internal class InterfaceWrapContext {
+namespace Feign.Core
+{
+    internal class InterfaceWrapContext
+    {
         public Type interfaceType { get; set; }
 
-        public List<HeaderAttribute> HeaderAttributes { get; set; } = new List<HeaderAttribute> ();
+        public List<HeaderAttribute> HeaderAttributes { get; set; } = new List<HeaderAttribute>();
 
         /// <summary>
-        /// 接口URL
+        /// parent context.
         /// </summary>
-        public URLAttribute InterfaceURLAttribute { get; set; }
+        public InterfaceWrapContext ParentContext { get; set; } = null;
 
-        internal static InterfaceWrapContext GetContext<T> (T t) {
 
-            Type interfacetype = typeof (T);
 
-            InterfaceWrapContext interfaceWrapContext = new InterfaceWrapContext ();
+        /// <summary>
+        /// 接口URL 特性
+        /// </summary>
+        public URLAttribute URLAttribute { get; set; }
+
+        internal static InterfaceWrapContext GetContext<T>(T t)
+        {
+
+            Type interfacetype = typeof(T);
+
+            InterfaceWrapContext interfaceWrapContext = new InterfaceWrapContext();
 
             interfaceWrapContext.interfaceType = interfacetype;
 
-            object[] interfaceAttibuts = interfacetype.GetCustomAttributes (true);
+            object[] interfaceAttibuts = interfacetype.GetCustomAttributes(true);
 
-            List<string> headers = new List<string> ();
+            List<string> headers = new List<string>();
 
-            for (int i = 0; i < interfaceAttibuts.Length; i++) {
+            for (int i = 0; i < interfaceAttibuts.Length; i++)
+            {
                 Object o = interfaceAttibuts[i];
-                if (typeof (HeaderAttribute).IsInstanceOfType (o)) {
+                if (typeof(HeaderAttribute).IsInstanceOfType(o))
+                {
                     HeaderAttribute newHeader = o as HeaderAttribute;
 
-                    if (headers.Contains (newHeader.Name)) {
-                        throw new FeignException ("重复的Header Name:" + headers);
-                    } else {
-                        headers.Add (newHeader.Name);
+                    if (headers.Contains(newHeader.Name))
+                    {
+                        throw new FeignException("接口:{0}重复的Header Name:{1}", interfacetype.Name, newHeader.Name);
+                    }
+                    else
+                    {
+                        headers.Add(newHeader.Name);
 
                     }
-                    interfaceWrapContext.HeaderAttributes.Add (newHeader);
+                    interfaceWrapContext.HeaderAttributes.Add(newHeader);
                     continue;
                 }
 
-                if (typeof (URLAttribute).IsInstanceOfType (o)) {
-                    interfaceWrapContext.InterfaceURLAttribute = (o as URLAttribute);
+                if (typeof(URLAttribute).IsInstanceOfType(o))
+                {
+                    interfaceWrapContext.URLAttribute = (o as URLAttribute);
                 }
 
             }
 
-            interfaceWrapContext.Validate ();
+            interfaceWrapContext.Validate();
 
             return interfaceWrapContext;
         }
 
-        private void Validate () {
+        private void Validate()
+        {
 
         }
 

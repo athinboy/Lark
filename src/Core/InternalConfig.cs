@@ -1,11 +1,11 @@
 namespace Feign.Core {
 
     /// <summary>
-    /// internal config .for test/debug propose.
+    /// internal config. for test/debug propose.
     /// </summary>
     public class InternalConfig {
         /// <summary>
-        /// Emit test code when wrap the interface class.
+        /// Emit test code 
         /// eg,
         /// methodILGenerator.EmitWriteLine ("current method is " + methodInfo.Name);
         /// </summary>
