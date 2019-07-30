@@ -34,7 +34,7 @@ namespace TestClient.Test.AttributeTest
             [URL("fwefwe")]
             void C(string name);
 
-            void AddJSON([Json][QueryPara("newstudent")][Body] Studuent studuent, [Header(name: "creator")] string creator);
+            void AddJSON([Json][Name("newstudent")][Body] Studuent studuent, [Header(name: "creator")] string creator);
 
             void AddXML([Xml] Studuent studuent);
 
@@ -62,7 +62,7 @@ namespace TestClient.Test.AttributeTest
 
             for (int i = 0; i < 1; i++)
             {
-                student = Feign.Core.Feign.Wrap<IStudentService>("");
+                student = Feign.Core.Feign.Wrap<IStudentService>("www.baidu.com");
                 student.A();
                 student.C("CCCCCCCCCC");
                 System.Console.WriteLine(student.B("BBB"));

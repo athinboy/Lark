@@ -7,6 +7,7 @@ using System.Text;
 using Core.ProxyFactory;
 using Feign.Core.Cache;
 using Feign.Core.Exception;
+using Feign.Core.ProxyFactory;
 using Feign.Core.Resources;
 
 namespace Feign.Core
@@ -47,20 +48,27 @@ namespace Feign.Core
                 throw new ArgumentException(string.Format(FeignResourceManager.getStr("{0} should be a interface"), nameof(T)));
             }
 
+            T t;
+
             if (InterfaceWrapCache.ContainsKey(interfacetype))
             {
-                return (T)(InterfaceWrapCache[interfacetype].WrapInstance);
+                t = (T)(InterfaceWrapCache[interfacetype].WrapInstance);
             }
-
-
-            return ClassFactory.Wrap<T>(interfacetype);
-
-
+            else
+            {
+                t = ClassFactory.Wrap<T>(interfacetype);
+            }
+            Type newType = t.GetType();
+            Object newo= Activator.CreateInstance(newType);
+            WrapBase wrapbase = (WrapBase)newo;
+            T newt = (T)newo;
+            wrapbase.Url = url;
+            return newt;
         }
 
 
 
-   
+
 
     }
 

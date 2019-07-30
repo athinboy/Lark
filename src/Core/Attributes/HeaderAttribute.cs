@@ -1,4 +1,5 @@
 ﻿using Feign.Core.Attributes.RequestService;
+using Feign.Core.Context;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -14,7 +15,7 @@ namespace Feign.Core.Attributes
     /// </summary>
     [System.AttributeUsage(AttributeTargets.Method | AttributeTargets.Interface | AttributeTargets.Class | AttributeTargets.Parameter,
         Inherited = true, AllowMultiple = true)]
-    public sealed class HeaderAttribute : Attribute, IRequestConstructService
+    public sealed class HeaderAttribute : FeignAttribute
     {
         //todo 添加值实现
 
@@ -43,41 +44,14 @@ namespace Feign.Core.Attributes
             throw new ArgumentNullException(nameof(name));
 
         }
+ 
 
-        void IRequestConstructService.Construct(HttpClient httpClient, HttpContent httpContent, MethodWrapContext methodWrapContext)
-        {
-            httpContent.Headers.Add(this.Name, this.Value);
 
-        }
-
-        void IRequestConstructService.Construct(HttpClient httpClient, HttpContent httpContent, MethodWrapContext methodWrapContext, ParameterInfo parameterInfo, object para)
-        {
-            IEnumerable<Attribute> attributes = parameterInfo.GetCustomAttributes();
-            IEnumerator<Attribute> enumerator = attributes.GetEnumerator();
-
-            string serialStr = null;
-
-            while (enumerator.MoveNext())
-            {
-                Attribute attribute = enumerator.Current;
-                if (attribute.GetType().IsAssignableFrom(typeof(XmlAttribute)))
-                {
-                    IValueSerializeService valueSerializeService = attribute as IValueSerializeService;
-                    serialStr = valueSerializeService.Serial(methodWrapContext, parameterInfo, para);
-                }
-                if (attribute.GetType().IsAssignableFrom(typeof(JsonAttribute)))
-                {
-                    IValueSerializeService valueSerializeService = attribute as IValueSerializeService;
-                    serialStr = valueSerializeService.Serial(methodWrapContext, parameterInfo, para);
-                }
-            }
-            if (serialStr == null)
-            {
-                serialStr = para.ToString();
-            }
-            httpContent.Headers.Add(this.Name, serialStr);
-
-        }
     }
+
+
+    
+
+
 
 }

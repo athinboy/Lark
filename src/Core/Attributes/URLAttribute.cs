@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Feign.Core.Context;
 
 namespace Feign.Core.Attributes
 {
@@ -9,7 +10,7 @@ namespace Feign.Core.Attributes
     /// </summary>
     [System.AttributeUsage(AttributeTargets.Method | AttributeTargets.Interface | AttributeTargets.Class,
     Inherited = true, AllowMultiple = false)]
-    public class URLAttribute : Attribute
+    public class URLAttribute : FeignAttribute
     {
         public URLAttribute(string url)
         {
@@ -18,6 +19,21 @@ namespace Feign.Core.Attributes
 
         public string Url { get; set; }
 
+        internal override void SaveToInterfaceContext(InterfaceWrapContext interfaceWrapContext)
+        {
+            base.SaveToInterfaceContext(interfaceWrapContext);
+            interfaceWrapContext.URLAttribute = this;
+        }
 
+        internal override void SaveToMethodContext(MethodWrapContext methodWrapContext)
+        {
+            base.SaveToMethodContext(methodWrapContext);
+            methodWrapContext.URLAttribute = this;
+        }
+
+        internal override void AddUrl(RequestCreContext requestCreContext)
+        {
+            requestCreContext.URL += (this.Url ?? "");
+        }
     }
 }

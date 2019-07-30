@@ -11,7 +11,7 @@ namespace Feign.Core.Attributes
     /// </summary>
     [System.AttributeUsage(AttributeTargets.Method | AttributeTargets.Interface,
         Inherited = true, AllowMultiple = false)]
-    public sealed class MethodAttribute : Attribute
+    public sealed class MethodAttribute : FeignAttribute
     {
 
         public string Method { get; set; } = HttpMethod.Post.Method;
@@ -20,6 +20,7 @@ namespace Feign.Core.Attributes
         {
             this.Method = httpmethod;
         }
+
 
     }
 }

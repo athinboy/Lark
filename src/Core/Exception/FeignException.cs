@@ -7,7 +7,7 @@ namespace Feign.Core.Exception
     public class FeignException : System.Exception
     {
 
-        private string[] args;
+        protected string[] args;
 
         public FeignException(string message) : base(message)
         {

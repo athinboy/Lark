@@ -27,4 +27,11 @@ a feign project corresponding to Feign(https://github.com/OpenFeign/feign).
 +  HttpHeadAttribute  
 +  HttpPostAttribute
 +  HttpPutAttribute
-+  
+
+
+
+## 功能节点
+### 1.0版本 
++ 暂时默认进行xml或者json序列化作为报文 。不支持form格式的请求。
+
+ 

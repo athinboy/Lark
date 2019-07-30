@@ -1,3 +1,5 @@
+using Feign.Core.Context;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace Feign.Core.Cache {
@@ -9,6 +11,10 @@ namespace Feign.Core.Cache {
         }
         public MethodInfo Method { get; set; }
         public MethodWrapContext WrapContext { get; set; }
+
+
+
+
 
     }
 }

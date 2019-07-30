@@ -4,6 +4,8 @@ using System.Reflection;
 using System.Reflection.Emit;
 using Feign.Core;
 using Feign.Core.Cache;
+using Feign.Core.Context;
+using Feign.Core.ProxyFactory;
 
 namespace Core.ProxyFactory
 {
@@ -12,10 +14,8 @@ namespace Core.ProxyFactory
         public static T Wrap<T>(Type interfacetype) where T : class
         {
 
-
-
-            Dictionary<MethodInfo, MethodItem> methodCache = new Dictionary<MethodInfo, MethodItem>();
-            MethodItem methodItem;
+             
+           
 
             Assembly assembly = interfacetype.Assembly;
             Module module = interfacetype.Module;
@@ -32,7 +32,8 @@ namespace Core.ProxyFactory
             // Console.WriteLine ("11111111");
             // Console.WriteLine ("11111111");
 
-            TypeBuilder typeBuilder = moduleBuilder.DefineType(interfacetype.Namespace + "." + interfacetype.Name + "$1", TypeAttributes.Class | TypeAttributes.Public, null, new Type[] { interfacetype });
+            TypeBuilder typeBuilder = moduleBuilder.DefineType(interfacetype.Namespace + "." + interfacetype.Name + "$1"
+                , TypeAttributes.Class | TypeAttributes.Public,typeof(WrapBase), new Type[] { interfacetype });
 
             ConstructorBuilder constructorBuilder = typeBuilder.DefineDefaultConstructor(MethodAttributes.Public);
             //constructorBuilder.GetILGenerator().Emit(OpCodes.Ret);
@@ -43,22 +44,20 @@ namespace Core.ProxyFactory
 
             MethodInfo[] interfacemethods = interfacetype.GetMethods();
             MethodInfo interfacemethodInfo;
-            MethodWrapContext methodWrapContext;
+           
             InterfaceWrapContext interfaceWrapContext = InterfaceWrapContext.GetContext(interfacetype);
 
             for (int i = 0; i < interfacemethods.Length; i++)
             {
                 interfacemethodInfo = interfacemethods[i];
                 MethodFactory.GenerateMethod(interfacetype, interfacemethodInfo, typeBuilder);
-                methodWrapContext = MethodWrapContext.GetContext(interfaceWrapContext, interfacemethodInfo);
-                methodItem = new MethodItem(interfacemethodInfo, methodWrapContext);
-                methodCache[interfacemethodInfo] = methodItem;
+ 
             }
 
             Type newtype = typeBuilder.CreateType();
 
             T t = (T)Activator.CreateInstance(newtype);
-            InterfaceItem interfaceItem = new InterfaceItem(t, interfacetype, methodCache, interfaceWrapContext);
+            InterfaceItem interfaceItem = new InterfaceItem(t, interfacetype,  interfaceWrapContext);
 
             Feign.Core.Feign.InterfaceWrapCache[interfacetype] = interfaceItem;
 

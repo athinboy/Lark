@@ -1,4 +1,6 @@
 ﻿using Feign.Core.Attributes.RequestService;
+using Feign.Core.Cache;
+using Feign.Core.Context;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -10,21 +12,15 @@ namespace Feign.Core.Attributes
     /// json serialize .
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
-    public class JsonAttribute : Attribute, IValueSerializeService
+    public class JsonAttribute : FeignAttribute 
     {
-        string IValueSerializeService.Serial(MethodWrapContext methodWrapContext, ParameterInfo parameterInfo, object value)
-        {
-            if (value == null)
-            {
-                return string.Empty;
-            }
-            Type type = value.GetType();
-            if (type.IsValueType)
-            {
-                return value.ToString();
-            }
 
-            return Newtonsoft.Json.JsonConvert.SerializeObject(value);
+        internal override void SaveToParameterContext(ParameterWrapContext parameterItem)
+        {
+            base.SaveToParameterContext(parameterItem);
+            parameterItem.JsonSerialize = true;
         }
+
+      
     }
 }

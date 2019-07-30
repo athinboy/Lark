@@ -89,6 +89,19 @@ namespace TestClient.Test {
             Console.WriteLine ("AssemblyQualifiedName:" + this.GetType ().AssemblyQualifiedName);
             Console.WriteLine ("Name:" + this.GetType ().Name);
             Console.WriteLine ("Namespace:" + this.GetType ().Namespace);
+
+            E(typeof(StudyMSIL), 0, null);
+            ParaStudyMSIL(this);
+
         }
+
+
+
+        public void ParaStudyMSIL(StudyMSIL s)
+        {
+
+        }
+
+
     }
 }

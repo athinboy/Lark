@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Feign.Core.Context;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Reflection;

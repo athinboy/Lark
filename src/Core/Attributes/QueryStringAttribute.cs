@@ -10,7 +10,7 @@ namespace Feign.Core.Attributes
 {
 
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
-    public class QueryStringAttribute : Attribute
+    public class QueryStringAttribute : FeignAttribute
     {
         public string Name { get; set; }
 
@@ -27,6 +27,8 @@ namespace Feign.Core.Attributes
         {
             return this.Name + "=" + this.Value;
         }
+
+
 
     }
 }

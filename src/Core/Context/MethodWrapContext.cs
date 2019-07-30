@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using Feign.Core.Attributes;
+using Feign.Core.Cache;
 using Feign.Core.Exception;
 
-namespace Feign.Core
+namespace Feign.Core.Context
 {
     internal class MethodWrapContext
     {
@@ -17,7 +18,17 @@ namespace Feign.Core
 
         private string url = null;
 
+        /// <summary>
+        /// 接口URL 特性
+        /// </summary>
+        public URLAttribute URLAttribute { get; set; }
+
         public List<HeaderAttribute> HeaderAttributes { get; set; } = new List<HeaderAttribute>();
+
+        public List<FeignAttribute> MyFeignAttributes { get; set; } = new List<FeignAttribute>();
+
+
+        public List<ParameterWrapContext> ParameterCache { get; set; } = new List<ParameterWrapContext>();
 
 
         /// <summary>
@@ -27,16 +38,56 @@ namespace Feign.Core
 
         private InterfaceWrapContext interfaceWrapContext = null;
 
+
+
+        private static void SaveParameter(MethodWrapContext methodWrapContext)
+        {
+            ParameterInfo parameterInfo;
+            MethodInfo methodInfo = methodWrapContext.methodInfo;
+            ParameterInfo[] parameterInfos = methodInfo.GetParameters();
+            Attribute attribute;
+            ParameterWrapContext parameterContext;
+            FeignAttribute feignAttribute;
+
+            for (int i = 0; i < parameterInfos.Length; i++)
+            {
+                parameterInfo = parameterInfos[i];
+                parameterContext = new ParameterWrapContext(parameterInfo);
+                IEnumerable<Attribute> attributes = parameterInfo.GetCustomAttributes();
+                IEnumerator<Attribute> enumerator = attributes.GetEnumerator();
+                while (enumerator.MoveNext())
+                {
+                    attribute = enumerator.Current;
+                    if (false == typeof(FeignAttribute).IsInstanceOfType(attribute))
+                    {
+                        continue;
+                    }
+
+                    feignAttribute = attribute as FeignAttribute;
+                    parameterContext.MyFeignAttributes.Add(feignAttribute);
+                    feignAttribute.SaveToParameterContext(parameterContext);
+
+                }
+                methodWrapContext.ParameterCache.Add(parameterContext);
+
+
+            }
+
+        }
+
+
         internal static MethodWrapContext GetContext(InterfaceWrapContext interfaceWrapContext, MethodInfo methodInfo)
         {
             MethodWrapContext methodWrapContext = new MethodWrapContext();
-            methodWrapContext.interfaceType = interfaceWrapContext.interfaceType;
+            methodWrapContext.interfaceType = interfaceWrapContext.InterfaceType;
             methodWrapContext.methodInfo = methodInfo;
+            methodWrapContext.interfaceWrapContext = interfaceWrapContext;
 
 
             object[] cas = methodInfo.GetCustomAttributes(true);
+            FeignAttribute feignAttribute;
 
-            ParameterInfo[] parameterInfos = methodInfo.GetParameters();
+
 
             object ca;
             List<string> headers = new List<string>();
@@ -44,6 +95,19 @@ namespace Feign.Core
             for (int i = 0; i < cas.Length; i++)
             {
                 ca = cas[i];
+
+
+                if (false == typeof(FeignAttribute).IsInstanceOfType(ca))
+                {
+
+                    continue;
+                }
+
+                feignAttribute = ca as FeignAttribute;
+                methodWrapContext.MyFeignAttributes.Add(feignAttribute);
+
+                feignAttribute.SaveToMethodContext(methodWrapContext);
+
                 if (typeof(URLAttribute).IsInstanceOfType(ca))
                 {
                     methodWrapContext.MethodURLAttribute = ca as URLAttribute;
@@ -72,15 +136,7 @@ namespace Feign.Core
 
             }
 
-            for (int i = 0; i < interfaceWrapContext.HeaderAttributes.Count; i++)
-            {
-                headerAttribute = interfaceWrapContext.HeaderAttributes[i];
-                if (false == headers.Contains(headerAttribute.Name))
-                {
-                    headers.Add(headerAttribute.Name);
-                    methodWrapContext.HeaderAttributes.Add(headerAttribute);
-                }
-            }
+            SaveParameter(methodWrapContext);
 
             methodWrapContext.Validate();
 
@@ -105,6 +161,7 @@ namespace Feign.Core
             if (url == null)
             {
                 url = Util.NormalizeURL(this.interfaceWrapContext.URLAttribute == null ? null : this.interfaceWrapContext.URLAttribute.Url);
+                url += Util.NormalizeURL(this.URLAttribute == null ? null : this.URLAttribute.Url);
             }
             return url;
 

@@ -1,5 +1,7 @@
 ﻿using Feign.Core.Cache;
+using Feign.Core.Context;
 using Feign.Core.Exception;
+using Feign.Core.ProxyFactory;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -11,31 +13,32 @@ namespace Feign.Core
     {
 
 
-        public static object Invoke(Type interfacetype, MethodInfo methodInfo, List<Object> args)
+        public static object Invoke(Type interfacetype, WrapBase wrapBase, MethodInfo methodInfo, List<Object> args)
         {
+
             if (false == Feign.InterfaceWrapCache.ContainsKey(interfacetype))
             {
                 throw new FeignException("运行时异常：wrapcache不存在！");
             }
             InterfaceItem interfaceItem = Feign.InterfaceWrapCache[interfacetype];
 
-            if (false == interfaceItem.MethodCache.ContainsKey(methodInfo))
+            if (false == interfaceItem.WrapContext.MethodCache.ContainsKey(methodInfo))
             {
                 throw new FeignException("运行时异常：MethodCache不存在！");
             }
 
-            MethodItem methodItem = interfaceItem.MethodCache[methodInfo];
+            MethodItem methodItem = interfaceItem.WrapContext.MethodCache[methodInfo];
 
             //todo not implete
 
+            RequestCreContext requestCreContext = new RequestCreContext();
 
-            HttpCreater.Create(methodItem.WrapContext,args);
+            requestCreContext.InfaceContext = interfaceItem.WrapContext;
+
+            requestCreContext.MethodWrap = methodItem.WrapContext;
 
 
-
-
-
-
+            HttpCreater.Create(requestCreContext, args);
 
 
 
