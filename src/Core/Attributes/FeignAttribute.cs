@@ -33,10 +33,7 @@ namespace Feign.Core.Attributes
 
         }
 
-        internal  virtual void AddUrl(RequestCreContext requestCreContext)
-        {
 
-        }
         internal  virtual void AddQueryStr(RequestCreContext requestCreContext)
         {
 

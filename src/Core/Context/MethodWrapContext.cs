@@ -147,7 +147,9 @@ namespace Feign.Core.Context
         private void Validate()
         {
 
-            if (this.MethodURLAttribute == null && string.IsNullOrEmpty(this.httpMethod) && this.interfaceWrapContext.URLAttribute != null)
+            if (this.MethodURLAttribute == null
+                && string.IsNullOrEmpty(this.httpMethod)
+                && this.interfaceWrapContext.URLAttribute != null)
             {
                 throw new FeignException("URL and Method Attribute can not be both Null ！");
             }
@@ -155,15 +157,19 @@ namespace Feign.Core.Context
         }
 
 
-        public string Url()
+        public string Url
         {
-
-            if (url == null)
+            get
             {
-                url = Util.NormalizeURL(this.interfaceWrapContext.URLAttribute == null ? null : this.interfaceWrapContext.URLAttribute.Url);
-                url += Util.NormalizeURL(this.URLAttribute == null ? null : this.URLAttribute.Url);
+                if (url == null)
+                {
+                    url = Util.NormalizeURL(this.interfaceWrapContext.URLAttribute == null ? null : this.interfaceWrapContext.URLAttribute.Url);
+                    url += Util.NormalizeURL(this.URLAttribute == null ? null : this.URLAttribute.Url);
+                }
+                return url;
             }
-            return url;
+            private set { }
+
 
         }
 

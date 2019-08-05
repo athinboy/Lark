@@ -1,4 +1,5 @@
-﻿using Feign.Core.Cache;
+﻿using Feign.Core.Attributes;
+using Feign.Core.Cache;
 using Feign.Core.Context;
 using Feign.Core.Exception;
 using Feign.Core.ProxyFactory;
@@ -9,9 +10,9 @@ using System.Text;
 
 namespace Feign.Core
 {
+
     public class InvokeProxy
     {
-
 
         public static object Invoke(Type interfacetype, WrapBase wrapBase, MethodInfo methodInfo, List<Object> args)
         {
@@ -37,18 +38,23 @@ namespace Feign.Core
 
             requestCreContext.MethodWrap = methodItem.WrapContext;
 
+            requestCreContext.WrapInstance = wrapBase;
 
-            HttpCreater.Create(requestCreContext, args);
 
+            string resultStr = HttpCreater.Create(requestCreContext, args);
 
 
             if (typeof(void) == methodInfo.ReturnType)
             {
                 return null;
             }
+            else
+            {
+                return resultStr;
+            }
 
-
-            return null;
         }
+
+
     }
 }

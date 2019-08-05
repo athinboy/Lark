@@ -16,7 +16,7 @@ namespace Feign.Core
 
         private static List<object> empterArgs = new List<object>();
 
-        internal static void Create(RequestCreContext requestCreContext, List<Object> args)
+        internal static string Create(RequestCreContext requestCreContext, List<Object> args)
         {
             MethodWrapContext methodWrap = requestCreContext.MethodWrap;
             args = args ?? empterArgs;
@@ -48,16 +48,15 @@ namespace Feign.Core
             for (int i = 0; i < interfaceWrap.MyFeignAttributes.Count; i++)
             {
                 feignAttribute = interfaceWrap.MyFeignAttributes[i];
-                feignAttribute.AddUrl(requestCreContext);
+    
 
             }
 
             for (int i = 0; i < methodWrap.MyFeignAttributes.Count; i++)
             {
                 feignAttribute = methodWrap.MyFeignAttributes[i];
-                feignAttribute.AddUrl(requestCreContext);
+              
             }
-
 
             for (int i = 0; i < methodWrap.MyFeignAttributes.Count; i++)
             {
@@ -73,18 +72,18 @@ namespace Feign.Core
                 feignAttribute.AddQueryStr(requestCreContext);
                 feignAttribute.AddHeader(requestCreContext, httpContent);
 
-
             }
 
-
+ 
+    
             for (int i = 0; i < args.Count; i++)
             {
                 if (InternalConfig.LogRequestParameter)
                 {
                     System.Console.WriteLine(args[i].ToString());
                 }
-
             }
+
             System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient();
             switch (requestCreContext.HttpMethod.Method)
             {
@@ -92,14 +91,17 @@ namespace Feign.Core
                     Task<HttpResponseMessage> task = httpClient.GetAsync(requestCreContext.URL);
                     task.Wait();
                     HttpResponseMessage httpResponseMessage = task.Result;
+                    Task<String> taskStr = httpResponseMessage.Content.ReadAsStringAsync();
+                    taskStr.Wait();
+                    return taskStr.Result;
 
-                    break;
                 case "POST":
                     break;
                 default:
                     throw new NotSupportedException("Not supported Http Method!");
             }
 
+            return "";
 
 
 

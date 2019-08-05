@@ -13,7 +13,7 @@ namespace Feign.Core.Attributes
     /// <summary>
     /// xml serialize.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.ReturnValue, AllowMultiple = false, Inherited = true)]
     public class XmlAttribute : FeignAttribute
     {
 

@@ -31,9 +31,6 @@ namespace Feign.Core.Attributes
             methodWrapContext.URLAttribute = this;
         }
 
-        internal override void AddUrl(RequestCreContext requestCreContext)
-        {
-            requestCreContext.URL += (this.Url ?? "");
-        }
+
     }
 }
