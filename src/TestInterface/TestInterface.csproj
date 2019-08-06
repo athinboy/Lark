@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\core\Core.csproj" />
+    <ProjectReference Include="..\core\Core.csproj" />
   </ItemGroup>
 
 </Project>

@@ -34,8 +34,7 @@ namespace TestClient.Test.AttributeTest
 
             }
 
-
-            System.Console.WriteLine("ffff");
+     
         }
 
     }

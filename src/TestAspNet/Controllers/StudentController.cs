@@ -1,4 +1,4 @@
-﻿using Feign.Core.Attributes;
+﻿
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;

@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\TestInterface\TestInterface.csproj" />
+    <ProjectReference Include="..\TestInterface\TestInterface.csproj" />
   </ItemGroup>
 
 </Project>
