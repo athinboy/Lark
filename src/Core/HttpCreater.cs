@@ -48,14 +48,14 @@ namespace Feign.Core
             for (int i = 0; i < interfaceWrap.MyFeignAttributes.Count; i++)
             {
                 feignAttribute = interfaceWrap.MyFeignAttributes[i];
-    
+
 
             }
 
             for (int i = 0; i < methodWrap.MyFeignAttributes.Count; i++)
             {
                 feignAttribute = methodWrap.MyFeignAttributes[i];
-              
+
             }
 
             for (int i = 0; i < methodWrap.MyFeignAttributes.Count; i++)
@@ -74,8 +74,8 @@ namespace Feign.Core
 
             }
 
- 
-    
+
+
             for (int i = 0; i < args.Count; i++)
             {
                 if (InternalConfig.LogRequestParameter)
@@ -85,25 +85,35 @@ namespace Feign.Core
             }
 
             System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient();
+            HttpResponseMessage httpResponseMessage = null;
+            Task<String> taskStr;
+            //todo  此处需要根据http响应码进行不同处理
+            Task<HttpResponseMessage> task;
             switch (requestCreContext.HttpMethod.Method)
             {
                 case "GET":
-                    Task<HttpResponseMessage> task = httpClient.GetAsync(requestCreContext.URL);
-                    task.Wait();
-                    HttpResponseMessage httpResponseMessage = task.Result;
-                    Task<String> taskStr = httpResponseMessage.Content.ReadAsStringAsync();
-                    taskStr.Wait();
-                    return taskStr.Result;
+                    task = httpClient.GetAsync(requestCreContext.URL);
+                    break;
 
                 case "POST":
+                    task = httpClient.PostAsync(requestCreContext.URL, httpContent);
+
                     break;
                 default:
                     throw new NotSupportedException("Not supported Http Method!");
             }
 
-            return "";
+            task.Wait();
+            httpResponseMessage = task.Result;
+            taskStr = httpResponseMessage.Content.ReadAsStringAsync();
+            taskStr.Wait();
 
+            if (InternalConfig.SaveResponse)
+            {
+                requestCreContext.WrapInstance.Response = httpResponseMessage;
+            }
 
+            return taskStr.Result;
 
 
         }

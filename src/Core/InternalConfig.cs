@@ -9,12 +9,15 @@ namespace Feign.Core {
         /// eg,
         /// methodILGenerator.EmitWriteLine ("current method is " + methodInfo.Name);
         /// </summary>
-        static public bool EmitTestCode = true;
+        static public bool EmitTestCode = false;
 
         /// <summary>
         /// log the request parameter .
         /// </summary>
-        static public bool LogRequestParameter = true;
+        static public bool LogRequestParameter = false;
+
+
+        static public bool SaveResponse = false;
 
     }
 

@@ -30,7 +30,7 @@ namespace Feign.Core
 
             MethodItem methodItem = interfaceItem.WrapContext.MethodCache[methodInfo];
 
-            //todo not implete
+             
 
             RequestCreContext requestCreContext = new RequestCreContext();
 
@@ -48,8 +48,13 @@ namespace Feign.Core
             {
                 return null;
             }
+            else if (typeof(string) == methodInfo.ReturnType)
+            {
+                return resultStr;
+            }
             else
             {
+
                 return resultStr;
             }
 
