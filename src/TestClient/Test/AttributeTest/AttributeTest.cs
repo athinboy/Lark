@@ -1,53 +1,55 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Text.Encodings.Web;
 using Feign.Core.Attributes;
+using Feign.Core.ProxyFactory;
 using NUnit.Framework;
-using Microsoft.AspNetCore.Mvc;
- 
+using TestInterface;
 
 /// <summary>
 /// 整体的Attribute测试。
 /// </summary>
-namespace TestClient.Test.AttributeTest {
+namespace TestClient.Test.AttributeTest
+{
 
 
 
     [TestFixture]
-    public class AttributeTest {
+    public class AttributeTest
+    {
+        private const string BaseUrl = "http://localhost:6346";
 
-        [Header ("myheader", "hello")]
-        [Method ("GET")]        
-        public interface IStudent {
 
-            [URL ("fwefwe")]
-            [HttpGet("fwef")]
-            void A ();
-
-            [URL ("fwefwe")]
-            string B (string name);
-
-            [URL ("fwefwe")]
-            void C (string name);
+        [SetUp]
+        public void Setup()
+        {
+            Feign.Core.InternalConfig.EmitTestCode = true;
+            Feign.Core.InternalConfig.SaveResponse = true;
         }
 
-        [Test]
-        public void WrapTest_One () {
-            IStudent student = Feign.Core.Feign.Wrap<IStudent> ("");
 
-            for (int i = 0; i < 1; i++) {
-                student = Feign.Core.Feign.Wrap<IStudent> ("");
-                student.A ();
-                student.C ("CCCCCCCCCC");
-                System.Console.WriteLine (student.B ("BBB"));
+        [Test]
+        public void WrapTest_One()
+        {
+            IStudentService student = Feign.Core.Feign.Wrap<IStudentService>("");
+
+            for (int i = 0; i < 1; i++)
+            {
+                student = Feign.Core.Feign.Wrap<IStudentService>(BaseUrl);
+                WrapBase wrap = (WrapBase)student;
+                Assert.IsTrue("Hello!" == student.SayHello());
+                HttpResponseMessage responseMessage = wrap.Response;
+                ProbeInfo probeInfo = Util.GetProbe(responseMessage) ?? throw new Exception("probeinfo is null");
+                Assert.IsTrue(probeInfo.Url.EndsWith("/api/student/sayhello"));
+                Assert.IsTrue(probeInfo.Method == "GET");
+                Assert.IsTrue(probeInfo.Headers.Exists(x => x.Key == "myheader" && x.Value == "hello"));
+
+
             }
 
-            student.A ();
-            //string b= student.B("BBB");
-            //System.Console.WriteLine(b);
-            //student.B("BBB");
-            System.Console.WriteLine ("ffff");
         }
 
     }
