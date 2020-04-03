@@ -8,7 +8,6 @@ using Core.ProxyFactory;
 using Feign.Core.Cache;
 using Feign.Core.Exception;
 using Feign.Core.ProxyFactory;
-using Feign.Core.Resources;
 
 namespace Feign.Core
 {
@@ -45,7 +44,7 @@ namespace Feign.Core
 
             if (false == interfacetype.IsInterface)
             {
-                throw new ArgumentException(string.Format(FeignResourceManager.getStr("{0} should be a interface"), nameof(T)));
+                throw new ArgumentException(string.Format("{0} should be a interface", nameof(T)));
             }
 
             T t;

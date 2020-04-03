@@ -14,13 +14,16 @@ namespace Core.ProxyFactory
         public static T Wrap<T>(Type interfacetype) where T : class
         {
 
-             
-           
+
+
 
             Assembly assembly = interfacetype.Assembly;
             Module module = interfacetype.Module;
 
-            AssemblyBuilder assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName(assembly.FullName), AssemblyBuilderAccess.Run);
+            AssemblyName assemblyName = new AssemblyName(assembly.FullName);
+            assemblyName.Name = assemblyName.Name + "$001";
+
+            AssemblyBuilder assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);
             ModuleBuilder moduleBuilder = assemblyBuilder.DefineDynamicModule(module.Name);
 
             // Console.WriteLine ("11111111");
@@ -33,7 +36,7 @@ namespace Core.ProxyFactory
             // Console.WriteLine ("11111111");
 
             TypeBuilder typeBuilder = moduleBuilder.DefineType(interfacetype.Namespace + "." + interfacetype.Name + "$1"
-                , TypeAttributes.Class | TypeAttributes.Public,typeof(WrapBase), new Type[] { interfacetype });
+                , TypeAttributes.Class | TypeAttributes.Public, typeof(WrapBase), new Type[] { interfacetype });
 
             ConstructorBuilder constructorBuilder = typeBuilder.DefineDefaultConstructor(MethodAttributes.Public);
             //constructorBuilder.GetILGenerator().Emit(OpCodes.Ret);
@@ -44,20 +47,20 @@ namespace Core.ProxyFactory
 
             MethodInfo[] interfacemethods = interfacetype.GetMethods();
             MethodInfo interfacemethodInfo;
-           
+
             InterfaceWrapContext interfaceWrapContext = InterfaceWrapContext.GetContext(interfacetype);
 
             for (int i = 0; i < interfacemethods.Length; i++)
             {
                 interfacemethodInfo = interfacemethods[i];
                 MethodFactory.GenerateMethod(interfacetype, interfacemethodInfo, typeBuilder);
- 
+
             }
 
             Type newtype = typeBuilder.CreateType();
 
             T t = (T)Activator.CreateInstance(newtype);
-            InterfaceItem interfaceItem = new InterfaceItem(t, interfacetype,  interfaceWrapContext);
+            InterfaceItem interfaceItem = new InterfaceItem(t, interfacetype, interfaceWrapContext);
 
             Feign.Core.Feign.InterfaceWrapCache[interfacetype] = interfaceItem;
 

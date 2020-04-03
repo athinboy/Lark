@@ -25,6 +25,8 @@ namespace TestAspNet
 
             probeInfo.Url = httpRequest.Host + httpRequest.Path.Value + httpRequest.QueryString;
 
+            probeInfo.Method = httpRequest.Method;
+
             foreach (string key in headers.Keys)
             {
                 probeInfo.Headers.Add(new KeyValuePair<string, string>(key, headers[key]));

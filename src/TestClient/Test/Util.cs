@@ -1,13 +1,56 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using TestInterface;
 
 namespace TestClient.Test
 {
     class Util
     {
+
+
+
+        public static ProbeInfo GetProbe(HttpResponseMessage responseMessage)
+        {
+
+
+            IEnumerable<string> ies = responseMessage.Headers.GetValues("probeInfo");
+            IEnumerator<string> ietors = ies.GetEnumerator();
+            string value = null;
+            while (ietors.MoveNext())
+            {
+                value = ietors.Current;
+            }
+
+            if (string.IsNullOrEmpty(value) == false)
+            {
+
+
+                value = WebUtility.HtmlDecode(value);
+                System.Console.WriteLine(value);
+
+                ProbeInfo probeInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<ProbeInfo>(value);
+                return probeInfo;
+
+            }
+            return null;
+
+
+
+        }
+
+
+
+
+
+
+
+
+
 
         static void Main(string[] args)
         {

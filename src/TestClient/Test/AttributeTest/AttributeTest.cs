@@ -23,42 +23,29 @@ namespace TestClient.Test.AttributeTest
         private const string BaseUrl = "http://localhost:6346";
 
 
+        [SetUp]
+        public void Setup()
+        {
+            Feign.Core.InternalConfig.EmitTestCode = true;
+            Feign.Core.InternalConfig.SaveResponse = true;
+        }
+
+
         [Test]
         public void WrapTest_One()
         {
             IStudentService student = Feign.Core.Feign.Wrap<IStudentService>("");
 
-            Feign.Core.InternalConfig.EmitTestCode = true;
-            Feign.Core.InternalConfig.SaveResponse = true;
-
-
             for (int i = 0; i < 1; i++)
             {
                 student = Feign.Core.Feign.Wrap<IStudentService>(BaseUrl);
                 WrapBase wrap = (WrapBase)student;
-                System.Console.WriteLine(student.SayHello());
+                Assert.IsTrue("Hello!" == student.SayHello());
                 HttpResponseMessage responseMessage = wrap.Response;
-                IEnumerable<string> ies = responseMessage.Headers.GetValues("probeInfo");
-                IEnumerator<string> ietors = ies.GetEnumerator();
-                string value = null;
-                while (ietors.MoveNext())
-                {
-                    value = ietors.Current;
-                }
-             
-                if (string.IsNullOrEmpty(value) == false)
-                {
-
-
-                    value = WebUtility.HtmlDecode(value);
-                    System.Console.WriteLine(value);
-
-                    ProbeInfo probeInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<ProbeInfo>(value);
-
-                }
-
-
-
+                ProbeInfo probeInfo = Util.GetProbe(responseMessage) ?? throw new Exception("probeinfo is null");
+                Assert.IsTrue(probeInfo.Url.EndsWith("/api/student/sayhello"));
+                Assert.IsTrue(probeInfo.Method == "GET");
+                Assert.IsTrue(probeInfo.Headers.Exists(x => x.Key == "myheader" && x.Value == "hello"));
 
 
             }
