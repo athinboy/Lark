@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29102.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "src\core\Core.csproj", "{52287594-C49E-4BF1-9DC7-2C43BC92EE01}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FeignCore", "src\FeignCore\FeignCore.csproj", "{52287594-C49E-4BF1-9DC7-2C43BC92EE01}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9B424333-5839-47D2-BAC0-5A68516556AB}"
 	ProjectSection(SolutionItems) = preProject

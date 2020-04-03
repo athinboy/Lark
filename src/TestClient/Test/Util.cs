@@ -17,7 +17,6 @@ namespace TestClient.Test
         public static ProbeInfo GetProbe(HttpResponseMessage responseMessage)
         {
 
-
             IEnumerable<string> ies = responseMessage.Headers.GetValues("probeInfo");
             IEnumerator<string> ietors = ies.GetEnumerator();
             string value = null;

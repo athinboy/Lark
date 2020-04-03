@@ -3,7 +3,7 @@ namespace TestClient.Test.AttributeTest {
 
         [NUnit.Framework.Test]
         public void Test () {
-
+            throw new System.Exception("A test！");
         }
 
     }

@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\core\Core.csproj" />
+    <ProjectReference Include="..\FeignCore\FeignCore.csproj" />
     <ProjectReference Include="..\TestInterface\TestInterface.csproj" />
   </ItemGroup>
 

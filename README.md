@@ -2,36 +2,38 @@
 
 a feign project corresponding to Feign(https://github.com/OpenFeign/feign).
 
-
 ## Principle
-+ ËùÓĞµÄÌØĞÔ³ıÁËURLĞÅÏ¢ÀàµÄÌØĞÔÍâ£¬È«²¿²ÉÓÃ¡°×ÓÎª×¼¡±Ô­Ôò¡£
-+ URLĞÅÏ¢Ïà¹ØµÄÌØĞÔ£¬²ÉÈ¡¡°¸¸+×Ó¡±Ô­Ôò¡£
 
-
++ æ‰€æœ‰çš„ç‰¹æ€§é™¤äº†URLä¿¡æ¯ç±»çš„ç‰¹æ€§å¤–ï¼Œå…¨éƒ¨é‡‡ç”¨â€œå­ä¸ºå‡†â€åŸåˆ™ã€‚
++ URLä¿¡æ¯ç›¸å…³çš„ç‰¹æ€§ï¼Œé‡‡å–â€œçˆ¶+å­â€åŸåˆ™ã€‚
 
 ## Feigh4Net Attribute
 
-
-
-
-
-
-
 ## Supported Asp MVC Attribute
+
 + FromFormAttribute
 + FromBodyAttribute
 + FromHeaderAttribute
 + FromQueryAttribute
-+  HttpDeleteAttribute
-+  HttpGetAttribute
-+  HttpHeadAttribute  
-+  HttpPostAttribute
-+  HttpPutAttribute
++ HttpDeleteAttribute
++ HttpGetAttribute
++ HttpHeadAttribute  
++ HttpPostAttribute
++ HttpPutAttribute
 
+## åŠŸèƒ½èŠ‚ç‚¹
 
+### 1.0ç‰ˆæœ¬
 
-## ¹¦ÄÜ½Úµã
-### 1.0°æ±¾ 
-+ ÔİÊ±Ä¬ÈÏ½øĞĞxml»òÕßjsonĞòÁĞ»¯×÷Îª±¨ÎÄ ¡£²»Ö§³Öform¸ñÊ½µÄÇëÇó¡£
++ æš‚æ—¶é»˜è®¤è¿›è¡Œxmlæˆ–è€…jsonåºåˆ—åŒ–ä½œä¸ºæŠ¥æ–‡ ã€‚ä¸æ”¯æŒformæ ¼å¼çš„è¯·æ±‚ã€‚
 
- 
+## æµ‹è¯•æ­¥éª¤
+
+1ã€appsetting.jsonä¸­å·²ç»é…ç½®ç«¯å£ï¼š6346
+
+``` cmd
+cd src\TestAspNet
+dotnet run
+```
+
+æµè§ˆå™¨æ‰“å¼€ï¼šhttp://localhost:6346/api/student/sayhello

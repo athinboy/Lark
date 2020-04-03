@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestAspNet", "TestAspNet\Te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestInterface", "TestInterface\TestInterface.csproj", "{D111E172-6D21-4F3B-AD47-3768B77DDE03}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{59E87B6C-C057-4598-AD95-42EB8352385B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FeignCore", "FeignCore\FeignCore.csproj", "{59E87B6C-C057-4598-AD95-42EB8352385B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
