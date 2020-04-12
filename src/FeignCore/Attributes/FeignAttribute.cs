@@ -28,7 +28,7 @@ namespace Feign.Core.Attributes
 
 
 
-        internal virtual  void AddHeader(RequestCreContext requestCreContext, HttpContent httpContext)
+        internal virtual  void AddHeader(RequestCreContext requestCreContext, HttpRequestMessage httpRequestMessage)
         {
 
         }

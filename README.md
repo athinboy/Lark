@@ -36,4 +36,4 @@ cd src\TestAspNet
 dotnet run
 ```
 
-浏览器打开：http://localhost:6346/api/student/sayhello
+2、浏览器打开：http://localhost:6346/api/student/sayhello

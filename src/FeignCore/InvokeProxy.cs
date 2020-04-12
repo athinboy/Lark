@@ -19,18 +19,18 @@ namespace Feign.Core
 
             if (false == Feign.InterfaceWrapCache.ContainsKey(interfacetype))
             {
-                throw new FeignException("运行时异常：wrapcache不存在！");
+                throw new FeignException("RuntimeException：wrapcache is not exists！");
             }
             InterfaceItem interfaceItem = Feign.InterfaceWrapCache[interfacetype];
 
             if (false == interfaceItem.WrapContext.MethodCache.ContainsKey(methodInfo))
             {
-                throw new FeignException("运行时异常：MethodCache不存在！");
+                throw new FeignException("RuntimeException：MethodCache is not exists！");
             }
 
             MethodItem methodItem = interfaceItem.WrapContext.MethodCache[methodInfo];
 
-             
+
 
             RequestCreContext requestCreContext = new RequestCreContext();
 
@@ -44,6 +44,7 @@ namespace Feign.Core
             string resultStr = HttpCreater.Create(requestCreContext, args);
 
 
+            //todo Need to complete the return object .
             if (typeof(void) == methodInfo.ReturnType)
             {
                 return null;

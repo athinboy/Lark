@@ -9,7 +9,7 @@ namespace Feign.Core.Attributes
 
     /// <summary>
     /// requset body
-    /// serialize a para ,the result string whill be 
+    /// serialize a para
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
     public class BodyAttribute : FeignAttribute

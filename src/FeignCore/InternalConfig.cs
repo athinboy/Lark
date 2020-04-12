@@ -1,9 +1,11 @@
-namespace Feign.Core {
+namespace Feign.Core
+{
 
     /// <summary>
     /// internal config. for test/debug propose.
     /// </summary>
-    public class InternalConfig {
+    public class InternalConfig
+    {
         /// <summary>
         /// Emit test code 
         /// eg,
@@ -12,13 +14,20 @@ namespace Feign.Core {
         static public bool EmitTestCode = false;
 
         /// <summary>
-        /// log the request parameter .
+        /// log the request info .
         /// </summary>
-        static public bool LogRequestParameter = false;
+        static public bool LogRequest = false;
 
 
+        /// <summary>
+        ///   save the original response ,porpose to debug/test .
+        /// </summary>
         static public bool SaveResponse = false;
 
+        /// <summary>
+        ///   Don't send Request,porpose to debug/test .
+        /// </summary>
+        public static bool NotRequest { get; set; }
     }
 
 }

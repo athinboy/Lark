@@ -10,7 +10,7 @@ using NUnit.Framework;
 using TestInterface;
 
 /// <summary>
-/// 整体的Attribute测试。
+/// The Whole  Attribute Related Test。
 /// </summary>
 namespace TestClient.Test.AttributeTest
 {
@@ -28,7 +28,10 @@ namespace TestClient.Test.AttributeTest
         {
             Feign.Core.InternalConfig.EmitTestCode = true;
             Feign.Core.InternalConfig.SaveResponse = true;
+            Feign.Core.InternalConfig.LogRequest = true;        
+ 
         }
+
 
 
         [Test]
@@ -41,7 +44,7 @@ namespace TestClient.Test.AttributeTest
                 student = Feign.Core.Feign.Wrap<IStudentService>(BaseUrl);
                 WrapBase wrap = (WrapBase)student;
                 Assert.IsTrue("Hello!" == student.SayHello());
-                HttpResponseMessage responseMessage = wrap.Response;
+                HttpResponseMessage responseMessage = wrap.OriginalResponseMessage;
                 ProbeInfo probeInfo = Util.GetProbe(responseMessage) ?? throw new Exception("probeinfo is null");
                 Assert.IsTrue(probeInfo.Url.EndsWith("/api/student/sayhello"));
                 Assert.IsTrue(probeInfo.Method == "GET");

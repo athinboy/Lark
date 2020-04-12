@@ -12,6 +12,7 @@ namespace TestInterface
     {
         [URL("/sayhello")]    
         [HttpGet("GET")]   
+        [Header("myheader", "SayHello")]
         string SayHello();
 
         

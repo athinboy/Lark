@@ -7,6 +7,9 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Feign.Core.ProxyFactory;
+using System.Net;
 
 namespace Feign.Core
 {
@@ -14,10 +17,16 @@ namespace Feign.Core
     {
 
 
+        Microsoft.Extensions.Logging.ILogger logger = LoggerFactory.Create((x) => { x.AddConsole(); }).CreateLogger<HttpCreater>();
+
+
         private static List<object> empterArgs = new List<object>();
 
         internal static string Create(RequestCreContext requestCreContext, List<Object> args)
         {
+
+            WrapBase wrapBase = requestCreContext.WrapInstance;
+
             MethodWrapContext methodWrap = requestCreContext.MethodWrap;
             args = args ?? empterArgs;
 
@@ -29,7 +38,7 @@ namespace Feign.Core
             InterfaceWrapContext interfaceWrap = requestCreContext.InfaceContext;
             ParameterWrapContext parameterWrap;
 
-            HttpContent httpContent = SpeculateHttpContent(requestCreContext);
+            HttpRequestMessage httpRequestMessage = SpeculateRequestMessage(requestCreContext);
             FeignAttribute feignAttribute;
 
             for (int i = 0; i < methodWrap.ParameterCache.Count; i++)
@@ -38,7 +47,7 @@ namespace Feign.Core
                 for (int j = 0; j < parameterWrap.MyFeignAttributes.Count; j++)
                 {
                     feignAttribute = parameterWrap.MyFeignAttributes[j];
-                    feignAttribute.AddHeader(requestCreContext, httpContent);
+                    feignAttribute.AddHeader(requestCreContext, httpRequestMessage);
                     feignAttribute.AddQueryStr(requestCreContext);
 
                 }
@@ -62,7 +71,7 @@ namespace Feign.Core
             {
                 feignAttribute = methodWrap.MyFeignAttributes[i];
                 feignAttribute.AddQueryStr(requestCreContext);
-                feignAttribute.AddHeader(requestCreContext, httpContent);
+                feignAttribute.AddHeader(requestCreContext, httpRequestMessage);
             }
 
 
@@ -70,7 +79,7 @@ namespace Feign.Core
             {
                 feignAttribute = interfaceWrap.MyFeignAttributes[i];
                 feignAttribute.AddQueryStr(requestCreContext);
-                feignAttribute.AddHeader(requestCreContext, httpContent);
+                feignAttribute.AddHeader(requestCreContext, httpRequestMessage);
 
             }
 
@@ -78,30 +87,41 @@ namespace Feign.Core
 
             for (int i = 0; i < args.Count; i++)
             {
-                if (InternalConfig.LogRequestParameter)
+                if (InternalConfig.LogRequest)
                 {
-                    System.Console.WriteLine(args[i].ToString());
+
                 }
             }
 
             System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient();
+            //HttpWebRequest  
+
+            if (InternalConfig.NotRequest)
+            {
+                wrapBase.MyClient = httpClient;
+                wrapBase.MyHttpRequestMessagea = httpRequestMessage;
+                wrapBase.MyRequestCreContext = requestCreContext;
+                return null;
+            }
+
+
             HttpResponseMessage httpResponseMessage = null;
             Task<String> taskStr;
-            //todo  此处需要根据http响应码进行不同处理
+            //todo  it's need to  deal with the http status code
             Task<HttpResponseMessage> task;
             switch (requestCreContext.HttpMethod.Method)
             {
                 case "GET":
-                    task = httpClient.GetAsync(requestCreContext.URL);
+                    task = httpClient.SendAsync(httpRequestMessage);
                     break;
 
                 case "POST":
-                    task = httpClient.PostAsync(requestCreContext.URL, httpContent);
-
+                    task = httpClient.SendAsync(httpRequestMessage);
                     break;
                 default:
                     throw new NotSupportedException("Not supported Http Method!");
             }
+
 
             task.Wait();
             httpResponseMessage = task.Result;
@@ -110,20 +130,19 @@ namespace Feign.Core
 
             if (InternalConfig.SaveResponse)
             {
-                requestCreContext.WrapInstance.Response = httpResponseMessage;
+                requestCreContext.WrapInstance.OriginalResponseMessage = httpResponseMessage;
             }
 
             return taskStr.Result;
 
-
         }
 
 
-        //todo 此功能需要进行完善,当前有逻辑漏洞。
-        private static HttpContent SpeculateHttpContent(RequestCreContext requestCreContext)
+        //todo there are holes. need to be perfected.
+        private static HttpRequestMessage SpeculateRequestMessage(RequestCreContext requestCreContext)
         {
 
-            HttpContent httpContent = null;
+            HttpRequestMessage httpRequestMessage = null;
             List<ParameterWrapContext> parameterContexts = requestCreContext.MethodWrap.ParameterCache;
             bool isstringbody = false;
             string stringbody = "";
@@ -137,16 +156,11 @@ namespace Feign.Core
 
             if (isstringbody)
             {
-
-
-
-                httpContent = new StringContent(stringbody);
+                httpRequestMessage = new HttpRequestMessage();
+                httpRequestMessage.Content = new StringContent(stringbody);
             }
 
-
-
-
-            return httpContent;
+            return httpRequestMessage;
 
         }
     }
