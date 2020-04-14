@@ -21,7 +21,7 @@ namespace TestClient.Test.AttributeTest
         public void Test()
         {
             IStudentService student = Feign.Core.Feign.Wrap<IStudentService>("http://localhost:6346");
-            student.SayHello();
+            student.TestURL();
             WrapBase wrap = (WrapBase)student;
             Assert.IsTrue(wrap.Url == BaseUrl);
             Assert.IsTrue(wrap.GetRequestCreURL() == BaseUrl + @"/api/student/sayhello");

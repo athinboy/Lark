@@ -25,7 +25,7 @@ namespace Feign.Core.Context
 
         public List<HeaderAttribute> HeaderAttributes { get; set; } = new List<HeaderAttribute>();
 
-        public List<FeignAttribute> MyFeignAttributes { get; set; } = new List<FeignAttribute>();
+        public List<BaseAttribute> MyFeignAttributes { get; set; } = new List<BaseAttribute>();
 
 
         public List<ParameterWrapContext> ParameterCache { get; set; } = new List<ParameterWrapContext>();
@@ -37,9 +37,6 @@ namespace Feign.Core.Context
         public URLAttribute MethodURLAttribute { get; set; }
 
         private InterfaceWrapContext interfaceWrapContext = null;
-
-
-
         private static void SaveParameter(MethodWrapContext methodWrapContext)
         {
             ParameterInfo parameterInfo;
@@ -47,23 +44,23 @@ namespace Feign.Core.Context
             ParameterInfo[] parameterInfos = methodInfo.GetParameters();
             Attribute attribute;
             ParameterWrapContext parameterContext;
-            FeignAttribute feignAttribute;
+            BaseAttribute feignAttribute;
 
             for (int i = 0; i < parameterInfos.Length; i++)
             {
                 parameterInfo = parameterInfos[i];
-                parameterContext = new ParameterWrapContext(parameterInfo);
+                parameterContext = new ParameterWrapContext(methodWrapContext,parameterInfo);
                 IEnumerable<Attribute> attributes = parameterInfo.GetCustomAttributes();
                 IEnumerator<Attribute> enumerator = attributes.GetEnumerator();
                 while (enumerator.MoveNext())
                 {
                     attribute = enumerator.Current;
-                    if (false == typeof(FeignAttribute).IsInstanceOfType(attribute))
+                    if (false == typeof(BaseAttribute).IsInstanceOfType(attribute))
                     {
                         continue;
                     }
 
-                    feignAttribute = attribute as FeignAttribute;
+                    feignAttribute = attribute as BaseAttribute;
                     parameterContext.MyFeignAttributes.Add(feignAttribute);
                     feignAttribute.SaveToParameterContext(parameterContext);
 
@@ -85,7 +82,7 @@ namespace Feign.Core.Context
 
 
             object[] cas = methodInfo.GetCustomAttributes(true);
-            FeignAttribute feignAttribute;
+            BaseAttribute feignAttribute;
 
 
 
@@ -97,13 +94,13 @@ namespace Feign.Core.Context
                 ca = cas[i];
 
 
-                if (false == typeof(FeignAttribute).IsInstanceOfType(ca))
+                if (false == typeof(BaseAttribute).IsInstanceOfType(ca))
                 {
 
                     continue;
                 }
 
-                feignAttribute = ca as FeignAttribute;
+                feignAttribute = ca as BaseAttribute;
                 methodWrapContext.MyFeignAttributes.Add(feignAttribute);
 
                 feignAttribute.SaveToMethodContext(methodWrapContext);
@@ -172,6 +169,9 @@ namespace Feign.Core.Context
 
 
         }
+
+        public bool JsonBody { get; internal set; } = true;
+        public bool XmlBody { get; internal set; } = false;
 
         public string HttpMethod()
         {

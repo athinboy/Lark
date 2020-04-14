@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Net.Http;
 using System.Text;
-
+using Feign.Core.Context;
 
 namespace Feign.Core.Attributes
 {
 
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
-    public class QueryStringAttribute : FeignAttribute
+    public class QueryStringAttribute : BaseAttribute
     {
         public string Name { get; set; }
 
@@ -27,6 +28,26 @@ namespace Feign.Core.Attributes
         {
             return this.Name + "=" + this.Value;
         }
+
+
+
+
+
+        internal override void AddInterfaceQueryString(RequestCreContext requestCreContext, InterfaceWrapContext interfaceWrap, HttpContent httpContext)
+        {
+
+        }
+        internal override void AddMethodQueryString(RequestCreContext requestCreContext, MethodWrapContext methodWrap, HttpContent httpContext)
+        {
+
+        }
+
+        internal override void AddParameterQueryString(RequestCreContext requestCreContext, ParameterWrapContext parameterWrap, HttpContent httpContext, object value)
+        {
+
+        }
+
+
 
 
 

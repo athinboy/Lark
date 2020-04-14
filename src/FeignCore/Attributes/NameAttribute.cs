@@ -14,7 +14,7 @@ namespace Feign.Core.Attributes
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter,
         Inherited = true, AllowMultiple = false)]
-    public class NameAttribute : FeignAttribute
+    public class NameAttribute : BaseAttribute
     {
 
         public String Name { get; set; } = "";

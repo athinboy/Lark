@@ -11,8 +11,8 @@ namespace Feign.Core.Attributes
     /// <summary>
     /// json serialize .
     /// </summary>
-    [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.ReturnValue, AllowMultiple = false, Inherited = true)]
-    public class JsonAttribute : FeignAttribute
+    [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.ReturnValue | AttributeTargets.Method | AttributeTargets.Interface, AllowMultiple = false, Inherited = true)]
+    public class JsonAttribute : BaseAttribute
     {
         internal override void SaveToParameterContext(ParameterWrapContext parameterItem)
         {

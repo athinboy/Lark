@@ -10,6 +10,8 @@ namespace Feign.Core.Context
 {
     internal class InterfaceWrapContext
     {
+        internal bool JsonBody { get; set; } = true;
+
         public Type InterfaceType { get; set; }
 
 
@@ -18,7 +20,7 @@ namespace Feign.Core.Context
 
         public List<HeaderAttribute> HeaderAttributes { get; set; } = new List<HeaderAttribute>();
 
-        public List<FeignAttribute> MyFeignAttributes { get; set; } = new List<FeignAttribute>();
+        public List<BaseAttribute> MyFeignAttributes { get; set; } = new List<BaseAttribute>();
 
 
 
@@ -27,6 +29,9 @@ namespace Feign.Core.Context
         /// </summary>
         public URLAttribute URLAttribute { get; set; }
 
+
+
+        public bool XmlBody { get; internal set; } = false;
 
         internal static void SaveMethod(InterfaceWrapContext interfaceWrapContext)
         {
@@ -54,8 +59,8 @@ namespace Feign.Core.Context
 
             object[] interfaceAttibuts = interfacetype.GetCustomAttributes(true);
 
-            List<string> headers = new List<string>();
-            FeignAttribute feignAttribute;
+        
+            BaseAttribute feignAttribute;
 
             for (int i = 0; i < interfaceAttibuts.Length; i++)
             {
@@ -64,28 +69,18 @@ namespace Feign.Core.Context
                 Object o = interfaceAttibuts[i];
 
 
-                if (false == typeof(FeignAttribute).IsInstanceOfType(o))
+                if (false == typeof(BaseAttribute).IsInstanceOfType(o))
                 {
                     continue;
                 }
-                feignAttribute = o as FeignAttribute;
+                feignAttribute = o as BaseAttribute;
                 interfaceWrapContext.MyFeignAttributes.Add(feignAttribute);
                 feignAttribute.SaveToInterfaceContext(interfaceWrapContext);
 
 
                 if (typeof(HeaderAttribute).IsInstanceOfType(o))
                 {
-                    HeaderAttribute newHeader = o as HeaderAttribute;
-
-                    if (headers.Contains(newHeader.Name))
-                    {
-                        throw new FeignException("接口:{0}重复的Header Name:{1}", interfacetype.Name, newHeader.Name);
-                    }
-                    else
-                    {
-                        headers.Add(newHeader.Name);
-
-                    }
+                    HeaderAttribute newHeader = o as HeaderAttribute; 
                     interfaceWrapContext.HeaderAttributes.Add(newHeader);
                     continue;
                 }

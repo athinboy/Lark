@@ -11,7 +11,9 @@ namespace Feign.Core.Context
 {
     internal class ParameterWrapContext
     {
-        public List<FeignAttribute> MyFeignAttributes { get; set; } = new List<FeignAttribute>();
+        public List<BaseAttribute> MyFeignAttributes { get; set; } = new List<BaseAttribute>();
+
+        public MethodWrapContext MethodWrap { get; set; }
 
         public ParameterInfo Parameter { get; set; }
 
@@ -29,13 +31,15 @@ namespace Feign.Core.Context
         {
 
         }
-        public ParameterWrapContext(ParameterInfo parameter) : this()
+        public ParameterWrapContext(MethodWrapContext methodWrapContext, ParameterInfo parameter) : this()
         {
             this.Parameter = parameter;
+            this.MethodWrap = methodWrapContext;
+
         }
 
 
-        internal string Serial(MethodWrapContext methodWrapContext, ParameterInfo parameterInfo, object value)
+        internal string Serial(object value)
         {
 
             if (value == null)

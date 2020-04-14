@@ -15,42 +15,122 @@ namespace Feign.Core.Attributes
     /// </summary>
     [System.AttributeUsage(AttributeTargets.Method | AttributeTargets.Interface | AttributeTargets.Class | AttributeTargets.Parameter,
         Inherited = true, AllowMultiple = true)]
-    public sealed class HeaderAttribute : FeignAttribute
+    public sealed class HeaderAttribute : BaseAttribute
     {
-        //todo 添加值实现
+
+
+        public HeaderAttribute()
+        {  
+        }
+
+        public HeaderAttribute(string name, string value)
+        {
+            this.Name = name;
+            this.Value = value;   
+        }
+        public HeaderAttribute(string name, string value, bool unique)
+        {
+            this.Name = name;
+            this.Value = value;
+            this.Unique = unique;
+        }
+        public HeaderAttribute(string name)
+        {
+            this.Name = name;
+        }
+        public HeaderAttribute(string name, bool unique)
+        {
+            this.Name = name;
+            this.Unique = unique;
+        }
+
 
         public String Name { get; set; } = "";
+        /// <summary>
+        /// the header value .ignore for parameter.
+        /// </summary>
+        /// <value></value>
         public string Value { get; set; } = "";
 
         /// <summary>
-        /// for mehtod or interface.  <code>public HeaderAttribute(string name) </code> is for parameter. 
+        /// whether the header is Unique.
+        /// If it is ,remove exist same name header,then add this header .
+        /// false: append this header to header with same name; 
+        /// default:true
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="value"></param>
-        public HeaderAttribute(string name, string value)
-        {
-            Name = ((name ?? "").Trim().Length == 0 ? null : name.Trim()) ??
-                throw new ArgumentNullException(nameof(name));
-            Value = ((value ?? "").Trim().Length == 0 ? null : value.Trim()) ?? "";
-        }
-        /// <summary>
-        /// for parameter .
-        /// </summary>
-        /// <param name="name"></param>
-        public HeaderAttribute(string name)
-        {
+        /// <value></value>
+        public bool Unique { get; set; } = true;
 
-            Name = (name.Trim().Length == 0 ? null : name) ??
-            throw new ArgumentNullException(nameof(name));
+        internal override void Validate()
+        {
+            Name = ((this.Name ?? "").Trim().Length == 0 ? null : Name.Trim()) ??
+                throw new ArgumentNullException(nameof(Name));
+            Value = ((Value ?? "").Trim().Length == 0 ? string.Empty : Value.Trim()) ?? "";
 
         }
- 
+
+
+        internal override void SaveToInterfaceContext(InterfaceWrapContext interfaceWrapContext)
+        {
+            base.SaveToInterfaceContext(interfaceWrapContext);
+        }
+        internal override void SaveToMethodContext(MethodWrapContext methodWrapContext)
+        {
+            base.SaveToMethodContext(methodWrapContext);
+        }
+        internal override void SaveToParameterContext(ParameterWrapContext parameterItem)
+        {
+            base.SaveToParameterContext(parameterItem);
+
+        }
+
+        internal override void AddInterfaceHeader(RequestCreContext requestCreContext, InterfaceWrapContext interfaceWrap, HttpContent httpContext)
+        {
+            if (this.Unique)
+            {
+                httpContext.Headers.Remove(this.Name);
+                httpContext.Headers.Add(this.Name, this.Value);
+            }
+            else
+            {
+                httpContext.Headers.Add(this.Name, this.Value);
+            }
+        }
+        internal override void AddMethodHeader(RequestCreContext requestCreContext, MethodWrapContext methodWrap, HttpContent httpContext)
+        {
+            if (this.Unique)
+            {
+                httpContext.Headers.Remove(this.Name);
+                httpContext.Headers.Add(this.Name, this.Value);
+            }
+            else
+            {
+                httpContext.Headers.Add(this.Name, this.Value);
+            }
+        }
+
+        internal override void AddParameterHeader(RequestCreContext requestCreContext, ParameterWrapContext parameterWrap, HttpContent httpContext, object value)
+        {
+            string valueStr = parameterWrap.Serial(value);
+
+            if (this.Unique)
+            {
+                httpContext.Headers.Remove(this.Name);
+                httpContext.Headers.Add(this.Name, valueStr);
+            }
+            else
+            {
+                httpContext.Headers.Add(this.Name, valueStr);
+            }
+        }
+
+
 
 
     }
 
 
-    
+
 
 
 

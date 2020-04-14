@@ -31,6 +31,8 @@ namespace Feign.Core.ProxyFactory
         /// </summary>
         public HttpRequestMessage MyHttpRequestMessagea { get; internal set; }
 
+        
+
         /// <summary>
         ///  RequestCreContext , just test/debug propose。 
         /// </summary>

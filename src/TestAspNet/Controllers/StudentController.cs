@@ -13,11 +13,13 @@ namespace TestAspNet.Controllers
     public class StudentController : ControllerBase, IStudentService
     {
         [HttpGet("sayhello")]
-        [HttpPost("sayhello")] 
-        public string SayHello()
+        [HttpPost("sayhello")]
+        public string SayHello([FromHeader]string id, [FromHeader]string myheader)
         {
             return "Hello!";
         }
+        
+
 
         [HttpGet]
         public string GetNow()
@@ -63,6 +65,9 @@ namespace TestAspNet.Controllers
             return name;
         }
 
- 
+        public string TestURL()
+        {
+           return "ok";
+        }
     }
 }

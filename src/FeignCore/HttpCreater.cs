@@ -39,7 +39,25 @@ namespace Feign.Core
             ParameterWrapContext parameterWrap;
 
             HttpRequestMessage httpRequestMessage = SpeculateRequestMessage(requestCreContext);
-            FeignAttribute feignAttribute;
+            BaseAttribute feignAttribute;
+
+
+            for (int i = 0; i < interfaceWrap.MyFeignAttributes.Count; i++)
+            {
+                feignAttribute = interfaceWrap.MyFeignAttributes[i];
+                feignAttribute.AddInterfaceHeader(requestCreContext, interfaceWrap, httpRequestMessage.Content);
+                feignAttribute.AddInterfaceQueryString(requestCreContext, interfaceWrap, httpRequestMessage.Content);
+
+            }
+
+
+            for (int i = 0; i < methodWrap.MyFeignAttributes.Count; i++)
+            {
+                feignAttribute = methodWrap.MyFeignAttributes[i];
+                feignAttribute.AddMethodHeader(requestCreContext, methodWrap, httpRequestMessage.Content);
+                feignAttribute.AddMethodQueryString(requestCreContext, methodWrap, httpRequestMessage.Content);
+            }
+
 
             for (int i = 0; i < methodWrap.ParameterCache.Count; i++)
             {
@@ -47,64 +65,16 @@ namespace Feign.Core
                 for (int j = 0; j < parameterWrap.MyFeignAttributes.Count; j++)
                 {
                     feignAttribute = parameterWrap.MyFeignAttributes[j];
-                    feignAttribute.AddHeader(requestCreContext, httpRequestMessage);
-                    feignAttribute.AddQueryStr(requestCreContext);
-
+                    feignAttribute.AddParameterHeader(requestCreContext, parameterWrap, httpRequestMessage.Content, args[parameterWrap.Parameter.Position]);
+                    feignAttribute.AddParameterQueryString(requestCreContext, parameterWrap, httpRequestMessage.Content, args[parameterWrap.Parameter.Position]);
                 }
-            }
-
-
-            for (int i = 0; i < interfaceWrap.MyFeignAttributes.Count; i++)
-            {
-                feignAttribute = interfaceWrap.MyFeignAttributes[i];
-
-
-            }
-
-            for (int i = 0; i < methodWrap.MyFeignAttributes.Count; i++)
-            {
-                feignAttribute = methodWrap.MyFeignAttributes[i];
-
-            }
-
-            for (int i = 0; i < methodWrap.MyFeignAttributes.Count; i++)
-            {
-                feignAttribute = methodWrap.MyFeignAttributes[i];
-                feignAttribute.AddQueryStr(requestCreContext);
-                feignAttribute.AddHeader(requestCreContext, httpRequestMessage);
-            }
-
-
-            for (int i = 0; i < interfaceWrap.MyFeignAttributes.Count; i++)
-            {
-                feignAttribute = interfaceWrap.MyFeignAttributes[i];
-                feignAttribute.AddQueryStr(requestCreContext);
-                feignAttribute.AddHeader(requestCreContext, httpRequestMessage);
-
-            }
-
-
-
-            for (int i = 0; i < args.Count; i++)
-            {
                 if (InternalConfig.LogRequest)
                 {
-
+                         parameterWrap.Serial(args[parameterWrap.Parameter.Position]);
                 }
             }
 
             System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient();
-            //HttpWebRequest  
-
-            if (InternalConfig.NotRequest)
-            {
-                wrapBase.MyClient = httpClient;
-                wrapBase.MyHttpRequestMessagea = httpRequestMessage;
-                wrapBase.MyRequestCreContext = requestCreContext;
-                return null;
-            }
-
-
             HttpResponseMessage httpResponseMessage = null;
             Task<String> taskStr;
             //todo  it's need to  deal with the http status code
@@ -112,17 +82,21 @@ namespace Feign.Core
             switch (requestCreContext.HttpMethod.Method)
             {
                 case "GET":
-                    task = httpClient.SendAsync(httpRequestMessage);
-                    break;
-
                 case "POST":
-                    task = httpClient.SendAsync(httpRequestMessage);
+                    httpRequestMessage.Method = new HttpMethod(requestCreContext.HttpMethod.Method);
                     break;
                 default:
                     throw new NotSupportedException("Not supported Http Method!");
             }
+            if (InternalConfig.NotRequest)
+            {
+                wrapBase.MyClient = httpClient;
+                wrapBase.MyHttpRequestMessagea = httpRequestMessage;
+                wrapBase.MyRequestCreContext = requestCreContext;                 
+                return null;
+            }
 
-
+            task = httpClient.SendAsync(httpRequestMessage);
             task.Wait();
             httpResponseMessage = task.Result;
             taskStr = httpResponseMessage.Content.ReadAsStringAsync();
@@ -138,28 +112,22 @@ namespace Feign.Core
         }
 
 
-        //todo there are holes. need to be perfected.
+        //just support string body.
         private static HttpRequestMessage SpeculateRequestMessage(RequestCreContext requestCreContext)
         {
 
-            HttpRequestMessage httpRequestMessage = null;
+            HttpRequestMessage httpRequestMessage = new HttpRequestMessage();
             List<ParameterWrapContext> parameterContexts = requestCreContext.MethodWrap.ParameterCache;
-            bool isstringbody = false;
+
             string stringbody = "";
             parameterContexts.ForEach(x =>
             {
                 if (x.IsBody)
                 {
-                    isstringbody = true;
+
                 }
             });
-
-            if (isstringbody)
-            {
-                httpRequestMessage = new HttpRequestMessage();
-                httpRequestMessage.Content = new StringContent(stringbody);
-            }
-
+            httpRequestMessage.Content = new StringContent(stringbody);
             return httpRequestMessage;
 
         }

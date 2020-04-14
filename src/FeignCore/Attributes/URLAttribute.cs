@@ -10,7 +10,7 @@ namespace Feign.Core.Attributes
     /// </summary>
     [System.AttributeUsage(AttributeTargets.Method | AttributeTargets.Interface | AttributeTargets.Class,
     Inherited = true, AllowMultiple = false)]
-    public class URLAttribute : FeignAttribute
+    public class URLAttribute : BaseAttribute
     {
         public URLAttribute(string url)
         {
