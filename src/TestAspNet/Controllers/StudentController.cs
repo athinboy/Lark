@@ -14,7 +14,7 @@ namespace TestAspNet.Controllers
     {
         [HttpGet("sayhello")]
         [HttpPost("sayhello")]
-        public string SayHello([FromHeader]string id, [FromHeader]string myheader)
+        public string SayHello([FromHeader]string id, [FromHeader]string myheader,[FromHeader] IStudentService.JsonHeader myjsonheader)
         {
             return "Hello!";
         }

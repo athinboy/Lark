@@ -43,7 +43,7 @@ namespace TestClient.Test.AttributeTest
             {
                 student = Feign.Core.Feign.Wrap<IStudentService>(BaseUrl);
                 WrapBase wrap = (WrapBase)student;
-                Assert.IsTrue("Hello!" == student.SayHello("myid","testheader"));
+                Assert.IsTrue("Hello!" == student.SayHello("myid","testheader",null));
                 HttpResponseMessage responseMessage = wrap.OriginalResponseMessage;
                 ProbeInfo probeInfo = Util.GetProbe(responseMessage) ?? throw new Exception("probeinfo is null");
                 Assert.IsTrue(probeInfo.Url.EndsWith("/api/student/sayhello"));

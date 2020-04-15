@@ -24,7 +24,7 @@ namespace TestClient.Test.AttributeTest
         public void Test()
         {
             IStudentService student = Feign.Core.Feign.Wrap<IStudentService>("http://localhost:6346");
-            student.SayHello("myid", "testheader");
+            student.SayHello("myid", "testheader", new IStudentService.JsonHeader() { MyName = "myjsonheader" });
             WrapBase wrap = (WrapBase)student;
             HttpRequestHeaders HttpRequestHeaders = wrap.MyHttpRequestMessagea.Headers;
             HttpContent httpContent = wrap.MyHttpRequestMessagea.Content;
@@ -32,6 +32,7 @@ namespace TestClient.Test.AttributeTest
             Assert.IsTrue(HttpRequestHeaders.Contains("myheader") || httpContent.Headers.Contains("myheader"));
             Assert.IsTrue(HttpRequestHeaders.Contains("id") || httpContent.Headers.Contains("myheader"));
             Assert.IsTrue(HttpRequestHeaders.Contains("myschool") || httpContent.Headers.Contains("myheader"));
+            Assert.IsTrue(HttpRequestHeaders.Contains("myjsonheader") || httpContent.Headers.Contains("myjsonheader"));
 
             IEnumerable<string> values = new List<string>();
             bool l = HttpRequestHeaders.TryGetValues("myheader", out values) ? true : httpContent.Headers.TryGetValues("myheader", out values);
@@ -49,11 +50,19 @@ namespace TestClient.Test.AttributeTest
             {
                 System.Console.WriteLine("myschool:" + value);
             }
+
+            l = HttpRequestHeaders.TryGetValues("myjsonheader", out values) ? true : httpContent.Headers.TryGetValues("myjsonheader", out values);
+            foreach (string value in values)
+            {
+                System.Console.WriteLine("myjsonheader:" + value);
+            }
+
             // myheader:SayHello
             // myheader:"testheader"
             // id:"myid"
             // myschool:school
             // myschool:schoolMethod
+            // myjsonheader:{"MyName":"myjsonheader"}
 
 
 
