@@ -9,7 +9,7 @@ using System.Text;
 namespace Feign.Core.Attributes
 {
     /// <summary>
-    /// json serialize .
+    /// the http request body is a json string .
     /// </summary>
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public class JsonBodyAttribute : BaseAttribute

@@ -25,7 +25,7 @@ namespace TestInterface
 
         [URL("/sayhello")]
         [HttpGet("GET")]
-        string TestURL();
+        string QueryEmpty();
 
 
 

@@ -65,7 +65,7 @@ namespace TestAspNet.Controllers
             return name;
         }
 
-        public string TestURL()
+        public string QueryEmpty()
         {
            return "ok";
         }

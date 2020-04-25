@@ -4,48 +4,54 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Net.Http;
+using System.Reflection;
 using System.Text;
 using Feign.Core.Context;
 
 namespace Feign.Core.Attributes
 {
 
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = true, Inherited = true)]
     public class QueryStringAttribute : BaseAttribute
     {
         public string Name { get; set; }
 
-        public string Value { get; set; }
+ 
 
-        public QueryStringAttribute(string name, string value)
-        {
-            Name = ((name ?? "").Trim().Length == 0 ? null : name) ??
-                throw new ArgumentNullException(nameof(name));
-            Value = (value.Trim().Length == 0 ? null : value) ?? "";
-        }
-
-        public string GetQueryString()
-        {
-            return this.Name + "=" + this.Value;
-        }
-
-
-
-
-
-        internal override void AddInterfaceQueryString(RequestCreContext requestCreContext, InterfaceWrapContext interfaceWrap, HttpContent httpContext)
-        {
-
-        }
-        internal override void AddMethodQueryString(RequestCreContext requestCreContext, MethodWrapContext methodWrap, HttpContent httpContext)
+        public QueryStringAttribute()
         {
 
         }
 
-        internal override void AddParameterQueryString(RequestCreContext requestCreContext, ParameterWrapContext parameterWrap, HttpContent httpContext, object value)
+        public QueryStringAttribute(string name)
         {
+            Name = name;       
+        }
+
+
+        internal override void Validate()
+        {
+            Name = ((Name ?? "").Trim().Length == 0 ? null : Name) ??
+                throw new ArgumentNullException(nameof(Name));       
+        }
+
+
+        internal override void SaveToParameterContext(ParameterWrapContext parameterItem)
+        {
+           base.SaveToParameterContext(parameterItem);
+         
+        }
+
+        internal override void AddParameterQueryString(RequestCreContext requestCreContext, ParameterWrapContext parameterWrap, HttpRequestMessage httpRequestMessage, object value)
+        {
+            
+            string valueStr = parameterWrap.Serial(value);
+            parameterWrap.QueryString=this.Name+"="+valueStr;
+          MethodWrapContext methodWrapContext=   parameterWrap.MethodWrap;
+         
 
         }
+
 
 
 

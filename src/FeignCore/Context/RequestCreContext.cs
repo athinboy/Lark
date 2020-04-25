@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Feign.Core.Context
 {
-    internal class RequestCreContext
+    internal class RequestCreContext:ContextBase
     {
         public InterfaceWrapContext InfaceContext { get; set; }
         public MethodWrapContext MethodWrap { get; set; }
@@ -26,6 +26,11 @@ namespace Feign.Core.Context
             }
         }
 
+        internal override void Clear()
+        {
+            throw new NotImplementedException();
+        }
+        
         public System.Net.Http.HttpMethod HttpMethod { get; set; } = new System.Net.Http.HttpMethod("GET");
 
 

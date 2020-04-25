@@ -66,18 +66,22 @@ namespace Feign.Core
                 {
                     feignAttribute = parameterWrap.MyFeignAttributes[j];
                     feignAttribute.AddParameterHeader(requestCreContext, parameterWrap, httpRequestMessage.Content, args[parameterWrap.Parameter.Position]);
-                    feignAttribute.AddParameterQueryString(requestCreContext, parameterWrap, httpRequestMessage.Content, args[parameterWrap.Parameter.Position]);
+                    feignAttribute.AddParameterQueryString(requestCreContext, parameterWrap, httpRequestMessage, args[parameterWrap.Parameter.Position]);
                 }
                 if (InternalConfig.LogRequest)
                 {
-                         parameterWrap.Serial(args[parameterWrap.Parameter.Position]);
+                    parameterWrap.Serial(args[parameterWrap.Parameter.Position]);
                 }
             }
+
+
+            httpRequestMessage.RequestUri = new Uri(methodWrap.Url);
+
 
             System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient();
             HttpResponseMessage httpResponseMessage = null;
             Task<String> taskStr;
-            //todo  it's need to  deal with the http status code
+            //TODO  it's need to  deal with the http status code
             Task<HttpResponseMessage> task;
             switch (requestCreContext.HttpMethod.Method)
             {
@@ -92,7 +96,7 @@ namespace Feign.Core
             {
                 wrapBase.MyClient = httpClient;
                 wrapBase.MyHttpRequestMessagea = httpRequestMessage;
-                wrapBase.MyRequestCreContext = requestCreContext;                 
+                wrapBase.MyRequestCreContext = requestCreContext;
                 return null;
             }
 

@@ -8,14 +8,14 @@ using Feign.Core.Exception;
 
 namespace Feign.Core.Context
 {
-    internal class InterfaceWrapContext
+    internal class InterfaceWrapContext : ContextBase
     {
         internal bool JsonBody { get; set; } = true;
 
         public Type InterfaceType { get; set; }
 
 
-        //todo 会有多线程访问的问题 System.Collections.Concurrent.ConcurrentDictionary
+        //TODO 会有多线程访问的问题 System.Collections.Concurrent.ConcurrentDictionary
         public Dictionary<MethodInfo, MethodItem> MethodCache { get; set; } = new Dictionary<MethodInfo, MethodItem>();
 
         public List<HeaderAttribute> HeaderAttributes { get; set; } = new List<HeaderAttribute>();
@@ -32,6 +32,15 @@ namespace Feign.Core.Context
 
 
         public bool XmlBody { get; internal set; } = false;
+
+
+
+        internal override void Clear()
+        {
+            throw new NotImplementedException();
+        }
+
+
 
         internal static void SaveMethod(InterfaceWrapContext interfaceWrapContext)
         {
@@ -59,7 +68,7 @@ namespace Feign.Core.Context
 
             object[] interfaceAttibuts = interfacetype.GetCustomAttributes(true);
 
-        
+
             BaseAttribute feignAttribute;
 
             for (int i = 0; i < interfaceAttibuts.Length; i++)
@@ -80,7 +89,7 @@ namespace Feign.Core.Context
 
                 if (typeof(HeaderAttribute).IsInstanceOfType(o))
                 {
-                    HeaderAttribute newHeader = o as HeaderAttribute; 
+                    HeaderAttribute newHeader = o as HeaderAttribute;
                     interfaceWrapContext.HeaderAttributes.Add(newHeader);
                     continue;
                 }

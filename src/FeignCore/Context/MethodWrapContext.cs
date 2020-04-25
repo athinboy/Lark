@@ -8,7 +8,7 @@ using Feign.Core.Exception;
 
 namespace Feign.Core.Context
 {
-    internal class MethodWrapContext
+    internal class MethodWrapContext : ContextBase
     {
         public Type interfaceType { get; set; }
 
@@ -37,6 +37,12 @@ namespace Feign.Core.Context
         public URLAttribute MethodURLAttribute { get; set; }
 
         private InterfaceWrapContext interfaceWrapContext = null;
+
+        internal override void Clear()
+        {
+            throw new NotImplementedException();
+        }
+
         private static void SaveParameter(MethodWrapContext methodWrapContext)
         {
             ParameterInfo parameterInfo;
@@ -49,7 +55,7 @@ namespace Feign.Core.Context
             for (int i = 0; i < parameterInfos.Length; i++)
             {
                 parameterInfo = parameterInfos[i];
-                parameterContext = new ParameterWrapContext(methodWrapContext,parameterInfo);
+                parameterContext = new ParameterWrapContext(methodWrapContext, parameterInfo);
                 IEnumerable<Attribute> attributes = parameterInfo.GetCustomAttributes();
                 IEnumerator<Attribute> enumerator = attributes.GetEnumerator();
                 while (enumerator.MoveNext())
@@ -160,8 +166,24 @@ namespace Feign.Core.Context
             {
                 if (url == null)
                 {
-                    url = Util.NormalizeURL(this.interfaceWrapContext.URLAttribute == null ? null : this.interfaceWrapContext.URLAttribute.Url);
-                    url += Util.NormalizeURL(this.URLAttribute == null ? null : this.URLAttribute.Url);
+                    url = this.interfaceWrapContext.URLAttribute == null ? null : this.interfaceWrapContext.URLAttribute.Url;
+                    url += this.URLAttribute == null ? null : this.URLAttribute.Url;
+                    string queryString = url.Contains("?") ? "&" : "?";//TODO:need to check and validate 
+                    bool addQuery = false;
+                    ParameterCache.ForEach(x =>
+                    {
+                        queryString += x.QueryString;
+                        queryString += "&";
+                        addQuery = true;
+                    });
+                    if (addQuery)
+                    {
+                        queryString.Remove(queryString.Length - 1);
+                    }
+                    url +=
+
+                    url = Util.NormalizeURL(url);
+
                 }
                 return url;
             }

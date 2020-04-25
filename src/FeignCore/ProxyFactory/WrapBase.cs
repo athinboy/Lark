@@ -6,7 +6,7 @@ using Feign.Core.Context;
 
 namespace Feign.Core.ProxyFactory
 {
-    //todo Warn:The instance of this class will ba cached . so set to threadlocal ? create once for every request ?  
+    //TODO Warn:The instance of this class will ba cached . so set to threadlocal ? create once for every request ?  
     public class WrapBase
     {
         public string Url { get; set; }

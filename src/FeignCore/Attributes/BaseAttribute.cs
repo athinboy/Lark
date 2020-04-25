@@ -29,9 +29,8 @@ namespace Feign.Core.Attributes
 
         internal virtual void SaveToInterfaceContext(InterfaceWrapContext interfaceWrapContext)
         {
-
+            
         }
-
 
         internal virtual void AddInterfaceQueryString(RequestCreContext requestCreContext, InterfaceWrapContext interfaceWrap, HttpContent httpContext)
         {
@@ -42,7 +41,7 @@ namespace Feign.Core.Attributes
 
         }
 
-        internal virtual void AddParameterQueryString(RequestCreContext requestCreContext, ParameterWrapContext parameterWrap, HttpContent httpContext,object value)
+        internal virtual void AddParameterQueryString(RequestCreContext requestCreContext, ParameterWrapContext parameterWrap, HttpRequestMessage httpRequestMessage,object value)
         {
 
         }

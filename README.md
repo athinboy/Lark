@@ -23,13 +23,13 @@ a feign project corresponding to Feign(https://github.com/OpenFeign/feign).
 + HttpPostAttribute
 + HttpPutAttribute
 
-## 测试步骤
+## test step
 
-1、appsetting.json中已经配置端口：6346
+1、In the appsetting.json, http port：6346
 
 ``` cmd
 cd src\TestAspNet
 dotnet run
 ```
 
-2、浏览器打开：http://localhost:6346/api/student/sayhello
+2、In broswer,open：http://localhost:6346/api/student/sayhello. 

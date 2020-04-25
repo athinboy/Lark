@@ -3,16 +3,18 @@ using NUnit.Framework;
 using TestInterface;
 using System;
 using Feign.Core;
+using System.Net.Http.Headers;
+using System.Collections.Generic;
+using System.Net.Http;
 
 namespace TestClient.Test.AttributeTest
 {
-    public class URLAttributeTest : TestBase
+    public class QueryStringAttribureTest : TestBase
     {
-
 
         [SetUp]
         public void BaseSetup1()
-        { 
+        {
             Feign.Core.InternalConfig.NotRequest = true;
         }
 
@@ -23,8 +25,10 @@ namespace TestClient.Test.AttributeTest
             IStudentService student = Feign.Core.Feign.Wrap<IStudentService>("http://localhost:6346");
             student.QueryEmpty();
             WrapBase wrap = (WrapBase)student;
-            Assert.IsTrue(wrap.Url == BaseUrl);
-            Assert.IsTrue(wrap.GetRequestCreURL() == BaseUrl + @"/api/student/sayhello");
+            HttpRequestHeaders HttpRequestHeaders = wrap.MyHttpRequestMessagea.Headers;
+            HttpContent httpContent = wrap.MyHttpRequestMessagea.Content;
+ 
+
 
 
         }

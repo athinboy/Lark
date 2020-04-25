@@ -9,7 +9,7 @@ using System.Xml.Serialization;
 
 namespace Feign.Core.Context
 {
-    internal class ParameterWrapContext
+    internal class ParameterWrapContext:ContextBase
     {
         public List<BaseAttribute> MyFeignAttributes { get; set; } = new List<BaseAttribute>();
 
@@ -26,6 +26,7 @@ namespace Feign.Core.Context
         public bool IsQueryStr { get; set; } = true;
 
         public string Name { get; set; } = string.Empty;
+        public string QueryString { get; internal set; }=string.Empty;
 
         private ParameterWrapContext()
         {
@@ -37,7 +38,10 @@ namespace Feign.Core.Context
             this.MethodWrap = methodWrapContext;
 
         }
-
+        internal override void Clear()
+        {
+            throw new NotImplementedException();
+        }
 
         internal string Serial(object value)
         {

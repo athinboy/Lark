@@ -10,7 +10,7 @@ using System.Text;
 namespace Feign.Core.Attributes
 {
     /// <summary>
-    /// query string name or form name.
+    ///   name of form or json or xml element .
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter,
         Inherited = true, AllowMultiple = false)]
