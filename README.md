@@ -8,6 +8,8 @@ a feign project corresponding to Feign(https://github.com/OpenFeign/feign).
 + URL信息相关的特性，采取“父+子”原则。
 + 默认序列化方式：Json。
 + 默认请求body：Json字符串。
++ GET Http：parameter without headerAttribute will append to query string.
++ POST Http: parameter without headerAttribute/querystringAttribute will append to post form .
 
 ## Feigh4Net Attribute
 

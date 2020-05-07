@@ -28,7 +28,7 @@ namespace TestClient.Test.AttributeTest
         {
             Feign.Core.InternalConfig.EmitTestCode = true;
             Feign.Core.InternalConfig.SaveResponse = true;
-            Feign.Core.InternalConfig.LogRequest = true;        
+            Feign.Core.InternalConfig.LogRequest = true; 
  
         }
 

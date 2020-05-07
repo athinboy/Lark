@@ -75,7 +75,7 @@ namespace Feign.Core
             }
 
 
-            httpRequestMessage.RequestUri = new Uri(methodWrap.Url);
+            httpRequestMessage.RequestUri = new Uri(wrapBase.Url + methodWrap.Url);
 
 
             System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient();

@@ -13,9 +13,18 @@ namespace Feign.Core
 
     public class InvokeProxy
     {
-
+ 
         public static object Invoke(Type interfacetype, WrapBase wrapBase, MethodInfo methodInfo, List<Object> args)
         {
+
+            // if (InternalConfig.EmitTestCode)
+            // {
+            //     Console.WriteLine("InvokeProxy args:");
+            //     args.ForEach(x=>{
+            //         Console.WriteLine((x??new object()).ToString());
+            //     });
+            // }
+
 
             if (false == Feign.InterfaceWrapCache.ContainsKey(interfacetype))
             {

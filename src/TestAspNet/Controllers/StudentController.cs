@@ -14,11 +14,11 @@ namespace TestAspNet.Controllers
     {
         [HttpGet("sayhello")]
         [HttpPost("sayhello")]
-        public string SayHello([FromHeader]string id, [FromHeader]string myheader,[FromHeader] IStudentService.JsonHeader myjsonheader)
+        public string SayHello([FromHeader] string id, [FromHeader] string myheader, [FromHeader] IStudentService.JsonHeader myjsonheader)
         {
             return "Hello!";
         }
-        
+
 
 
         [HttpGet]
@@ -29,7 +29,7 @@ namespace TestAspNet.Controllers
 
         //http://localhost:5000/api/student/add?Name=56156156156156
         [HttpGet("add")]
-        public string Add([FromQuery]Student s)
+        public string Add([FromQuery] Student s)
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(s ?? new Student { Name = "name", Age = 234 });
         }
@@ -65,9 +65,19 @@ namespace TestAspNet.Controllers
             return name;
         }
 
-        public string QueryEmpty()
+        public string QueryEmpty(string name, int age)
         {
-           return "ok";
+            return "ok";
+        }
+        public void QueryEmpty3(string name, int age)
+        {
+
+        }
+
+
+        public string QueryEmpty2(object ss)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -23,13 +23,14 @@ namespace TestClient.Test.AttributeTest
         public void Test()
         {
             IStudentService student = Feign.Core.Feign.Wrap<IStudentService>("http://localhost:6346");
-            student.QueryEmpty();
+            //student.SayHello("1", "2", null);
+            //student.QueryEmpty2(new System.Int32());
+            // student.QueryEmpty2(45);
+            // student.QueryEmpty("myname", 20);
+            student.QueryEmpty3("123",2);
             WrapBase wrap = (WrapBase)student;
             HttpRequestHeaders HttpRequestHeaders = wrap.MyHttpRequestMessagea.Headers;
             HttpContent httpContent = wrap.MyHttpRequestMessagea.Content;
- 
-
-
 
         }
 

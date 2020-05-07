@@ -21,11 +21,20 @@ namespace TestInterface
         [HttpGet("GET")]
         [Header("myheader", "SayHello", true)]
         [Header(Name = "myschool", Value = "schoolMethod", Unique = false)]
-        string SayHello([Header("id", true)] string id, [Header("myheader", false)] string myheader, [Json][Header("myjsonheader")]  JsonHeader myjsonheader);
+        string SayHello([Header("id", true)] string id, [Header("myheader", false)] string myheader, [Json][Header("myjsonheader")] JsonHeader myjsonheader);
 
-        [URL("/sayhello")]
+
+        [URL("/queryempty")]
         [HttpGet("GET")]
-        string QueryEmpty();
+        string QueryEmpty([QueryString("name")] string name, int age);
+
+        [URL("/queryempty")]
+        [HttpGet("GET")]
+        void QueryEmpty3([QueryString("name")] string name, int age);
+
+        [URL("/queryempty2")]
+        [HttpGet("GET")]
+        string QueryEmpty2(object ss);
 
 
 
