@@ -3,15 +3,17 @@ using Feign.Core.Context;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Http;
 using System.Reflection;
 using System.Text;
 using System.Xml.Serialization;
 
 namespace Feign.Core.Context
 {
-    internal class ParameterWrapContext:ContextBase
+    internal class ParameterWrapContext : ContextBase
     {
-        public List<BaseAttribute> MyFeignAttributes { get; set; } = new List<BaseAttribute>();
+        public List<HeaderAttribute> MyHeaderAttributes { get; set; } = new List<HeaderAttribute>();
+        public List<QueryStringAttribute> MyQueryStringAttributes { get; set; } = new List<QueryStringAttribute>();
 
         public MethodWrapContext MethodWrap { get; set; }
 
@@ -26,7 +28,7 @@ namespace Feign.Core.Context
         public bool IsQueryStr { get; set; } = true;
 
         public string Name { get; set; } = string.Empty;
-        public string QueryString { get; internal set; }=string.Empty;
+        public string QueryString { get; internal set; } = string.Empty;
 
         private ParameterWrapContext()
         {
@@ -42,6 +44,22 @@ namespace Feign.Core.Context
         {
             throw new NotImplementedException();
         }
+
+        internal override void AddHeader(RequestCreContext requestCreContext, HttpContent httpContext)
+        {
+            this.MyHeaderAttributes.ForEach(x=>{
+                x.AddParameterHeader(requestCreContext,this,httpContext);
+            });
+
+        }
+
+        internal override void AddQueryString(RequestCreContext requestCreContext, HttpContent httpContext)
+        {
+            this.MyQueryStringAttributes.ForEach(x=>{
+                x.AddParameterQueryString(requestCreContext,this,httpContext);
+            });
+        }
+
 
         internal string Serial(object value)
         {

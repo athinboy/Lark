@@ -74,7 +74,7 @@ namespace TestClient.Test
         {
             Console.WriteLine(DateTime.Now.ToString("hh:mm:ss-FFF") + " before do1:" + i.ToString());
 
-            await Do1(i);
+            Do1(i);
             Console.WriteLine(DateTime.Now.ToString("hh:mm:ss-FFF") + " after do1:" + i.ToString());
 
             Console.WriteLine(DateTime.Now.ToString("hh:mm:ss-FFF") + " before do2:" + i.ToString());
@@ -84,14 +84,14 @@ namespace TestClient.Test
         }
 
 
-        public static async Task<object> Do1(int i)
+        public static object Do1(int i)
         {
             Console.WriteLine(DateTime.Now.ToString("hh:mm:ss-FFF") + " do1:" + i.ToString());
             Thread.Sleep(1000);
             return null;
         }
 
-        public static async Task<object> Do2(int i)
+        public static Task<object> Do2(int i)
         {
             Console.WriteLine(DateTime.Now.ToString("hh:mm:ss-FFF") + " do2:" + i.ToString());
             Thread.Sleep(1000);

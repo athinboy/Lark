@@ -20,13 +20,13 @@ namespace Feign.Core.Attributes
 
 
         public HeaderAttribute()
-        {  
+        {
         }
 
         public HeaderAttribute(string name, string value)
         {
             this.Name = name;
-            this.Value = value;   
+            this.Value = value;
         }
         public HeaderAttribute(string name, string value, bool unique)
         {
@@ -69,22 +69,7 @@ namespace Feign.Core.Attributes
 
         }
 
-
-        internal override void SaveToInterfaceContext(InterfaceWrapContext interfaceWrapContext)
-        {
-            base.SaveToInterfaceContext(interfaceWrapContext);
-        }
-        internal override void SaveToMethodContext(MethodWrapContext methodWrapContext)
-        {
-            base.SaveToMethodContext(methodWrapContext);
-        }
-        internal override void SaveToParameterContext(ParameterWrapContext parameterItem)
-        {
-            base.SaveToParameterContext(parameterItem);
-
-        }
-
-        internal override void AddInterfaceHeader(RequestCreContext requestCreContext, InterfaceWrapContext interfaceWrap, HttpContent httpContext)
+        internal void AddInterfaceHeader(RequestCreContext requestCreContext, InterfaceWrapContext interfaceWrap, HttpContent httpContext)
         {
             if (this.Unique)
             {
@@ -96,7 +81,7 @@ namespace Feign.Core.Attributes
                 httpContext.Headers.Add(this.Name, this.Value);
             }
         }
-        internal override void AddMethodHeader(RequestCreContext requestCreContext, MethodWrapContext methodWrap, HttpContent httpContext)
+        internal void AddMethodHeader(RequestCreContext requestCreContext, MethodWrapContext methodWrap, HttpContent httpContext)
         {
             if (this.Unique)
             {
@@ -109,8 +94,9 @@ namespace Feign.Core.Attributes
             }
         }
 
-        internal override void AddParameterHeader(RequestCreContext requestCreContext, ParameterWrapContext parameterWrap, HttpContent httpContext, object value)
+        internal void AddParameterHeader(RequestCreContext requestCreContext, ParameterWrapContext parameterWrap, HttpContent httpContext)
         {
+            object value = requestCreContext.ParaValues[parameterWrap.Parameter.Position];
             string valueStr = parameterWrap.Serial(value);
 
             if (this.Unique)

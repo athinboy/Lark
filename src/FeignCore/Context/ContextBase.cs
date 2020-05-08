@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Reflection;
 using System.Text;
 using Feign.Core.Attributes;
@@ -15,6 +16,20 @@ namespace Feign.Core.Context
         /// Clear cache、status etc.
         /// </summary>
         internal abstract void Clear();
+
+       internal virtual void AddHeader(RequestCreContext requestCreContext,HttpContent httpContext){
+
+       }
+
+       internal virtual void AddQueryString(RequestCreContext requestCreContext,HttpContent httpContext){
+
+       }
+
+       
+
+
+
+       
 
     }
 }

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Reflection;
 using System.Text;
 using Feign.Core.Attributes;
 using Feign.Core.Cache;
 using Feign.Core.Exception;
+using FeignCore;
 
 namespace Feign.Core.Context
 {
@@ -14,7 +16,7 @@ namespace Feign.Core.Context
 
         public MethodInfo methodInfo { get; set; }
 
-        private string httpMethod;
+        private string httpMethod = DefaultConfig.DefaultHttpMethod;
 
         private string url = null;
 
@@ -25,11 +27,7 @@ namespace Feign.Core.Context
 
         public List<HeaderAttribute> HeaderAttributes { get; set; } = new List<HeaderAttribute>();
 
-        public List<BaseAttribute> MyFeignAttributes { get; set; } = new List<BaseAttribute>();
-
-
         public List<ParameterWrapContext> ParameterCache { get; set; } = new List<ParameterWrapContext>();
-
 
         /// <summary>
         /// 方法的URL
@@ -52,8 +50,17 @@ namespace Feign.Core.Context
             ParameterWrapContext parameterContext;
             BaseAttribute feignAttribute;
 
+
+            bool asHeader = false;
+            bool asQueryStr = false;
+
+
             for (int i = 0; i < parameterInfos.Length; i++)
             {
+
+                asHeader = false;
+                asQueryStr = false;
+
                 parameterInfo = parameterInfos[i];
                 parameterContext = new ParameterWrapContext(methodWrapContext, parameterInfo);
                 IEnumerable<Attribute> attributes = parameterInfo.GetCustomAttributes();
@@ -65,13 +72,39 @@ namespace Feign.Core.Context
                     {
                         continue;
                     }
-
                     feignAttribute = attribute as BaseAttribute;
-                    parameterContext.MyFeignAttributes.Add(feignAttribute);
+
+                    if (typeof(HeaderAttribute).IsInstanceOfType(attribute))
+                    {
+                        asHeader = true;
+                        parameterContext.MyHeaderAttributes.Add(feignAttribute as HeaderAttribute);
+
+                    }
+                    if (typeof(QueryStringAttribute).IsInstanceOfType(attribute))
+                    {
+                        asQueryStr = true;
+                        parameterContext.MyQueryStringAttributes.Add(feignAttribute as QueryStringAttribute);
+                    }
+
                     feignAttribute.SaveToParameterContext(parameterContext);
 
                 }
                 methodWrapContext.ParameterCache.Add(parameterContext);
+                if (!asHeader && !asQueryStr)
+                {
+                    if (methodWrapContext.IsGet())
+                    {
+                        QueryStringAttribute queryStringAttribute = new QueryStringAttribute();
+                        parameterContext.MyQueryStringAttributes.Add(queryStringAttribute);
+                        queryStringAttribute.SaveToParameterContext(parameterContext);
+                    }
+                    if (methodWrapContext.IsPOST())
+                    {
+                        //todo need to complete
+
+                    }
+                }
+
 
 
             }
@@ -107,7 +140,7 @@ namespace Feign.Core.Context
                 }
 
                 feignAttribute = ca as BaseAttribute;
-                methodWrapContext.MyFeignAttributes.Add(feignAttribute);
+
 
                 feignAttribute.SaveToMethodContext(methodWrapContext);
 
@@ -147,6 +180,20 @@ namespace Feign.Core.Context
 
         }
 
+
+        internal override void AddHeader(RequestCreContext requestCreContext, HttpContent httpContext)
+        {
+            this.HeaderAttributes.ForEach(x =>
+            {
+                x.AddMethodHeader(requestCreContext, this, httpContext);
+            });
+
+        }
+
+
+
+
+
         private void Validate()
         {
 
@@ -155,6 +202,10 @@ namespace Feign.Core.Context
                 && this.interfaceWrapContext.URLAttribute != null)
             {
                 throw new FeignException("URL and Method Attribute can not be both Null ！");
+            }
+            if (false == DefaultConfig.SupportHttpMethod.Contains(this.httpMethod))
+            {
+                throw new FeignException("Just support GET/POST now！");
             }
 
         }
@@ -198,6 +249,14 @@ namespace Feign.Core.Context
         public string HttpMethod()
         {
             return httpMethod;
+        }
+        public bool IsGet()
+        {
+            return this.httpMethod == "GET";
+        }
+        public bool IsPOST()
+        {
+            return this.httpMethod == "POST";
         }
 
 

@@ -89,7 +89,7 @@ namespace Core.ProxyFactory
                 {
                     methodILGenerator.Emit(OpCodes.Dup);
                 }
-                EmitArgInsertList(methodILGenerator, parameterInfos[i].ParameterType, i);
+                EmitArgInsertList(methodILGenerator, parameterInfos[i].ParameterType, i);//todo allocate list everytime, performance  
                 if (i < parameterInfos.Length - 1)
                 {
                     methodILGenerator.Emit(OpCodes.Dup);
@@ -143,6 +143,12 @@ namespace Core.ProxyFactory
 
         }
 
+/// <summary>
+/// 
+/// </summary>
+/// <param name="iLGenerator"></param>
+/// <param name="argType"></param>
+/// <param name="argIndex"></param>
         private static void EmitArgInsertList(ILGenerator iLGenerator, Type argType, int argIndex)
         {
             iLGenerator.Emit(OpCodes.Ldarg, argIndex + 1);

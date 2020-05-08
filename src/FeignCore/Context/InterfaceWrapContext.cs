@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Reflection;
 using System.Text;
 using Feign.Core.Attributes;
@@ -19,8 +20,6 @@ namespace Feign.Core.Context
         public Dictionary<MethodInfo, MethodItem> MethodCache { get; set; } = new Dictionary<MethodInfo, MethodItem>();
 
         public List<HeaderAttribute> HeaderAttributes { get; set; } = new List<HeaderAttribute>();
-
-        public List<BaseAttribute> MyFeignAttributes { get; set; } = new List<BaseAttribute>();
 
 
 
@@ -73,17 +72,13 @@ namespace Feign.Core.Context
 
             for (int i = 0; i < interfaceAttibuts.Length; i++)
             {
-
-
                 Object o = interfaceAttibuts[i];
-
 
                 if (false == typeof(BaseAttribute).IsInstanceOfType(o))
                 {
                     continue;
                 }
                 feignAttribute = o as BaseAttribute;
-                interfaceWrapContext.MyFeignAttributes.Add(feignAttribute);
                 feignAttribute.SaveToInterfaceContext(interfaceWrapContext);
 
 
@@ -108,6 +103,12 @@ namespace Feign.Core.Context
             interfaceWrapContext.Validate();
 
             return interfaceWrapContext;
+        }
+
+
+        internal override void AddHeader(RequestCreContext requestCreContext, HttpContent httpContext)
+        {
+            this.HeaderAttributes.ForEach(x => { x.AddInterfaceHeader(requestCreContext, this, httpContext); });
         }
 
         private void Validate()

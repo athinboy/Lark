@@ -49,8 +49,10 @@ namespace Feign.Core
 
             requestCreContext.WrapInstance = wrapBase;
 
+            requestCreContext.ParaValues=args;
 
-            string resultStr = HttpCreater.Create(requestCreContext, args);
+
+            string resultStr = HttpCreater.Create(requestCreContext);
 
 
             //TODO Need to complete the return object .

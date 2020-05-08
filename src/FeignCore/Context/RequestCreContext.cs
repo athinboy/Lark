@@ -32,8 +32,6 @@ namespace Feign.Core.Context
         }
         
         public System.Net.Http.HttpMethod HttpMethod { get; set; } = new System.Net.Http.HttpMethod("GET");
-
-
-
+        public List<object> ParaValues { get; internal set; }
     }
 }

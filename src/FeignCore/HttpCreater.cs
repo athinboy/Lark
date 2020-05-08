@@ -19,16 +19,13 @@ namespace Feign.Core
 
         Microsoft.Extensions.Logging.ILogger logger = LoggerFactory.Create((x) => { x.AddConsole(); }).CreateLogger<HttpCreater>();
 
-
-        private static List<object> empterArgs = new List<object>();
-
-        internal static string Create(RequestCreContext requestCreContext, List<Object> args)
+ 
+        internal static string Create(RequestCreContext requestCreContext)
         {
 
             WrapBase wrapBase = requestCreContext.WrapInstance;
 
-            MethodWrapContext methodWrap = requestCreContext.MethodWrap;
-            args = args ?? empterArgs;
+            MethodWrapContext methodWrap = requestCreContext.MethodWrap; 
 
             if (methodWrap == null)
             {
@@ -39,38 +36,25 @@ namespace Feign.Core
             ParameterWrapContext parameterWrap;
 
             HttpRequestMessage httpRequestMessage = SpeculateRequestMessage(requestCreContext);
-            BaseAttribute feignAttribute;
 
 
-            for (int i = 0; i < interfaceWrap.MyFeignAttributes.Count; i++)
-            {
-                feignAttribute = interfaceWrap.MyFeignAttributes[i];
-                feignAttribute.AddInterfaceHeader(requestCreContext, interfaceWrap, httpRequestMessage.Content);
-                feignAttribute.AddInterfaceQueryString(requestCreContext, interfaceWrap, httpRequestMessage.Content);
-
-            }
+            interfaceWrap.AddHeader(requestCreContext, httpRequestMessage.Content);
 
 
-            for (int i = 0; i < methodWrap.MyFeignAttributes.Count; i++)
-            {
-                feignAttribute = methodWrap.MyFeignAttributes[i];
-                feignAttribute.AddMethodHeader(requestCreContext, methodWrap, httpRequestMessage.Content);
-                feignAttribute.AddMethodQueryString(requestCreContext, methodWrap, httpRequestMessage.Content);
-            }
+            methodWrap.AddHeader(requestCreContext, httpRequestMessage.Content);
+
+            methodWrap.AddQueryString(requestCreContext, httpRequestMessage.Content);
 
 
             for (int i = 0; i < methodWrap.ParameterCache.Count; i++)
             {
                 parameterWrap = methodWrap.ParameterCache[i];
-                for (int j = 0; j < parameterWrap.MyFeignAttributes.Count; j++)
-                {
-                    feignAttribute = parameterWrap.MyFeignAttributes[j];
-                    feignAttribute.AddParameterHeader(requestCreContext, parameterWrap, httpRequestMessage.Content, args[parameterWrap.Parameter.Position]);
-                    feignAttribute.AddParameterQueryString(requestCreContext, parameterWrap, httpRequestMessage, args[parameterWrap.Parameter.Position]);
-                }
+                parameterWrap.AddHeader(requestCreContext, httpRequestMessage.Content);
+                parameterWrap.AddQueryString(requestCreContext, httpRequestMessage.Content);
+
                 if (InternalConfig.LogRequest)
                 {
-                    parameterWrap.Serial(args[parameterWrap.Parameter.Position]);
+                    parameterWrap.Serial(requestCreContext.ParaValues[parameterWrap.Parameter.Position]);
                 }
             }
 

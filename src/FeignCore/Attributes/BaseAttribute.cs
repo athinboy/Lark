@@ -31,34 +31,7 @@ namespace Feign.Core.Attributes
         {
             
         }
-
-        internal virtual void AddInterfaceQueryString(RequestCreContext requestCreContext, InterfaceWrapContext interfaceWrap, HttpContent httpContext)
-        {
-
-        }
-        internal virtual void AddMethodQueryString(RequestCreContext requestCreContext, MethodWrapContext methodWrap, HttpContent httpContext)
-        {
-
-        }
-
-        internal virtual void AddParameterQueryString(RequestCreContext requestCreContext, ParameterWrapContext parameterWrap, HttpRequestMessage httpRequestMessage,object value)
-        {
-
-        }
-
-        virtual internal void AddInterfaceHeader(RequestCreContext requestCreContext, InterfaceWrapContext interfaceWrap, HttpContent httpContext)
-        {
-
-        }
-        virtual internal void AddMethodHeader(RequestCreContext requestCreContext, MethodWrapContext methodWrap, HttpContent httpContext)
-        {
-
-        }
-
-        virtual internal void AddParameterHeader(RequestCreContext requestCreContext, ParameterWrapContext parameterWrap, HttpContent httpContext,object value)
-        {
-
-        }
+ 
 
 
 

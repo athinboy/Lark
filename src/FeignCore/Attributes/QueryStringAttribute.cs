@@ -16,8 +16,6 @@ namespace Feign.Core.Attributes
     {
         public string Name { get; set; }
 
- 
-
         public QueryStringAttribute()
         {
 
@@ -25,30 +23,25 @@ namespace Feign.Core.Attributes
 
         public QueryStringAttribute(string name)
         {
-            Name = name;       
+            Name = name;
         }
 
 
         internal override void Validate()
         {
             Name = ((Name ?? "").Trim().Length == 0 ? null : Name) ??
-                throw new ArgumentNullException(nameof(Name));       
+                throw new ArgumentNullException(nameof(Name));
         }
 
 
-        internal override void SaveToParameterContext(ParameterWrapContext parameterItem)
-        {
-           base.SaveToParameterContext(parameterItem);
-         
-        }
 
-        internal override void AddParameterQueryString(RequestCreContext requestCreContext, ParameterWrapContext parameterWrap, HttpRequestMessage httpRequestMessage, object value)
+        internal void AddParameterQueryString(RequestCreContext requestCreContext, ParameterWrapContext parameterWrap, HttpContent httpContent)
         {
-            
+            object value = requestCreContext.ParaValues[parameterWrap.Parameter.Position];
+
             string valueStr = parameterWrap.Serial(value);
-            parameterWrap.QueryString=this.Name+"="+valueStr;
-          MethodWrapContext methodWrapContext=   parameterWrap.MethodWrap;
-         
+            parameterWrap.QueryString = this.Name + "=" + valueStr;
+            
 
         }
 

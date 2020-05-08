@@ -1,6 +1,6 @@
 # Feign4Net
 
-a feign project corresponding to Feign(https://github.com/OpenFeign/feign).
+a feign project corresponding to Feign(<https://github.com/OpenFeign/feign).>
 
 ## Principle
 
@@ -9,21 +9,10 @@ a feign project corresponding to Feign(https://github.com/OpenFeign/feign).
 + 默认序列化方式：Json。
 + 默认请求body：Json字符串。
 + GET Http：parameter without headerAttribute will append to query string.
-+ POST Http: parameter without headerAttribute/querystringAttribute will append to post form .
++ POST Http: parameter without headerAttribute/querystringAttribute will append to post form.
++ Do not support cookie.
 
-## Feigh4Net Attribute
-
-## Supported Asp MVC Attribute
-
-+ FromFormAttribute
-+ FromBodyAttribute
-+ FromHeaderAttribute
-+ FromQueryAttribute
-+ HttpDeleteAttribute
-+ HttpGetAttribute
-+ HttpHeadAttribute  
-+ HttpPostAttribute
-+ HttpPutAttribute
+## Feigh4Net Attribute  
 
 ## test step
 
@@ -34,4 +23,4 @@ cd src\TestAspNet
 dotnet run
 ```
 
-2、In broswer,open：http://localhost:6346/api/student/sayhello. 
+2、In broswer,open：<http://localhost:6346/api/student/sayhello.>  
