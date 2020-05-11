@@ -19,13 +19,13 @@ namespace Feign.Core
 
         Microsoft.Extensions.Logging.ILogger logger = LoggerFactory.Create((x) => { x.AddConsole(); }).CreateLogger<HttpCreater>();
 
- 
+
         internal static string Create(RequestCreContext requestCreContext)
         {
 
             WrapBase wrapBase = requestCreContext.WrapInstance;
 
-            MethodWrapContext methodWrap = requestCreContext.MethodWrap; 
+            MethodWrapContext methodWrap = requestCreContext.MethodWrap;
 
             if (methodWrap == null)
             {
@@ -38,19 +38,19 @@ namespace Feign.Core
             HttpRequestMessage httpRequestMessage = SpeculateRequestMessage(requestCreContext);
 
 
-            interfaceWrap.AddHeader(requestCreContext, httpRequestMessage.Content);
+            interfaceWrap.AddHeader(requestCreContext);
 
 
-            methodWrap.AddHeader(requestCreContext, httpRequestMessage.Content);
+            methodWrap.AddHeader(requestCreContext);
 
-            methodWrap.AddQueryString(requestCreContext, httpRequestMessage.Content);
+            methodWrap.AddQueryString(requestCreContext);
 
 
             for (int i = 0; i < methodWrap.ParameterCache.Count; i++)
             {
                 parameterWrap = methodWrap.ParameterCache[i];
-                parameterWrap.AddHeader(requestCreContext, httpRequestMessage.Content);
-                parameterWrap.AddQueryString(requestCreContext, httpRequestMessage.Content);
+                parameterWrap.AddHeader(requestCreContext);
+                parameterWrap.AddQueryString(requestCreContext);
 
                 if (InternalConfig.LogRequest)
                 {
@@ -59,8 +59,8 @@ namespace Feign.Core
             }
 
 
-            httpRequestMessage.RequestUri = new Uri(wrapBase.Url + methodWrap.Url);
-
+            //todo is it ok?
+            httpRequestMessage.RequestUri = new Uri(requestCreContext.GetRequestUrl());
 
             System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient();
             HttpResponseMessage httpResponseMessage = null;
@@ -116,6 +116,8 @@ namespace Feign.Core
                 }
             });
             httpRequestMessage.Content = new StringContent(stringbody);
+
+            requestCreContext.httpRequestMessage = httpRequestMessage;
             return httpRequestMessage;
 
         }

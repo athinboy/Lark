@@ -1,5 +1,6 @@
 ﻿using Feign.Core.Attributes;
 using Feign.Core.Context;
+using FeignCore.Serialize;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,16 +20,17 @@ namespace Feign.Core.Context
 
         public ParameterInfo Parameter { get; set; }
 
-        public bool JsonSerialize { get; set; } = true;
-
-        public bool XmlSerialize { get; set; } = false;
+        public SerializeTypes serializeType;
 
         public bool IsBody { get; set; } = false;
 
-        public bool IsQueryStr { get; set; } = true;
-
         public string Name { get; set; } = string.Empty;
         public string QueryString { get; internal set; } = string.Empty;
+
+
+
+        
+
 
         private ParameterWrapContext()
         {
@@ -42,21 +44,26 @@ namespace Feign.Core.Context
         }
         internal override void Clear()
         {
+            this.serializeType = SerializeTypes.json;
+            IsBody = false;
+            this.QueryString=string.Empty;
             throw new NotImplementedException();
         }
 
-        internal override void AddHeader(RequestCreContext requestCreContext, HttpContent httpContext)
+        internal override void AddHeader(RequestCreContext requestCreContext)
         {
-            this.MyHeaderAttributes.ForEach(x=>{
-                x.AddParameterHeader(requestCreContext,this,httpContext);
+            this.MyHeaderAttributes.ForEach(x =>
+            {
+                x.AddParameterHeader(requestCreContext, this);
             });
 
         }
 
-        internal override void AddQueryString(RequestCreContext requestCreContext, HttpContent httpContext)
+        internal override void AddQueryString(RequestCreContext requestCreContext)
         {
-            this.MyQueryStringAttributes.ForEach(x=>{
-                x.AddParameterQueryString(requestCreContext,this,httpContext);
+            this.MyQueryStringAttributes.ForEach(x =>
+            {
+                x.AddParameterQueryString(requestCreContext, this);
             });
         }
 
@@ -73,8 +80,11 @@ namespace Feign.Core.Context
             {
                 return value.ToString();
             }
-
-            if (this.XmlSerialize)
+            if (this.serializeType == SerializeTypes.tostring)
+            {
+                return value.ToString();
+            }
+            if (this.serializeType == SerializeTypes.xml)
             {
                 XmlSerializer xmlSerializer = new XmlSerializer(type);
                 StringBuilder stringBuilder = new StringBuilder();
@@ -82,7 +92,7 @@ namespace Feign.Core.Context
                 xmlSerializer.Serialize(stringWriter, value);
                 return stringBuilder.ToString();
             }
-            if (this.JsonSerialize)
+            if (this.serializeType == SerializeTypes.json)
             {
                 return Newtonsoft.Json.JsonConvert.SerializeObject(value);
             }

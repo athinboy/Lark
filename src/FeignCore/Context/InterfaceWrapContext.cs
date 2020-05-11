@@ -106,9 +106,10 @@ namespace Feign.Core.Context
         }
 
 
-        internal override void AddHeader(RequestCreContext requestCreContext, HttpContent httpContext)
+        internal override void AddHeader(RequestCreContext requestCreContext)
         {
-            this.HeaderAttributes.ForEach(x => { x.AddInterfaceHeader(requestCreContext, this, httpContext); });
+
+            this.HeaderAttributes.ForEach(x => { x.AddInterfaceHeader(requestCreContext, this); });
         }
 
         private void Validate()

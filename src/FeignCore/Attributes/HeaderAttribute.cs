@@ -69,8 +69,9 @@ namespace Feign.Core.Attributes
 
         }
 
-        internal void AddInterfaceHeader(RequestCreContext requestCreContext, InterfaceWrapContext interfaceWrap, HttpContent httpContext)
+        internal void AddInterfaceHeader(RequestCreContext requestCreContext, InterfaceWrapContext interfaceWrap)
         {
+            HttpContent httpContext=requestCreContext.httpRequestMessage.Content;
             if (this.Unique)
             {
                 httpContext.Headers.Remove(this.Name);
@@ -81,8 +82,9 @@ namespace Feign.Core.Attributes
                 httpContext.Headers.Add(this.Name, this.Value);
             }
         }
-        internal void AddMethodHeader(RequestCreContext requestCreContext, MethodWrapContext methodWrap, HttpContent httpContext)
+        internal void AddMethodHeader(RequestCreContext requestCreContext, MethodWrapContext methodWrap)
         {
+            HttpContent httpContext=requestCreContext.httpRequestMessage.Content;
             if (this.Unique)
             {
                 httpContext.Headers.Remove(this.Name);
@@ -94,8 +96,9 @@ namespace Feign.Core.Attributes
             }
         }
 
-        internal void AddParameterHeader(RequestCreContext requestCreContext, ParameterWrapContext parameterWrap, HttpContent httpContext)
+        internal void AddParameterHeader(RequestCreContext requestCreContext, ParameterWrapContext parameterWrap)
         {
+            HttpContent httpContext=requestCreContext.httpRequestMessage.Content;
             object value = requestCreContext.ParaValues[parameterWrap.Parameter.Position];
             string valueStr = parameterWrap.Serial(value);
 

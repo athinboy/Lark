@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Reflection;
 using System.Text;
 using Feign.Core.Context;
+using FeignCore.Serialize;
 
 namespace Feign.Core.Attributes
 {
@@ -33,15 +34,18 @@ namespace Feign.Core.Attributes
                 throw new ArgumentNullException(nameof(Name));
         }
 
-
-
-        internal void AddParameterQueryString(RequestCreContext requestCreContext, ParameterWrapContext parameterWrap, HttpContent httpContent)
+        internal override void SaveToParameterContext(ParameterWrapContext parameterWrapContext)
         {
-            object value = requestCreContext.ParaValues[parameterWrap.Parameter.Position];
+            parameterWrapContext.serializeType = SerializeTypes.tostring;
+        }
 
+        internal void AddParameterQueryString(RequestCreContext requestCreContext, ParameterWrapContext parameterWrap)
+        {
+            HttpContent httpContext = requestCreContext.httpRequestMessage.Content;
+            object value = requestCreContext.ParaValues[parameterWrap.Parameter.Position];
             string valueStr = parameterWrap.Serial(value);
             parameterWrap.QueryString = this.Name + "=" + valueStr;
-            
+            requestCreContext.QueryString.Add(this.Name,valueStr);
 
         }
 

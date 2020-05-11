@@ -1,6 +1,7 @@
 ﻿using Feign.Core.Attributes.RequestService;
 using Feign.Core.Cache;
 using Feign.Core.Context;
+using FeignCore.Serialize;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -17,7 +18,7 @@ namespace Feign.Core.Attributes
         internal override void SaveToParameterContext(ParameterWrapContext parameterItem)
         {
             base.SaveToParameterContext(parameterItem);
-            parameterItem.JsonSerialize = true;
+            parameterItem.serializeType = SerializeTypes.json;
         }
 
 

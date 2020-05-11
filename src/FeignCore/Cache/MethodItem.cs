@@ -12,9 +12,5 @@ namespace Feign.Core.Cache {
         public MethodInfo Method { get; set; }
         public MethodWrapContext WrapContext { get; set; }
 
-
-
-
-
     }
 }

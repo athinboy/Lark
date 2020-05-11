@@ -13,7 +13,7 @@ namespace Feign.Core
 
         public static string GetRequestCreURL(this WrapBase warpbase)
         {
-            return warpbase.MyRequestCreContext.URL;
+            return warpbase.MyRequestCreContext.httpRequestMessage.RequestUri.ToString();
         }
 
 

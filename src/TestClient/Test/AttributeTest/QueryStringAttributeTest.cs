@@ -27,11 +27,14 @@ namespace TestClient.Test.AttributeTest
             //student.QueryEmpty2(new System.Int32());
             // student.QueryEmpty2(45);
             // student.QueryEmpty("myname", 20);
-            student.QueryEmpty3("123",2);
+            student.QueryEmpty3("123", 2);
             WrapBase wrap = (WrapBase)student;
-            HttpRequestHeaders HttpRequestHeaders = wrap.MyHttpRequestMessagea.Headers;
             HttpContent httpContent = wrap.MyHttpRequestMessagea.Content;
+            HttpRequestMessage httpRequestMessage = wrap.MyHttpRequestMessagea;
+            System.Console.WriteLine(httpRequestMessage.RequestUri.ToString());
+            Assert.IsTrue(httpRequestMessage.RequestUri.ToString() == "http://localhost:6346/api/student/queryempty?name=123&age=2");
 
+            
         }
 
     }

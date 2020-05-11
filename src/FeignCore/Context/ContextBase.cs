@@ -17,11 +17,11 @@ namespace Feign.Core.Context
         /// </summary>
         internal abstract void Clear();
 
-       internal virtual void AddHeader(RequestCreContext requestCreContext,HttpContent httpContext){
+       internal virtual void AddHeader(RequestCreContext requestCreContext){
 
        }
 
-       internal virtual void AddQueryString(RequestCreContext requestCreContext,HttpContent httpContext){
+       internal virtual void AddQueryString(RequestCreContext requestCreContext){
 
        }
 

@@ -95,6 +95,7 @@ namespace Feign.Core.Context
                     if (methodWrapContext.IsGet())
                     {
                         QueryStringAttribute queryStringAttribute = new QueryStringAttribute();
+                        queryStringAttribute.Name=parameterInfo.Name;
                         parameterContext.MyQueryStringAttributes.Add(queryStringAttribute);
                         queryStringAttribute.SaveToParameterContext(parameterContext);
                     }
@@ -181,17 +182,14 @@ namespace Feign.Core.Context
         }
 
 
-        internal override void AddHeader(RequestCreContext requestCreContext, HttpContent httpContext)
+        internal override void AddHeader(RequestCreContext requestCreContext)
         {
             this.HeaderAttributes.ForEach(x =>
             {
-                x.AddMethodHeader(requestCreContext, this, httpContext);
+                x.AddMethodHeader(requestCreContext, this);
             });
 
         }
-
-
-
 
 
         private void Validate()
@@ -218,23 +216,7 @@ namespace Feign.Core.Context
                 if (url == null)
                 {
                     url = this.interfaceWrapContext.URLAttribute == null ? null : this.interfaceWrapContext.URLAttribute.Url;
-                    url += this.URLAttribute == null ? null : this.URLAttribute.Url;
-                    string queryString = url.Contains("?") ? "&" : "?";//TODO:need to check and validate 
-                    bool addQuery = false;
-                    ParameterCache.ForEach(x =>
-                    {
-                        queryString += x.QueryString;
-                        queryString += "&";
-                        addQuery = true;
-                    });
-                    if (addQuery)
-                    {
-                        queryString.Remove(queryString.Length - 1);
-                    }
-                    url +=
-
-                    url = Util.NormalizeURL(url);
-
+                    url += this.URLAttribute == null ? "" : this.URLAttribute.Url;
                 }
                 return url;
             }

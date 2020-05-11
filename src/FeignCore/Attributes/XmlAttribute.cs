@@ -1,6 +1,7 @@
 ﻿using Feign.Core.Attributes.RequestService;
 using Feign.Core.Cache;
 using Feign.Core.Context;
+using FeignCore.Serialize;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,10 +19,10 @@ namespace Feign.Core.Attributes
     {
 
 
-        internal override void SaveToParameterContext(ParameterWrapContext parameterItem)
+        internal override void SaveToParameterContext(ParameterWrapContext parameterWrapContext)
         {
-            base.SaveToParameterContext(parameterItem);
-            parameterItem.XmlSerialize = true;
+            base.SaveToParameterContext(parameterWrapContext);
+            parameterWrapContext.serializeType=SerializeTypes.xml;
         }
 
 
