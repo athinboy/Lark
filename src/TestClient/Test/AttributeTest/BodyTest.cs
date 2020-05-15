@@ -1,15 +1,12 @@
+using Feign.Core;
 using Feign.Core.ProxyFactory;
 using NUnit.Framework;
 using TestInterface;
-using System;
-using Feign.Core;
 
 namespace TestClient.Test.AttributeTest
 {
-    public class URLAttributeTest : TestBase
+    public class BodyTest : TestBase
     {
-
-
         [SetUp]
         public void BaseSetup1()
         {
@@ -18,7 +15,6 @@ namespace TestClient.Test.AttributeTest
             Feign.Core.InternalConfig.SaveResponse = true;
             Feign.Core.InternalConfig.LogRequest = true;
         }
-
 
         [NUnit.Framework.Test]
         public void Test()
@@ -31,6 +27,8 @@ namespace TestClient.Test.AttributeTest
             Assert.IsTrue(wrap.GetRequestCreURL() == BaseUrl + @"/api/student/111/nnnnname/98/del");
 
         }
+
+
 
     }
 }

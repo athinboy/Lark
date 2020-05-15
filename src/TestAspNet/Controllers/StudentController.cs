@@ -1,10 +1,12 @@
 ﻿
+using Feign.Core.Attributes;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TestInterface;
+using static TestInterface.IStudentService;
 
 namespace TestAspNet.Controllers
 {
@@ -12,15 +14,6 @@ namespace TestAspNet.Controllers
     [Route("/api/[controller]")]
     public class StudentController : ControllerBase, IStudentService
     {
-        [HttpGet("sayhello")]
-        [HttpPost("sayhello")]
-        public string SayHello([FromHeader] string id, [FromHeader] string myheader, [FromHeader] IStudentService.JsonHeader myjsonheader)
-        {
-            return "Hello!";
-        }
-
-
-
         [HttpGet]
         public string GetNow()
         {
@@ -65,19 +58,26 @@ namespace TestAspNet.Controllers
             return name;
         }
 
-        public string QueryEmpty(string name, int age)
-        {
-            return "ok";
-        }
-        public void QueryEmpty3(string name, int age)
-        {
-
-        }
-
 
         public string QueryEmpty2(object ss)
         {
             throw new NotImplementedException();
+        }
+
+        public string QueryName(int id, [Header(Name = "case", Value = "low", Unique = false)] string stringcase, [Header(Name = "prefix", Value = "2", Unique = true)] string length)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Student QueryById(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpGet("/{id}/{name}/{age}/del")]
+        public Student DelById([FromQuery] int id, [FromQuery(Name = "name")] string theName,int age)
+        {
+            return new Student() { ID = id, Name = theName,Age=age };
         }
     }
 }

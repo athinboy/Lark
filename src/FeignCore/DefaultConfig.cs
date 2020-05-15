@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace FeignCore
+namespace Feign.Core
 {
     public class DefaultConfig
     {

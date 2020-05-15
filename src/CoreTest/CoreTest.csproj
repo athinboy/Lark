@@ -1,9 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <StartupObject>TestClient.Program</StartupObject>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0"/>
     <PackageReference Include="NUnit" Version="3.12.0"/>
@@ -14,16 +17,10 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="xunit" Version="2.4.1"/>
-    <PackageReference Include="MSTest.TestFramework" Version="2.1.1"/>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FeignCore\FeignCore.csproj"/>
     <ProjectReference Include="..\TestInterface\TestInterface.csproj"/>
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="System.Text.Encodings.Web">
-      <HintPath>C:\Program Files\dotnet\sdk\NuGetFallbackFolder\system.text.encodings.web\4.5.0\lib\netstandard2.0\System.Text.Encodings.Web.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+
 </Project>

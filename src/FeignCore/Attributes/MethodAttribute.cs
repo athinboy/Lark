@@ -18,7 +18,7 @@ namespace Feign.Core.Attributes
 
         public MethodAttribute(string httpmethod)
         {
-            this.Method = httpmethod;
+            this.Method = httpmethod.ToUpper();
         }
 
 

@@ -11,8 +11,6 @@ namespace Feign.Core.Context
 {
     internal class InterfaceWrapContext : ContextBase
     {
-        internal bool JsonBody { get; set; } = true;
-
         public Type InterfaceType { get; set; }
 
 
@@ -26,13 +24,7 @@ namespace Feign.Core.Context
         /// <summary>
         /// 接口URL 特性
         /// </summary>
-        public URLAttribute URLAttribute { get; set; }
-
-
-
-        public bool XmlBody { get; internal set; } = false;
-
-
+        public PathAttribute PathAttribute { get; set; }
 
         internal override void Clear()
         {
@@ -51,7 +43,7 @@ namespace Feign.Core.Context
             for (int i = 0; i < interfacemethods.Length; i++)
             {
                 interfacemethodInfo = interfacemethods[i];
-                methodWrapContext = MethodWrapContext.GetContext(interfaceWrapContext, interfacemethodInfo);
+                methodWrapContext = MethodWrapContext.GetContext(interfaceWrapContext, interfacemethodInfo);               
                 methodItem = new MethodItem(interfacemethodInfo, methodWrapContext);
                 interfaceWrapContext.MethodCache[interfacemethodInfo] = methodItem;
             }
@@ -89,9 +81,9 @@ namespace Feign.Core.Context
                     continue;
                 }
 
-                if (typeof(URLAttribute).IsInstanceOfType(o))
+                if (typeof(PathAttribute).IsInstanceOfType(o))
                 {
-                    interfaceWrapContext.URLAttribute = (o as URLAttribute);
+                    interfaceWrapContext.PathAttribute = (o as PathAttribute);
                 }
 
             }

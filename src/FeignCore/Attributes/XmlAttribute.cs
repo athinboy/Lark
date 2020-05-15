@@ -1,7 +1,7 @@
 ﻿using Feign.Core.Attributes.RequestService;
 using Feign.Core.Cache;
 using Feign.Core.Context;
-using FeignCore.Serialize;
+using Feign.Core.Serialize;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,8 +17,6 @@ namespace Feign.Core.Attributes
     [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.ReturnValue, AllowMultiple = false, Inherited = true)]
     public class XmlAttribute : BaseAttribute
     {
-
-
         internal override void SaveToParameterContext(ParameterWrapContext parameterWrapContext)
         {
             base.SaveToParameterContext(parameterWrapContext);

@@ -19,7 +19,8 @@ namespace Feign.Core.Context
         //todo performance ok ?
         public string GetRequestUrl()
         {
-            string url = this.WrapInstance.Url + this.MethodWrap.Url + "?";
+            //todo is it need to check url begin/end with “/”？？
+            string url = this.WrapInstance.Url+ this.MethodUrl + (this.QueryString.Count > 0 ? "?" : string.Empty);
 
             foreach (var item in this.QueryString)
             {
@@ -37,7 +38,14 @@ namespace Feign.Core.Context
         {
             QueryString.Clear();
             ParaValues.Clear();
+            methodUrl = string.Empty;
             throw new NotImplementedException();
+
+        }
+
+        internal void FillPath(string name, string valueStr)
+        {
+            this.methodUrl = this.MethodUrl.Replace("{" + name + "}", valueStr);
 
         }
 
@@ -50,5 +58,24 @@ namespace Feign.Core.Context
         }
         public List<object> ParaValues { get; internal set; }
         public Dictionary<string, string> QueryString { get; internal set; } = new Dictionary<string, string>();
+
+        private string methodUrl = string.Empty;
+
+
+
+        public string MethodUrl
+        {
+            get
+            {
+                if (methodUrl.Length == 0)
+                {
+                    methodUrl = this.MethodWrap.MethodPath;
+                }
+                return methodUrl;
+
+            }
+
+
+        }
     }
 }

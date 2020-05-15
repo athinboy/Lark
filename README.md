@@ -8,12 +8,15 @@ a feign project corresponding to Feign(<https://github.com/OpenFeign/feign).>
 + URL信息相关的特性，采取“父+子”原则。
 + 默认请求body：Json字符串。
 + GET Http：
-    - parameter without headerAttribute will append to query string.
+    - 未指定 headerAttribute时参数优先判断作为路径参数，其次作为查询字符串.
 + POST 
-    - Http: parameter without headerAttribute/querystringAttribute will append to post form.
-    - default complex object serial：Json
-+ Header/Querystring: ToString() of the value of parameter ;
-+ Do not support cookie.
+    - Http: 未指定 headerAttribute/querystringAttribute 时优先判断作为路径参数，其次作为查询字符串。
+    - 复杂对象默认序列化：Json
++ 对Header/Querystring的值进行处理:  
+    - 基础类型通过调用器ToString()方法;
+    - 复杂类型将进行解构Deconstruction;
++ 不支持cookie操作.
++ NameAttribute is not work for PathParaAttribute .
 
 ## Feigh4Net Attribute  
 

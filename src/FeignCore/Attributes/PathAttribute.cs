@@ -10,25 +10,26 @@ namespace Feign.Core.Attributes
     /// </summary>
     [System.AttributeUsage(AttributeTargets.Method | AttributeTargets.Interface | AttributeTargets.Class,
     Inherited = true, AllowMultiple = false)]
-    public class URLAttribute : BaseAttribute
+    public class PathAttribute : BaseAttribute
     {
-        public URLAttribute(string url)
+        public PathAttribute(string path)
         {
-            this.Url = url ?? "";
+            this.Path = path ?? "";
         }
 
-        public string Url { get; set; }
+        public string Path { get; set; }
+
 
         internal override void SaveToInterfaceContext(InterfaceWrapContext interfaceWrapContext)
         {
             base.SaveToInterfaceContext(interfaceWrapContext);
-            interfaceWrapContext.URLAttribute = this;
+            interfaceWrapContext.PathAttribute = this;
         }
 
         internal override void SaveToMethodContext(MethodWrapContext methodWrapContext)
         {
             base.SaveToMethodContext(methodWrapContext);
-            methodWrapContext.URLAttribute = this;
+            methodWrapContext.PathAttribute = this;
         }
 
 

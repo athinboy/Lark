@@ -1,4 +1,4 @@
-namespace FeignCore.Serialize
+namespace Feign.Core.Serialize
 {
     public enum SerializeTypes
     {

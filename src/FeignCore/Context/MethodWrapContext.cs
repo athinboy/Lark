@@ -6,7 +6,6 @@ using System.Text;
 using Feign.Core.Attributes;
 using Feign.Core.Cache;
 using Feign.Core.Exception;
-using FeignCore;
 
 namespace Feign.Core.Context
 {
@@ -18,12 +17,12 @@ namespace Feign.Core.Context
 
         private string httpMethod = DefaultConfig.DefaultHttpMethod;
 
-        private string url = null;
+        private string methodPath = null;
 
         /// <summary>
         /// 接口URL 特性
         /// </summary>
-        public URLAttribute URLAttribute { get; set; }
+        public PathAttribute PathAttribute { get; set; }
 
         public List<HeaderAttribute> HeaderAttributes { get; set; } = new List<HeaderAttribute>();
 
@@ -32,7 +31,7 @@ namespace Feign.Core.Context
         /// <summary>
         /// 方法的URL
         /// </summary>
-        public URLAttribute MethodURLAttribute { get; set; }
+        public PathAttribute MethodPathAttribute { get; set; }
 
         private InterfaceWrapContext interfaceWrapContext = null;
 
@@ -52,14 +51,14 @@ namespace Feign.Core.Context
 
 
             bool asHeader = false;
-            bool asQueryStr = false;
+            bool asUrlPathStr = false;
 
 
             for (int i = 0; i < parameterInfos.Length; i++)
             {
 
                 asHeader = false;
-                asQueryStr = false;
+                asUrlPathStr = false;
 
                 parameterInfo = parameterInfos[i];
                 parameterContext = new ParameterWrapContext(methodWrapContext, parameterInfo);
@@ -77,27 +76,44 @@ namespace Feign.Core.Context
                     if (typeof(HeaderAttribute).IsInstanceOfType(attribute))
                     {
                         asHeader = true;
-                        parameterContext.MyHeaderAttributes.Add(feignAttribute as HeaderAttribute);
-
+                        parameterContext.HeaderAttributes.Add(feignAttribute as HeaderAttribute);
                     }
                     if (typeof(QueryStringAttribute).IsInstanceOfType(attribute))
                     {
-                        asQueryStr = true;
-                        parameterContext.MyQueryStringAttributes.Add(feignAttribute as QueryStringAttribute);
+                        asUrlPathStr = true;
+                        parameterContext.QueryStringAttributes.Add(feignAttribute as QueryStringAttribute);
+                    }
+                    if (typeof(PathParaAttribute).IsInstanceOfType(attribute))
+                    {
+                        asUrlPathStr = true;                  
+                        parameterContext.PathParaAttribute = feignAttribute as PathParaAttribute;
+                        if(parameterContext.PathParaAttribute.Name.Length==0){
+                            parameterContext.PathParaAttribute.Name=parameterInfo.Name;
+                        }
                     }
 
                     feignAttribute.SaveToParameterContext(parameterContext);
 
                 }
                 methodWrapContext.ParameterCache.Add(parameterContext);
-                if (!asHeader && !asQueryStr)
+                if (!asHeader && !asUrlPathStr)
                 {
                     if (methodWrapContext.IsGet())
                     {
-                        QueryStringAttribute queryStringAttribute = new QueryStringAttribute();
-                        queryStringAttribute.Name=parameterInfo.Name;
-                        parameterContext.MyQueryStringAttributes.Add(queryStringAttribute);
-                        queryStringAttribute.SaveToParameterContext(parameterContext);
+                        if (methodWrapContext.MethodPath.Contains("{" + parameterInfo.Name + "}"))
+                        {
+                            PathParaAttribute pathParaAttribute = new PathParaAttribute(parameterInfo.Name);
+                            parameterContext.PathParaAttribute = pathParaAttribute;
+
+                        }
+                        else
+                        {
+                            QueryStringAttribute queryStringAttribute = new QueryStringAttribute();
+                            queryStringAttribute.Name = parameterInfo.Name;
+                            parameterContext.QueryStringAttributes.Add(queryStringAttribute);
+                            queryStringAttribute.SaveToParameterContext(parameterContext);
+                        }
+
                     }
                     if (methodWrapContext.IsPOST())
                     {
@@ -145,9 +161,9 @@ namespace Feign.Core.Context
 
                 feignAttribute.SaveToMethodContext(methodWrapContext);
 
-                if (typeof(URLAttribute).IsInstanceOfType(ca))
+                if (typeof(PathAttribute).IsInstanceOfType(ca))
                 {
-                    methodWrapContext.MethodURLAttribute = ca as URLAttribute;
+                    methodWrapContext.MethodPathAttribute = ca as PathAttribute;
                     continue;
                 }
 
@@ -195,9 +211,9 @@ namespace Feign.Core.Context
         private void Validate()
         {
 
-            if (this.MethodURLAttribute == null
+            if (this.MethodPathAttribute == null
                 && string.IsNullOrEmpty(this.httpMethod)
-                && this.interfaceWrapContext.URLAttribute != null)
+                && this.interfaceWrapContext.PathAttribute != null)
             {
                 throw new FeignException("URL and Method Attribute can not be both Null ！");
             }
@@ -209,24 +225,22 @@ namespace Feign.Core.Context
         }
 
 
-        public string Url
+        public string MethodPath
         {
             get
             {
-                if (url == null)
+                if (methodPath == null)
                 {
-                    url = this.interfaceWrapContext.URLAttribute == null ? null : this.interfaceWrapContext.URLAttribute.Url;
-                    url += this.URLAttribute == null ? "" : this.URLAttribute.Url;
+                    methodPath = this.interfaceWrapContext.PathAttribute == null ? null : this.interfaceWrapContext.PathAttribute.Path;
+                    methodPath += this.PathAttribute == null ? "" : this.PathAttribute.Path;
                 }
-                return url;
+                return methodPath;
             }
             private set { }
 
 
         }
 
-        public bool JsonBody { get; internal set; } = true;
-        public bool XmlBody { get; internal set; } = false;
 
         public string HttpMethod()
         {

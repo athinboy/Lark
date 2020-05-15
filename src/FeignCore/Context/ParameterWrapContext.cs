@@ -1,6 +1,6 @@
 ﻿using Feign.Core.Attributes;
 using Feign.Core.Context;
-using FeignCore.Serialize;
+using Feign.Core.Serialize;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,8 +13,8 @@ namespace Feign.Core.Context
 {
     internal class ParameterWrapContext : ContextBase
     {
-        public List<HeaderAttribute> MyHeaderAttributes { get; set; } = new List<HeaderAttribute>();
-        public List<QueryStringAttribute> MyQueryStringAttributes { get; set; } = new List<QueryStringAttribute>();
+        public List<HeaderAttribute> HeaderAttributes { get; set; } = new List<HeaderAttribute>();
+        public List<QueryStringAttribute> QueryStringAttributes { get; set; } = new List<QueryStringAttribute>();
 
         public MethodWrapContext MethodWrap { get; set; }
 
@@ -23,13 +23,10 @@ namespace Feign.Core.Context
         public SerializeTypes serializeType;
 
         public bool IsBody { get; set; } = false;
-
         public string Name { get; set; } = string.Empty;
         public string QueryString { get; internal set; } = string.Empty;
-
-
-
         
+        public PathParaAttribute PathParaAttribute { get; internal set; }
 
 
         private ParameterWrapContext()
@@ -44,15 +41,25 @@ namespace Feign.Core.Context
         }
         internal override void Clear()
         {
+            this.PathParaAttribute=null;
+            this.HeaderAttributes.Clear();
+            this.QueryStringAttributes.Clear();
             this.serializeType = SerializeTypes.json;
-            IsBody = false;
+            IsBody = false;  
             this.QueryString=string.Empty;
             throw new NotImplementedException();
         }
 
+        internal void FillPath(RequestCreContext requestCreContext)
+        {
+            if(this.PathParaAttribute!=null){
+                PathParaAttribute.FillPath(requestCreContext,this);
+            }
+        }
+
         internal override void AddHeader(RequestCreContext requestCreContext)
         {
-            this.MyHeaderAttributes.ForEach(x =>
+            this.HeaderAttributes.ForEach(x =>
             {
                 x.AddParameterHeader(requestCreContext, this);
             });
@@ -61,7 +68,7 @@ namespace Feign.Core.Context
 
         internal override void AddQueryString(RequestCreContext requestCreContext)
         {
-            this.MyQueryStringAttributes.ForEach(x =>
+            this.QueryStringAttributes.ForEach(x =>
             {
                 x.AddParameterQueryString(requestCreContext, this);
             });
@@ -76,9 +83,17 @@ namespace Feign.Core.Context
                 return string.Empty;
             }
             Type type = value.GetType();
+            
             if (type.IsValueType)
             {
                 return value.ToString();
+            }
+            if(typeof(string).IsInstanceOfType(value)){
+                return value.ToString();
+            }
+            if(type.IsPrimitive){
+                return value.ToString();
+
             }
             if (this.serializeType == SerializeTypes.tostring)
             {

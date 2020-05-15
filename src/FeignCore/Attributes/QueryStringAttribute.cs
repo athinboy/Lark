@@ -7,7 +7,9 @@ using System.Net.Http;
 using System.Reflection;
 using System.Text;
 using Feign.Core.Context;
-using FeignCore.Serialize;
+using Feign.Core.Reflect;
+using Feign.Core.Serialize;
+using System.Linq;
 
 namespace Feign.Core.Attributes
 {
@@ -27,11 +29,10 @@ namespace Feign.Core.Attributes
             Name = name;
         }
 
-
         internal override void Validate()
         {
-            Name = ((Name ?? "").Trim().Length == 0 ? null : Name) ??
-                throw new ArgumentNullException(nameof(Name));
+
+
         }
 
         internal override void SaveToParameterContext(ParameterWrapContext parameterWrapContext)
@@ -43,9 +44,30 @@ namespace Feign.Core.Attributes
         {
             HttpContent httpContext = requestCreContext.httpRequestMessage.Content;
             object value = requestCreContext.ParaValues[parameterWrap.Parameter.Position];
-            string valueStr = parameterWrap.Serial(value);
-            parameterWrap.QueryString = this.Name + "=" + valueStr;
-            requestCreContext.QueryString.Add(this.Name,valueStr);
+            if (TypeReflector.IsPrivateValue(parameterWrap.Parameter.ParameterType))
+            {
+
+
+                string valueStr = parameterWrap.Serial(value);
+                parameterWrap.QueryString = this.Name + "=" + valueStr;
+                requestCreContext.QueryString.Add(this.Name, valueStr);
+            }
+            else
+            {
+                Dictionary<string, object> valuePairs = DeconstructUtil.Deconstruct(value);
+                IEnumerator<KeyValuePair<string, object>> enumerator = valuePairs.GetEnumerator();
+                KeyValuePair<string, object> keyValue;
+                while (enumerator.MoveNext())
+                {
+                    keyValue=enumerator.Current;
+                                  
+
+                }
+
+
+
+            }
+
 
         }
 

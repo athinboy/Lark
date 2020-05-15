@@ -51,6 +51,7 @@ namespace Feign.Core
                 parameterWrap = methodWrap.ParameterCache[i];
                 parameterWrap.AddHeader(requestCreContext);
                 parameterWrap.AddQueryString(requestCreContext);
+                parameterWrap.FillPath(requestCreContext);
 
                 if (InternalConfig.LogRequest)
                 {

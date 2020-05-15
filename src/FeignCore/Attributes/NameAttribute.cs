@@ -12,8 +12,7 @@ namespace Feign.Core.Attributes
     /// <summary>
     ///   name of form or json or xml element .
     /// </summary>
-    [AttributeUsage(AttributeTargets.Parameter,
-        Inherited = true, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Parameter, Inherited = true, AllowMultiple = false)]
     public class NameAttribute : BaseAttribute
     {
 
@@ -31,7 +30,7 @@ namespace Feign.Core.Attributes
             base.SaveToParameterContext(parameterItem);
             parameterItem.Name = this.Name;
         }
- 
+
 
     }
 

@@ -14,7 +14,7 @@ namespace TestClient.Test
         interface IAnimal
         {
             void Say(string a);
-            void Say(string a,int age);
+            void Say(string a, int age);
 
         }
 
@@ -30,7 +30,7 @@ namespace TestClient.Test
                 System.Console.WriteLine("i am a dog:" + a);
             }
 
-            public void Say(string a,int age)
+            public void Say(string a, int age)
             {
                 //if (1 == 2)
                 //{
@@ -44,6 +44,21 @@ namespace TestClient.Test
             }
             public void Call(List<object> args)
             {
+                   int s =0;
+                try
+                {
+
+                    s = int.Parse("xxxx");
+                }
+                catch (Exception e)
+                {
+
+                }
+
+                if(s==2){
+                    throw new Exception("fwe");
+                }
+
                 return;
             }
 
@@ -127,7 +142,7 @@ namespace TestClient.Test
             E(typeof(StudyMSIL), 0, null);
             ParaStudyMSIL(this);
             Dog dog = new Dog();
-            dog.Say("",324);
+            dog.Say("", 324);
 
         }
 

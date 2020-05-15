@@ -1,5 +1,6 @@
 ﻿using Feign.Core.Attributes.RequestService;
 using Feign.Core.Context;
+using Feign.Core.Reflect;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -38,6 +39,8 @@ namespace Feign.Core.Attributes
         {
             this.Name = name;
         }
+
+
         public HeaderAttribute(string name, bool unique)
         {
             this.Name = name;
@@ -71,7 +74,7 @@ namespace Feign.Core.Attributes
 
         internal void AddInterfaceHeader(RequestCreContext requestCreContext, InterfaceWrapContext interfaceWrap)
         {
-            HttpContent httpContext=requestCreContext.httpRequestMessage.Content;
+            HttpContent httpContext = requestCreContext.httpRequestMessage.Content;
             if (this.Unique)
             {
                 httpContext.Headers.Remove(this.Name);
@@ -84,7 +87,7 @@ namespace Feign.Core.Attributes
         }
         internal void AddMethodHeader(RequestCreContext requestCreContext, MethodWrapContext methodWrap)
         {
-            HttpContent httpContext=requestCreContext.httpRequestMessage.Content;
+            HttpContent httpContext = requestCreContext.httpRequestMessage.Content;
             if (this.Unique)
             {
                 httpContext.Headers.Remove(this.Name);
@@ -98,10 +101,14 @@ namespace Feign.Core.Attributes
 
         internal void AddParameterHeader(RequestCreContext requestCreContext, ParameterWrapContext parameterWrap)
         {
-            HttpContent httpContext=requestCreContext.httpRequestMessage.Content;
+
+            if(TypeReflector.IsComplextClass(parameterWrap.Parameter.ParameterType)){
+                throw new NotSupportedException("暂时不支持复杂类型用于header、pathpara");
+            }
+
+            HttpContent httpContext = requestCreContext.httpRequestMessage.Content;
             object value = requestCreContext.ParaValues[parameterWrap.Parameter.Position];
             string valueStr = parameterWrap.Serial(value);
-
             if (this.Unique)
             {
                 httpContext.Headers.Remove(this.Name);
@@ -112,8 +119,6 @@ namespace Feign.Core.Attributes
                 httpContext.Headers.Add(this.Name, valueStr);
             }
         }
-
-
 
 
     }
