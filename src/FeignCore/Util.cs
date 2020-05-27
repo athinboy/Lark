@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Feign.Core
 {
@@ -23,16 +25,20 @@ namespace Feign.Core
             {
                 url = url.Remove(url.Length - 1);
             }
-            if (false==url.StartsWith("/"))
+            if (false == url.StartsWith("/"))
             {
                 url = "/" + url;
             }
             return url;
 
-
         }
 
-        
+        public static IEnumerable<string> GetPathParaName(string path)
+        {
+            Regex pathparaRegex = new Regex(@"\{([a-z|A-Z]{1,})\}");
+            MatchCollection matchs = pathparaRegex.Matches(path.ToLower());                
+            return matchs.ToList().ConvertAll<string>(x => { return x.Groups[1].Value; }).ToList().Distinct();
+        }
 
 
 

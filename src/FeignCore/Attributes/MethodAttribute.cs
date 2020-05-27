@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
+using Feign.Core.Context;
+
 namespace Feign.Core.Attributes
 {
 
@@ -14,12 +16,28 @@ namespace Feign.Core.Attributes
     public sealed class MethodAttribute : BaseAttribute
     {
 
-        public string Method { get; set; } = HttpMethod.Post.Method;
+        public string Method { get; set; } = HttpMethod.Get.Method;
 
         public MethodAttribute(string httpmethod)
         {
             this.Method = httpmethod.ToUpper();
         }
+
+        internal override void SaveToParameterContext(ParameterWrapContext parameterItem)
+        {
+            
+        }
+
+        internal override void SaveToMethodContext(MethodWrapContext methodWrapContext)
+        {
+            methodWrapContext.HttpMethod = this.Method.ToUpper();
+        }
+
+        internal override void SaveToInterfaceContext(InterfaceWrapContext interfaceWrapContext)
+        {
+            interfaceWrapContext.HttpMethod = this.Method.ToUpper();
+        }
+
 
 
     }

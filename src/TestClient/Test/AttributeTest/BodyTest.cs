@@ -16,7 +16,7 @@ namespace TestClient.Test.AttributeTest
             Feign.Core.InternalConfig.LogRequest = true;
         }
 
-        [NUnit.Framework.Test]
+        //[NUnit.Framework.Test]
         public void Test()
         {
             IStudentService student = Feign.Core.Feign.Wrap<IStudentService>("http://localhost:6346");

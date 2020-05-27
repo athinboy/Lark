@@ -12,7 +12,7 @@ namespace TestInterface
     [Header(Name = "myschool", Value = "2.0", Unique = false)]
     public interface IStudentService
     {
-        
+
         public class Student
         {
             public int ID { get; set; }
@@ -46,7 +46,7 @@ namespace TestInterface
         [Header(Name = "appcode", Value = "appcode111111111111", Unique = true)]
         [Header(Name = "supportversion", Value = "3.0", Unique = false)]
         [Header(Name = "case", Value = "lower", Unique = false)]
-        string QueryName(int id, [Header(Name = "case", Value = "low", Unique = false)] string stringcase, [Header(Name = "prefix", Value = "2", Unique = true)] string length);
+        string QueryName(int id, [Header(Name = "case", Unique = false)] string stringcase, [Header(Name = "prefix", Unique = true)] string length);
 
 
         [Path("/QueryById")]

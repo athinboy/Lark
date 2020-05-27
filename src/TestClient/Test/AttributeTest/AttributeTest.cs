@@ -34,7 +34,7 @@ namespace TestClient.Test.AttributeTest
 
 
 
-        [Test]
+        //[Test]
         public void WrapTest_One()
         {
             IStudentService student = Feign.Core.Feign.Wrap<IStudentService>("");

@@ -40,9 +40,8 @@ namespace Feign.Core
 
             interfaceWrap.AddHeader(requestCreContext);
 
-
+            
             methodWrap.AddHeader(requestCreContext);
-
             methodWrap.AddQueryString(requestCreContext);
 
 

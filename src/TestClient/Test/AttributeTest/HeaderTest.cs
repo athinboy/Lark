@@ -13,8 +13,6 @@ namespace TestClient.Test.AttributeTest
     // [Microsoft.VisualStudio.TestTools.UnitTesting.TestClass]
     public class HeaderAttributeTest : TestBase
     {
-
-
         [SetUp]
         public void BaseSetup1()
         {

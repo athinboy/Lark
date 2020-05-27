@@ -20,30 +20,20 @@ namespace Feign.Core.Attributes
              throw new ArgumentNullException(nameof(name));
         }
 
-        internal virtual void Validate()
+        internal override void Validate()
         {
 
         }
 
         internal override void SaveToParameterContext(ParameterWrapContext parameterItem)
         {
-            if(TypeReflector.IsComplextClass(parameterItem.Parameter.ParameterType)){
+            if (TypeReflector.IsComplextClass(parameterItem.Parameter.ParameterType))
+            {
                 throw new NotSupportedException("暂时不支持复杂类型用于header、pathpara");
             }
-            parameterItem.PathParaAttribute = this;
+            parameterItem.pathParaAttribute = this;
         }
 
-        internal void FillPath(RequestCreContext requestCreContext, ParameterWrapContext parameterWrapContext)
-        {
-
-
-            HttpContent httpContext = requestCreContext.httpRequestMessage.Content;
-            object value = requestCreContext.ParaValues[parameterWrapContext.Parameter.Position];
-            string valueStr = parameterWrapContext.Serial(value);
-            requestCreContext.FillPath(this.Name, valueStr);
-
-
-        }
     }
 
 

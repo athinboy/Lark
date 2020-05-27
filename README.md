@@ -17,6 +17,10 @@ a feign project corresponding to Feign(<https://github.com/OpenFeign/feign).>
     - 复杂类型将进行解构Deconstruction;
 + 不支持cookie操作.
 + NameAttribute is not work for PathParaAttribute .
++ pathparaattribute、headerAttribute 只支持简单值类型。
++ 为了避免不清晰的绑定关系：
+    - 禁止
+
 
 ## Feigh4Net Attribute  
 

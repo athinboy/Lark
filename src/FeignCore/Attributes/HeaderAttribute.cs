@@ -48,6 +48,10 @@ namespace Feign.Core.Attributes
         }
 
 
+/// <summary>
+/// 对于复杂类型，如果指定了Name，则整个对象进行字符串化。否则对其进行解构。
+/// </summary>
+/// <value></value>
         public String Name { get; set; } = "";
         /// <summary>
         /// the header value .ignore for parameter.
@@ -62,64 +66,37 @@ namespace Feign.Core.Attributes
         /// default:true
         /// </summary>
         /// <value></value>
-        public bool Unique { get; set; } = true;
+        public bool Unique { get; set; } = DefaultConfig.HeaderUnique;
 
         internal override void Validate()
         {
-            Name = ((this.Name ?? "").Trim().Length == 0 ? null : Name.Trim()) ??
-                throw new ArgumentNullException(nameof(Name));
+            Name = this.Name ?? "";
             Value = ((Value ?? "").Trim().Length == 0 ? string.Empty : Value.Trim()) ?? "";
 
         }
 
-        internal void AddInterfaceHeader(RequestCreContext requestCreContext, InterfaceWrapContext interfaceWrap)
-        {
-            HttpContent httpContext = requestCreContext.httpRequestMessage.Content;
-            if (this.Unique)
-            {
-                httpContext.Headers.Remove(this.Name);
-                httpContext.Headers.Add(this.Name, this.Value);
-            }
-            else
-            {
-                httpContext.Headers.Add(this.Name, this.Value);
-            }
-        }
-        internal void AddMethodHeader(RequestCreContext requestCreContext, MethodWrapContext methodWrap)
-        {
-            HttpContent httpContext = requestCreContext.httpRequestMessage.Content;
-            if (this.Unique)
-            {
-                httpContext.Headers.Remove(this.Name);
-                httpContext.Headers.Add(this.Name, this.Value);
-            }
-            else
-            {
-                httpContext.Headers.Add(this.Name, this.Value);
-            }
-        }
-
-        internal void AddParameterHeader(RequestCreContext requestCreContext, ParameterWrapContext parameterWrap)
+        internal override void SaveToParameterContext(ParameterWrapContext parameterItem)
         {
 
-            if(TypeReflector.IsComplextClass(parameterWrap.Parameter.ParameterType)){
+            if (TypeReflector.IsComplextClass(parameterItem.Parameter.ParameterType))
+            {
                 throw new NotSupportedException("暂时不支持复杂类型用于header、pathpara");
             }
-
-            HttpContent httpContext = requestCreContext.httpRequestMessage.Content;
-            object value = requestCreContext.ParaValues[parameterWrap.Parameter.Position];
-            string valueStr = parameterWrap.Serial(value);
-            if (this.Unique)
-            {
-                httpContext.Headers.Remove(this.Name);
-                httpContext.Headers.Add(this.Name, valueStr);
+            if(false==string.IsNullOrEmpty(this.Value)){
+                throw new NotSupportedException("对于参数指定Value无效！");
             }
-            else
-            {
-                httpContext.Headers.Add(this.Name, valueStr);
-            }
+            parameterItem.HeaderAttributes.Add(this);             
         }
 
+        internal override void SaveToMethodContext(MethodWrapContext methodWrapContext)
+        {
+            methodWrapContext.HeaderAttributes.Add(this);
+        }
+
+        internal override void SaveToInterfaceContext(InterfaceWrapContext interfaceWrapContext)
+        {
+            interfaceWrapContext.HeaderAttributes.Add(this);
+        }
 
     }
 

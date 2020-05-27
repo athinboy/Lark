@@ -20,9 +20,24 @@ namespace Feign.Core.Attributes
         internal override void SaveToParameterContext(ParameterWrapContext parameterWrapContext)
         {
             base.SaveToParameterContext(parameterWrapContext);
-            parameterWrapContext.serializeType=SerializeTypes.xml;
+            parameterWrapContext.SerializeType = SerializeTypes.xml;
         }
 
+
+
+        internal override void SaveToMethodContext(MethodWrapContext methodWrapContext)
+        {
+
+        }
+
+        internal override void SaveToInterfaceContext(InterfaceWrapContext interfaceWrapContext)
+        {
+
+        }
+        internal override void SaveToReturnContext(ReturnContext returnContext)
+        {
+            returnContext.SerializeType = SerializeTypes.xml;
+        }
 
 
     }

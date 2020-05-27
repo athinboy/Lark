@@ -20,7 +20,7 @@ namespace Feign.Core.Context
         public string GetRequestUrl()
         {
             //todo is it need to check url begin/end with “/”？？
-            string url = this.WrapInstance.Url+ this.MethodUrl + (this.QueryString.Count > 0 ? "?" : string.Empty);
+            string url = this.WrapInstance.Url + this.MethodUrl + (this.QueryString.Count > 0 ? "?" : string.Empty);
 
             foreach (var item in this.QueryString)
             {
@@ -53,7 +53,7 @@ namespace Feign.Core.Context
         {
             get
             {
-                return new HttpMethod(this.MethodWrap.HttpMethod());
+                return new HttpMethod(this.MethodWrap.HttpMethod);
             }
         }
         public List<object> ParaValues { get; internal set; }
@@ -61,7 +61,10 @@ namespace Feign.Core.Context
 
         private string methodUrl = string.Empty;
 
+        internal override void CreateBind()
+        {
 
+        }
 
         public string MethodUrl
         {

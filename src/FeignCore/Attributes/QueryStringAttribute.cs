@@ -14,9 +14,13 @@ using System.Linq;
 namespace Feign.Core.Attributes
 {
 
-    [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = true, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
     public class QueryStringAttribute : BaseAttribute
     {
+        /// <summary>
+        /// 对于复杂类型，如果指定了Name，则整个对象进行字符串化。否则对其进行解构。
+        /// </summary>
+        /// <value></value>
         public string Name { get; set; }
 
         public QueryStringAttribute()
@@ -33,44 +37,13 @@ namespace Feign.Core.Attributes
         {
 
 
-        }
+        } 
 
         internal override void SaveToParameterContext(ParameterWrapContext parameterWrapContext)
         {
-            parameterWrapContext.serializeType = SerializeTypes.tostring;
+            parameterWrapContext.QueryStringAttribute=this;          
         }
-
-        internal void AddParameterQueryString(RequestCreContext requestCreContext, ParameterWrapContext parameterWrap)
-        {
-            HttpContent httpContext = requestCreContext.httpRequestMessage.Content;
-            object value = requestCreContext.ParaValues[parameterWrap.Parameter.Position];
-            if (TypeReflector.IsPrivateValue(parameterWrap.Parameter.ParameterType))
-            {
-
-
-                string valueStr = parameterWrap.Serial(value);
-                parameterWrap.QueryString = this.Name + "=" + valueStr;
-                requestCreContext.QueryString.Add(this.Name, valueStr);
-            }
-            else
-            {
-                Dictionary<string, object> valuePairs = DeconstructUtil.Deconstruct(value);
-                IEnumerator<KeyValuePair<string, object>> enumerator = valuePairs.GetEnumerator();
-                KeyValuePair<string, object> keyValue;
-                while (enumerator.MoveNext())
-                {
-                    keyValue=enumerator.Current;
-                                  
-
-                }
-
-
-
-            }
-
-
-        }
-
+ 
 
 
 

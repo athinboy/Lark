@@ -11,13 +11,17 @@ namespace Feign.Core.Attributes
     {
 
 
-        internal virtual void Validate ()
+        internal virtual void Validate()
+        {
+
+        }
+        
+        internal virtual void SaveToParameterContext(ParameterWrapContext parameterItem)
         {
 
         }
 
-
-        internal virtual void SaveToParameterContext(ParameterWrapContext parameterItem)
+        internal virtual void SaveToReturnContext(ReturnContext returnContext)
         {
 
         }
@@ -29,9 +33,9 @@ namespace Feign.Core.Attributes
 
         internal virtual void SaveToInterfaceContext(InterfaceWrapContext interfaceWrapContext)
         {
-            
+
         }
- 
+
 
 
 

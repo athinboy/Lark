@@ -22,15 +22,22 @@ namespace Feign.Core.Attributes
 
         internal override void SaveToInterfaceContext(InterfaceWrapContext interfaceWrapContext)
         {
-            base.SaveToInterfaceContext(interfaceWrapContext);
-            interfaceWrapContext.PathAttribute = this;
+
+            interfaceWrapContext.Path = this.Path;
         }
 
         internal override void SaveToMethodContext(MethodWrapContext methodWrapContext)
         {
-            base.SaveToMethodContext(methodWrapContext);
-            methodWrapContext.PathAttribute = this;
+      
+            methodWrapContext.Path = this.Path;
         }
+
+        internal override void SaveToParameterContext(ParameterWrapContext parameterItem)
+        {
+
+        }
+
+
 
 
     }

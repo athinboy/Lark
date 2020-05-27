@@ -30,6 +30,17 @@ namespace Feign.Core.Attributes
             base.SaveToParameterContext(parameterItem);
             parameterItem.Name = this.Name;
         }
+ 
+
+        internal override void SaveToMethodContext(MethodWrapContext methodWrapContext)
+        {
+           
+        }
+
+        internal override void SaveToInterfaceContext(InterfaceWrapContext interfaceWrapContext)
+        {
+         
+        }
 
 
     }

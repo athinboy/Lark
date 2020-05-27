@@ -8,7 +8,7 @@ namespace TestClient.Test.AttributeTest
     {
 
 
-        [NUnit.Framework.Test]
+        //[NUnit.Framework.Test]
         public void A()
         {
             for (int i = 0; i < 3; i++)
