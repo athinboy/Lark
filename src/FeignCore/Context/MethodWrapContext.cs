@@ -65,6 +65,8 @@ namespace Feign.Core.Context
 
         public List<ParameterWrapContext> ParameterCache { get; set; } = new List<ParameterWrapContext>();
 
+        public BodyBind bodyBind=null;
+
         /// <summary>
         /// 方法的URL
         /// </summary>
@@ -90,7 +92,8 @@ namespace Feign.Core.Context
                 parameterWrap = ParameterWrapContext.GetContext(this, parameter);
                 ParameterCache.Add(parameterWrap);
             }
-            ParameterCache.ForEach(x=>{
+            ParameterCache.ForEach(x =>
+            {
                 x.CreateBind();
             });
 
@@ -127,7 +130,7 @@ namespace Feign.Core.Context
 
             methodWrapContext.CreateBind();
 
-            methodWrapContext.SaveParameter();            
+            methodWrapContext.SaveParameter();
 
             methodWrapContext.Validate();
 
@@ -140,7 +143,7 @@ namespace Feign.Core.Context
         {
             this.HeaderAttributes.ForEach(x =>
             {
-                this.HeaderBindes.Add(new HeaderBind(x.Name, x.Value,x.Unique));
+                this.HeaderBindes.Add(new HeaderBind(x.Name, x.Value, x.Unique));
             });
         }
 
@@ -177,11 +180,39 @@ namespace Feign.Core.Context
         private void ValidateParameterBind()
         {
 
-            ParameterWrapContext parameterWrapContext;
+            ParameterWrapContext parameterWrapContextA;
+            ParameterWrapContext parameterWrapContextB;
             for (int i = 0; i < this.ParameterCache.Count; i++)
             {
-                parameterWrapContext = ParameterCache[i];
+                parameterWrapContextA = ParameterCache[i];
+                for (int j = i + 1; j < this.ParameterCache.Count; j++)
+                {
+                    parameterWrapContextB = this.ParameterCache[j];
+
+                    parameterWrapContextA.HeaderBindes.ForEach(x =>
+                    {
+                        parameterWrapContextB.HeaderBindes.ForEach(y =>
+                        {
+                        });
+
+                    });
+                    parameterWrapContextA.QueryStringBindes.ForEach(x =>
+                    {
+                        parameterWrapContextB.QueryStringBindes.ForEach(y =>
+                        {
+                            if (x.Name == y.Name)
+                            {
+                                throw new System.Exception(string.Format("参数:{0}、{1}具有相同的查询参数:{2}", parameterWrapContextA.Parameter.Name, parameterWrapContextB.Parameter.Name, x.Name));                                
+                            }
+                        });
+
+                    });
+                }
+
             }
+
+
+
         }
 
         public PathParaBind GetPathParaBind(string paraName)
@@ -220,7 +251,7 @@ namespace Feign.Core.Context
             {
                 if (methodPath == null)
                 {
-                    methodPath = (this.interfaceWrapContext.Path ?? "") + (this.Path ?? "");
+                    methodPath = Util.NormalizeURL(this.interfaceWrapContext.Path ?? "") + Util.NormalizeURL(this.Path ?? "");
                 }
                 return methodPath;
             }

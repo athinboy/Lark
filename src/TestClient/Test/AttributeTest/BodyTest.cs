@@ -16,15 +16,21 @@ namespace TestClient.Test.AttributeTest
             Feign.Core.InternalConfig.LogRequest = true;
         }
 
-        //[NUnit.Framework.Test]
+        [NUnit.Framework.Test]
         public void Test()
         {
+
             IStudentService student = Feign.Core.Feign.Wrap<IStudentService>("http://localhost:6346");
             student.DelById(111, "nnnnname", 98);
             WrapBase wrap = (WrapBase)student;
             Assert.IsTrue(wrap.Url == BaseUrl);
             System.Console.WriteLine(wrap.GetRequestCreURL());
             Assert.IsTrue(wrap.GetRequestCreURL() == BaseUrl + @"/api/student/111/nnnnname/98/del");
+            System.Console.WriteLine(wrap.GetRequestCreURL());
+
+            student.AddPost(new IStudentService.Student(){Name="studnetName"});
+
+
 
         }
 

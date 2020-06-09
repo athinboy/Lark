@@ -23,8 +23,6 @@ namespace Feign.Core.Attributes
             parameterWrapContext.SerializeType = SerializeTypes.xml;
         }
 
-
-
         internal override void SaveToMethodContext(MethodWrapContext methodWrapContext)
         {
 

@@ -33,13 +33,38 @@ namespace TestInterface
 
         }
 
+
+        public class StudentClass
+        {
+            public int number;
+
+            //public string Name { get; set; }
+
+            public string ClassName { get; set; }
+        }
+
+        public class Remark
+        {
+            public string R1;
+            public string R2;
+        }
+
         [Path("add")]
         [Method("GET")]
-        string Add(Student s);
+        string Add(Student student);
+
+        [Path("add2")]
+        [Method("GET")]
+        string Add2(Student s, [QueryString] StudentClass studentClass, [QueryString("Remark")] Remark remark);
+
 
         [Method("POST")]
         [Path("add")]
         string AddPost(Student s);
+
+        [Method("POST")]
+        [Path("addform")]
+        string AddPostForm([FromBody]Student s);
 
 
         [Path("/QueryName")]

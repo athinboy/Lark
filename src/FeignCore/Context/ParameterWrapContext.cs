@@ -71,7 +71,6 @@ namespace Feign.Core.Context
             List<FieldInfo> fieldInfos = new List<FieldInfo>(this.Parameter.ParameterType.GetFields());
             List<PropertyInfo> properties = new List<PropertyInfo>(this.Parameter.ParameterType.GetProperties());
 
-
             if (this.pathParaAttribute != null)
             {
                 paraBind = new PathParaBind(string.IsNullOrEmpty(pathParaAttribute.Name) ? this.Parameter.Name : pathParaAttribute.Name);
@@ -109,33 +108,48 @@ namespace Feign.Core.Context
                 });
                 AttributeBinded = true;
             }
-
-
             if (this.QueryStringAttribute != null)
             {
+                string queryname;
                 if (TypeReflector.IsPrivateValue(this.Parameter.ParameterType))
                 {
-                    string queryname = string.IsNullOrEmpty(this.QueryStringAttribute.Name) ? this.Parameter.Name : this.QueryStringAttribute.Name;
+                    queryname = string.IsNullOrEmpty(this.QueryStringAttribute.Name) ? this.Parameter.Name : this.QueryStringAttribute.Name;
                     queryStringBind = new QueryStringBind(queryname);
                     queryStringBind.Prompt();
                     this.QueryStringBindes.Add(queryStringBind);
                 }
                 else
                 {
-                    fieldInfos.ForEach(f =>
+
+                    if (false == string.IsNullOrEmpty(this.QueryStringAttribute.Name))
                     {
-                        queryStringBind = new QueryStringBind(f.Name, f);
+                        queryStringBind = new QueryStringBind(this.QueryStringAttribute.Name);
                         queryStringBind.Prompt();
                         this.QueryStringBindes.Add(queryStringBind);
-                    });
-                    properties.ForEach(p =>
+                    }
+                    else
                     {
-                        queryStringBind = new QueryStringBind(p.Name, p);
-                        queryStringBind.Prompt();
-                        this.QueryStringBindes.Add(queryStringBind);
-                    });
+                        fieldInfos.ForEach(f =>
+                        {
+                            queryStringBind = new QueryStringBind(f.Name, f);
+                            queryStringBind.Prompt();
+                            this.QueryStringBindes.Add(queryStringBind);
+                        });
+                        properties.ForEach(p =>
+                        {
+                            queryStringBind = new QueryStringBind(p.Name, p);
+                            queryStringBind.Prompt();
+                            this.QueryStringBindes.Add(queryStringBind);
+                        });
+                    }
+
                 }
                 AttributeBinded = true;
+            }
+
+            if (this.SerializeType == SerializeTypes.formdata)
+            {
+
             }
 
 
@@ -155,9 +169,24 @@ namespace Feign.Core.Context
             }
             else
             {
+                //bind to querystring
                 this.PresumeQueryStringBind();
             }
-            //bind to querystring
+            if (this.MethodWrap.IsGet())
+            {
+                return;
+            }
+
+
+            if (this.HeaderBindes.Count > 0 || this.PathParaBindes.Count > 0 || this.QueryStringBindes.Count > 0)
+            {
+                return;
+            }
+            else
+            {
+                //bind to body
+
+            }
 
         }
 

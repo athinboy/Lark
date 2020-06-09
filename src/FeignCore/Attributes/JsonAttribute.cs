@@ -17,10 +17,10 @@ namespace Feign.Core.Attributes
     {
         internal override void SaveToParameterContext(ParameterWrapContext parameterItem)
         {
-         
+
             parameterItem.SerializeType = SerializeTypes.json;
         }
- 
+
 
         internal override void SaveToMethodContext(MethodWrapContext methodWrapContext)
         {
@@ -29,10 +29,11 @@ namespace Feign.Core.Attributes
 
         internal override void SaveToInterfaceContext(InterfaceWrapContext interfaceWrapContext)
         {
-         
+
         }
-           internal override void  SaveToReturnContext(ReturnContext returnContext){
-    returnContext.SerializeType = SerializeTypes.json;
+        internal override void SaveToReturnContext(ReturnContext returnContext)
+        {
+            returnContext.SerializeType = SerializeTypes.json;
         }
 
 

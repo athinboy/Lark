@@ -11,7 +11,7 @@ using System.Text;
 
 namespace FeignCore.ValueBind
 {
-    public class QueryStringBind:BindBase
+    public class QueryStringBind : BindBase
     {
 
         public string Name;
@@ -21,7 +21,7 @@ namespace FeignCore.ValueBind
         public PropertyInfo Property;
         public QueryStringBind(string name)
         {
-            Name = name;  
+            Name = name;
         }
 
         public QueryStringBind(string name, FieldInfo field)
@@ -38,30 +38,47 @@ namespace FeignCore.ValueBind
 
         internal void AddParameterQueryString(RequestCreContext requestCreContext, ParameterWrapContext parameterWrap)
         {
-                      HttpContent httpContext = requestCreContext.httpRequestMessage.Content;
-            object value = requestCreContext.ParaValues[parameterWrap.Parameter.Position];
+            HttpContent httpContext = requestCreContext.httpRequestMessage.Content;
+            object paraValue = requestCreContext.ParaValues[parameterWrap.Parameter.Position];
+
             if (TypeReflector.IsPrivateValue(parameterWrap.Parameter.ParameterType))
             {
-
-
-                string valueStr = parameterWrap.Serial(value);
+                //todo  valueStr :performance problem ?
+                string valueStr = parameterWrap.Serial(paraValue);
                 parameterWrap.QueryString = this.Name + "=" + valueStr;
                 requestCreContext.QueryString.Add(this.Name, valueStr);
             }
             else
             {
-                Dictionary<string, object> valuePairs = DeconstructUtil.Deconstruct(value);
-                IEnumerator<KeyValuePair<string, object>> enumerator = valuePairs.GetEnumerator();
-                KeyValuePair<string, object> keyValue;
-                while (enumerator.MoveNext())
+                if (Field == null && Property == null)
                 {
-                    keyValue = enumerator.Current;
-
+                    string valueStr = parameterWrap.Serial(paraValue);
+                    parameterWrap.QueryString = this.Name + "=" + valueStr;
+                    requestCreContext.QueryString.Add(this.Name, valueStr);
+                }
+                else
+                {
+                    object value;
+                    string queryName = null;
+                    if (Field != null)
+                    {
+                        queryName = Field.Name;
+                        value = Field.GetValue(paraValue);
+                    }
+                    else if (Property != null)
+                    {
+                        queryName = Property.Name;
+                        value = Property.GetValue(paraValue);
+                    }
+                    else
+                    {
+                        throw new SystemException(nameof(this.Name));
+                    }
+                    string valueStr = parameterWrap.Serial(value);
+                    parameterWrap.QueryString = queryName + "=" + valueStr;
+                    requestCreContext.QueryString.Add(queryName, valueStr);
 
                 }
-
-
-
             }
         }
     }

@@ -16,13 +16,18 @@ namespace TestClient.Test.AttributeTest
         [SetUp]
         public void BaseSetup1()
         {
-            Feign.Core.InternalConfig.NotRequest = true;
+            //Feign.Core.InternalConfig.NotRequest = true;
+            Feign.Core.InternalConfig.SaveRequest=true;
+            
         }
         [NUnit.Framework.Test]
         public void Test1()
         {
+            object responseResult;
+
             IStudentService student = Feign.Core.Feign.Wrap<IStudentService>("http://localhost:6346");
-            student.QueryName(12, "upper", "234");
+            responseResult= student.QueryName(12, "upper", "234");
+            System.Console.WriteLine(responseResult.ToString());
             WrapBase wrap = (WrapBase)student;
             HttpRequestHeaders HttpRequestHeaders = wrap.MyHttpRequestMessagea.Headers;
             HttpContent httpContent = wrap.MyHttpRequestMessagea.Content;
@@ -70,12 +75,6 @@ namespace TestClient.Test.AttributeTest
         }
 
 
-        [NUnit.Framework.Test]
-        public void Test2()
-        {
-            IStudentService student = Feign.Core.Feign.Wrap<IStudentService>("http://localhost:6346");
-            student.Add(new IStudentService.Student() { ID = 1, Name = "name", rank = 23 }) ;
 
-        }
     }
 }

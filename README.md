@@ -2,6 +2,17 @@
 
 a feign project corresponding to Feign(<https://github.com/OpenFeign/feign).>
 
+推荐使用项目：
+
++ https://github.com/reactiveui/refit
++ https://github.com/dotnetcore/WebApiClient
++ https://github.com/restsharp/RestSharp
+
+考虑采用的组件：
+
++ https://github.com/serilog/serilog
++ https://github.com/App-vNext/Polly
+
 ## Principle
 
 + 所有的特性除了特定信息类的特性外，全部采用“子为准”原则。
@@ -19,8 +30,7 @@ a feign project corresponding to Feign(<https://github.com/OpenFeign/feign).>
 + NameAttribute is not work for PathParaAttribute .
 + pathparaattribute、headerAttribute 只支持简单值类型。
 + 为了避免不清晰的绑定关系：
-    - 禁止
-
+    - 任一绑定到pathpara、querystring、header的参数不支持绑定到body。
 
 ## Feigh4Net Attribute  
 
@@ -33,4 +43,9 @@ cd src\TestAspNet
 dotnet run
 ```
 
-2、In broswer,open：<http://localhost:6346/api/student/sayhello.>  
+2、In broswer,open：
+
+``` cmd
+http://localhost:6346/api/student/sayhello
+http://localhost:6346/api/student
+```

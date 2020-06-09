@@ -20,7 +20,7 @@ namespace Feign.Core
         Microsoft.Extensions.Logging.ILogger logger = LoggerFactory.Create((x) => { x.AddConsole(); }).CreateLogger<HttpCreater>();
 
 
-        internal static string Create(RequestCreContext requestCreContext)
+        internal static FeignResult Create(RequestCreContext requestCreContext)
         {
 
             WrapBase wrapBase = requestCreContext.WrapInstance;
@@ -40,7 +40,7 @@ namespace Feign.Core
 
             interfaceWrap.AddHeader(requestCreContext);
 
-            
+
             methodWrap.AddHeader(requestCreContext);
             methodWrap.AddQueryString(requestCreContext);
 
@@ -63,8 +63,7 @@ namespace Feign.Core
             httpRequestMessage.RequestUri = new Uri(requestCreContext.GetRequestUrl());
 
             System.Net.Http.HttpClient httpClient = new System.Net.Http.HttpClient();
-            HttpResponseMessage httpResponseMessage = null;
-            Task<String> taskStr;
+
             //TODO  it's need to  deal with the http status code
             Task<HttpResponseMessage> task;
             switch (requestCreContext.HttpMethod.Method)
@@ -76,26 +75,31 @@ namespace Feign.Core
                 default:
                     throw new NotSupportedException("Not supported Http Method!");
             }
+            if (InternalConfig.SaveRequest)
+            {
+                wrapBase.MyClient = httpClient;
+                wrapBase.MyHttpRequestMessagea = httpRequestMessage;
+                wrapBase.MyRequestCreContext = requestCreContext;
+
+            }
             if (InternalConfig.NotRequest)
             {
                 wrapBase.MyClient = httpClient;
                 wrapBase.MyHttpRequestMessagea = httpRequestMessage;
                 wrapBase.MyRequestCreContext = requestCreContext;
-                return null;
+                return FeignResult.GetResult(null, requestCreContext.MethodWrap.ReturnContext); ;
             }
 
             task = httpClient.SendAsync(httpRequestMessage);
+            //todo need to try-catch ?
             task.Wait();
-            httpResponseMessage = task.Result;
-            taskStr = httpResponseMessage.Content.ReadAsStringAsync();
-            taskStr.Wait();
 
             if (InternalConfig.SaveResponse)
             {
-                requestCreContext.WrapInstance.OriginalResponseMessage = httpResponseMessage;
+                requestCreContext.WrapInstance.OriginalResponseMessage = task.Result;
             }
 
-            return taskStr.Result;
+            return FeignResult.GetResult(task.Result, requestCreContext.MethodWrap.ReturnContext);
 
         }
 
@@ -112,10 +116,21 @@ namespace Feign.Core
             {
                 if (x.IsBody)
                 {
-
+                    
                 }
             });
-            httpRequestMessage.Content = new StringContent(stringbody);
+            if (requestCreContext.MethodWrap.IsGet())
+            {
+
+            }
+            else if (requestCreContext.MethodWrap.IsPOST())
+            {
+                httpRequestMessage.Content = new StringContent(stringbody);
+            }
+            else
+            {
+                throw new UnsupportException();
+            }
 
             requestCreContext.httpRequestMessage = httpRequestMessage;
             return httpRequestMessage;
