@@ -8,7 +8,7 @@ using System.Reflection;
 using System.Text;
 using Feign.Core.Context;
 using Feign.Core.Reflect;
-using Feign.Core.Serialize;
+using Feign.Core.Enum;
 using System.Linq;
 
 namespace Feign.Core.Attributes

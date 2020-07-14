@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text;
 using Feign.Core.Attributes;
 using Feign.Core.Cache;
+using Feign.Core.Enum;
 using Feign.Core.Exception;
 using FeignCore.ValueBind;
 
@@ -13,13 +14,17 @@ namespace Feign.Core.Context
     internal class InterfaceWrapContext : ContextBase
     {
 
+   
 
         public string HttpMethod = null;
+
+        public HttpContentTypes ContentType { get; set; }
 
 
         internal InterfaceWrapContext()
         {
             this.HttpMethod = DefaultConfig.DefaultHttpMethod;
+            this.ContentType = DefaultConfig.DefaultHttpContentType;
         }
 
 
@@ -57,7 +62,7 @@ namespace Feign.Core.Context
                 methodWrapContext = MethodWrapContext.GetContext(this, interfacemethodInfo);
                 methodItem = new MethodItem(interfacemethodInfo, methodWrapContext);
                 this.MethodCache[interfacemethodInfo] = methodItem;
-            }            
+            }
         }
 
 
@@ -89,7 +94,7 @@ namespace Feign.Core.Context
 
             interfaceWrapContext.CreateBind();
 
-            interfaceWrapContext.SaveMethod();            
+            interfaceWrapContext.SaveMethod();
 
             interfaceWrapContext.Validate();
 
@@ -110,7 +115,7 @@ namespace Feign.Core.Context
         {
             this.HeaderAttributes.ForEach(x =>
             {
-                this.HeaderBindes.Add(new HeaderBind(x.Name, x.Value,x.Unique));
+                this.HeaderBindes.Add(new HeaderBind(x.Name, x.Value, x.Unique));
             });
         }
     }

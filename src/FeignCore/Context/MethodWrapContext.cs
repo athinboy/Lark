@@ -5,17 +5,29 @@ using System.Reflection;
 using System.Text;
 using Feign.Core.Attributes;
 using Feign.Core.Cache;
+using Feign.Core.Enum;
 using Feign.Core.Exception;
 using FeignCore.ValueBind;
 
 namespace Feign.Core.Context
 {
-    internal class MethodWrapContext : ContextBase
+    internal sealed class MethodWrapContext : ContextBase
     {
         public Type interfaceType { get; set; }
 
         public MethodInfo methodInfo { get; set; }
 
+
+
+        private HttpContentTypes contentType = HttpContentTypes.none;
+
+        internal HttpContentTypes ContentType
+        {
+            get
+            {
+                return this.contentType == HttpContentTypes.none ? this.interfaceWrapContext.ContentType : this.contentType;
+            }
+        }
 
 
         private List<string> pathParaNames = null;
@@ -65,7 +77,7 @@ namespace Feign.Core.Context
 
         public List<ParameterWrapContext> ParameterCache { get; set; } = new List<ParameterWrapContext>();
 
-        public BodyBind bodyBind=null;
+        public BodyBind bodyBind = null;
 
         /// <summary>
         /// 方法的URL
@@ -96,8 +108,6 @@ namespace Feign.Core.Context
             {
                 x.CreateBind();
             });
-
-
 
         }
 
@@ -138,6 +148,19 @@ namespace Feign.Core.Context
 
         }
 
+        private void PresumeBodyBind()
+        {
+            if (this.ContentType == HttpContentTypes.formdata)
+            {
+                this.bodyBind = new FormContentBodyBind();
+            }
+            if (this.ContentType == HttpContentTypes.text)
+            {
+                this.bodyBind = new StringContentBodyBind();
+            }
+
+
+        }
 
         internal override void CreateBind()
         {
@@ -145,6 +168,10 @@ namespace Feign.Core.Context
             {
                 this.HeaderBindes.Add(new HeaderBind(x.Name, x.Value, x.Unique));
             });
+            if (this.IsPOST())
+            {
+                this.PresumeBodyBind();
+            }
         }
 
 
@@ -202,7 +229,7 @@ namespace Feign.Core.Context
                         {
                             if (x.Name == y.Name)
                             {
-                                throw new System.Exception(string.Format("参数:{0}、{1}具有相同的查询参数:{2}", parameterWrapContextA.Parameter.Name, parameterWrapContextB.Parameter.Name, x.Name));                                
+                                throw new System.Exception(string.Format("参数:{0}、{1}具有相同的查询参数:{2}", parameterWrapContextA.Parameter.Name, parameterWrapContextB.Parameter.Name, x.Name));
                             }
                         });
 

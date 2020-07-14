@@ -1,7 +1,7 @@
 ﻿using Feign.Core.Attributes;
 using Feign.Core.Context;
+using Feign.Core.Enum;
 using Feign.Core.Reflect;
-using Feign.Core.Serialize;
 using FeignCore.ValueBind;
 using System;
 using System.Collections.Generic;
@@ -145,12 +145,7 @@ namespace Feign.Core.Context
 
                 }
                 AttributeBinded = true;
-            }
-
-            if (this.SerializeType == SerializeTypes.formdata)
-            {
-
-            }
+            }         
 
 
         }

@@ -1,7 +1,7 @@
 ﻿using Feign.Core.Attributes.RequestService;
 using Feign.Core.Cache;
 using Feign.Core.Context;
-using Feign.Core.Serialize;
+using Feign.Core.Enum;
 using System;
 using System.Collections.Generic;
 using System.IO;

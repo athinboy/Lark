@@ -11,6 +11,12 @@ namespace FeignCore.ValueBind
 {
     public abstract class BodyBind : BindBase
     {
+        private protected List<ParameterWrapContext> parameterWraps = new List<ParameterWrapContext>();
         public abstract HttpContent Bindbody();
+
+        internal void AddPara(ParameterWrapContext parameterWrap)
+        {
+            this.parameterWraps.Add(parameterWrap);
+        }
     }
 }

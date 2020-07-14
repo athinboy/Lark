@@ -124,7 +124,7 @@ namespace FeignCore.ValueBind
         {
             HttpContent httpContext = requestCreContext.httpRequestMessage.Content;
             if (this.Unique)
-            {
+            {                 
                 httpContext.Headers.Remove(this.Name);
                 httpContext.Headers.Add(this.Name, value);
             }

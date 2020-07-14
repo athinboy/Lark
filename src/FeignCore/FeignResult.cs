@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Feign.Core.ProxyFactory;
 using System.Net;
-using Feign.Core.Serialize;
+using Feign.Core.Enum;
 using System.Xml;
 
 namespace Feign.Core

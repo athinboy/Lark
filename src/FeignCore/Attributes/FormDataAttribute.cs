@@ -1,20 +1,19 @@
 using System;
 using Feign.Core.Attributes;
 using Feign.Core.Context;
-using Feign.Core.Serialize;
+using Feign.Core.Enum;
 
 namespace FeignCore.Attributes
 {
     /// <summary>
     /// form data serialize .
     /// </summary>
-    [AttributeUsage(AttributeTargets.Parameter , AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     public class FormDataAttribute : BaseAttribute
     {
-        internal override void SaveToParameterContext(ParameterWrapContext parameterItem)
+        internal override void SaveToInterfaceContext(InterfaceWrapContext interfaceWrapContext)
         {
-
-            parameterItem.SerializeType = SerializeTypes.formdata;
+            interfaceWrapContext.ContentType=HttpContentTypes.formdata; 
         }
     }
 }

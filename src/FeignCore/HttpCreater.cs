@@ -111,17 +111,10 @@ namespace Feign.Core
             HttpRequestMessage httpRequestMessage = new HttpRequestMessage();
             List<ParameterWrapContext> parameterContexts = requestCreContext.MethodWrap.ParameterCache;
 
-            string stringbody = "";
-            parameterContexts.ForEach(x =>
-            {
-                if (x.IsBody)
-                {
-                    
-                }
-            });
+            string stringbody = "";           
             if (requestCreContext.MethodWrap.IsGet())
             {
-
+                httpRequestMessage.Content = new StringContent(stringbody);
             }
             else if (requestCreContext.MethodWrap.IsPOST())
             {
