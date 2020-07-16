@@ -21,11 +21,31 @@ namespace Feign.Core.Context
 
         private HttpContentTypes contentType = HttpContentTypes.none;
 
+        public SerializeTypes serializeType = SerializeTypes.none;
+
+
+        public SerializeTypes SerializeType
+        {
+            get
+            {
+                return this.serializeType == SerializeTypes.none ? this.interfaceWrapContext.SerializeType : this.serializeType;
+            }
+            set
+            {
+                this.serializeType = value;
+            }
+        }
+
+
         internal HttpContentTypes ContentType
         {
             get
             {
                 return this.contentType == HttpContentTypes.none ? this.interfaceWrapContext.ContentType : this.contentType;
+            }
+            set
+            {
+                this.contentType = value;
             }
         }
 
@@ -154,11 +174,18 @@ namespace Feign.Core.Context
             {
                 this.bodyBind = new FormContentBodyBind();
             }
-            if (this.ContentType == HttpContentTypes.text)
+            if (this.ContentType == HttpContentTypes.textstr)
             {
                 this.bodyBind = new StringContentBodyBind();
             }
-
+            if (this.ContentType == HttpContentTypes.json)
+            {
+                this.bodyBind = new JsonContentBodyBind();
+            }
+            if (this.ContentType == HttpContentTypes.xml)
+            {
+                this.bodyBind = new XmlContentBodyBind();
+            }
 
         }
 
@@ -166,24 +193,13 @@ namespace Feign.Core.Context
         {
             this.HeaderAttributes.ForEach(x =>
             {
-                this.HeaderBindes.Add(new HeaderBind(x.Name, x.Value, x.Unique));
+                this.HeaderBindes.Add(new HeaderBind(HeaderBind.Source.FromMethod, x.Name, x.Value, x.Unique));
             });
             if (this.IsPOST())
             {
                 this.PresumeBodyBind();
             }
         }
-
-
-        internal override void AddHeader(RequestCreContext requestCreContext)
-        {
-            this.HeaderBindes.ForEach(x =>
-            {
-                x.AddHeader(requestCreContext);
-            });
-
-        }
-
 
         private void Validate()
         {
@@ -288,7 +304,6 @@ namespace Feign.Core.Context
         }
 
 
-
         public bool IsGet()
         {
             return this.HttpMethod == "GET";
@@ -297,7 +312,6 @@ namespace Feign.Core.Context
         {
             return this.HttpMethod == "POST";
         }
-
 
 
 

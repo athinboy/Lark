@@ -9,10 +9,16 @@ using System.Reflection;
 using System.Text;
 namespace FeignCore.ValueBind
 {
-    public abstract class BodyBind : BindBase
+    internal abstract class BodyBind : BindBase
     {
+
+        protected BodyBind()
+        {
+
+        }
+
         private protected List<ParameterWrapContext> parameterWraps = new List<ParameterWrapContext>();
-        public abstract HttpContent Bindbody();
+        internal abstract HttpContent Bindbody(RequestCreContext requestCreContext);
 
         internal void AddPara(ParameterWrapContext parameterWrap)
         {

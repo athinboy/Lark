@@ -26,7 +26,7 @@ namespace FeignCore.ValueBind
         internal void FillPath(RequestCreContext requestCreContext, ParameterWrapContext parameterWrapContext)
         {
             HttpContent httpContext = requestCreContext.httpRequestMessage.Content;
-            object value = requestCreContext.ParaValues[parameterWrapContext.Parameter.Position];
+            object value = requestCreContext.ParameterValues.Value[parameterWrapContext.Parameter.Position];
             string valueStr = parameterWrapContext.Serial(value);
             requestCreContext.FillPath(this.Name, valueStr);
         }

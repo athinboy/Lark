@@ -1,5 +1,6 @@
 using Feign.Core;
 using Feign.Core.ProxyFactory;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using TestInterface;
 
@@ -10,7 +11,8 @@ namespace TestClient.Test.AttributeTest
         [SetUp]
         public void BaseSetup1()
         {
-            Feign.Core.InternalConfig.NotRequest = true;
+            Feign.Core.InternalConfig.NotRequest = false;
+            Feign.Core.InternalConfig.SaveRequest = true;
             Feign.Core.InternalConfig.EmitTestCode = true;
             Feign.Core.InternalConfig.SaveResponse = true;
             Feign.Core.InternalConfig.LogRequest = true;
@@ -21,16 +23,13 @@ namespace TestClient.Test.AttributeTest
         {
 
             IStudentService student = Feign.Core.Feign.Wrap<IStudentService>("http://localhost:6346");
-            student.DelById(111, "nnnnname", 98);
-            WrapBase wrap = (WrapBase)student;
-            Assert.IsTrue(wrap.Url == BaseUrl);
-            System.Console.WriteLine(wrap.GetRequestCreURL());
-            Assert.IsTrue(wrap.GetRequestCreURL() == BaseUrl + @"/api/student/111/nnnnname/98/del");
-            System.Console.WriteLine(wrap.GetRequestCreURL());
 
-            student.AddPost(new IStudentService.Student(){Name="studnetName"});
+            IStudentService.Student s1 = new IStudentService.Student() { Name = "studnetName" };
 
-
+            string resultstr = student.AddPost(s1);
+            System.Console.WriteLine(resultstr);
+            IStudentService.Student s2 = JsonConvert.DeserializeObject<IStudentService.Student>(resultstr);
+            Assert.IsTrue(s2 != null && s2.Name == s1.Name);
 
         }
 

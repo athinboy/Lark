@@ -10,26 +10,16 @@ using Feign.Core.Enum;
 
 namespace Feign.Core.Context
 {
-    internal abstract class ContextBase
+    public abstract class ContextBase
     {
 
-        public SerializeTypes SerializeType=DefaultConfig.DefaultSerilizeType;       
+     
 
 
         /// <summary>
         /// Clear cache、status etc.
         /// </summary>
         internal abstract void Clear();
-
-        internal virtual void AddHeader(RequestCreContext requestCreContext)
-        {
-
-        }
-
-        internal virtual void AddQueryString(RequestCreContext requestCreContext)
-        {
-
-        }
 
 
         internal abstract void CreateBind();

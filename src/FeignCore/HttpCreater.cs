@@ -33,31 +33,10 @@ namespace Feign.Core
             }
 
             InterfaceWrapContext interfaceWrap = requestCreContext.InfaceContext;
-            ParameterWrapContext parameterWrap;
-
-            HttpRequestMessage httpRequestMessage = SpeculateRequestMessage(requestCreContext);
 
 
-            interfaceWrap.AddHeader(requestCreContext);
-
-
-            methodWrap.AddHeader(requestCreContext);
-            methodWrap.AddQueryString(requestCreContext);
-
-
-            for (int i = 0; i < methodWrap.ParameterCache.Count; i++)
-            {
-                parameterWrap = methodWrap.ParameterCache[i];
-                parameterWrap.AddHeader(requestCreContext);
-                parameterWrap.AddQueryString(requestCreContext);
-                parameterWrap.FillPath(requestCreContext);
-
-                if (InternalConfig.LogRequest)
-                {
-                    parameterWrap.Serial(requestCreContext.ParaValues[parameterWrap.Parameter.Position]);
-                }
-            }
-
+            HttpRequestMessage httpRequestMessage = requestCreContext.PreparaRequestMessage();
+ 
 
             //todo is it ok?
             httpRequestMessage.RequestUri = new Uri(requestCreContext.GetRequestUrl());
@@ -84,9 +63,6 @@ namespace Feign.Core
             }
             if (InternalConfig.NotRequest)
             {
-                wrapBase.MyClient = httpClient;
-                wrapBase.MyHttpRequestMessagea = httpRequestMessage;
-                wrapBase.MyRequestCreContext = requestCreContext;
                 return FeignResult.GetResult(null, requestCreContext.MethodWrap.ReturnContext); ;
             }
 
@@ -104,31 +80,7 @@ namespace Feign.Core
         }
 
 
-        //just support string body.
-        private static HttpRequestMessage SpeculateRequestMessage(RequestCreContext requestCreContext)
-        {
 
-            HttpRequestMessage httpRequestMessage = new HttpRequestMessage();
-            List<ParameterWrapContext> parameterContexts = requestCreContext.MethodWrap.ParameterCache;
-
-            string stringbody = "";           
-            if (requestCreContext.MethodWrap.IsGet())
-            {
-                httpRequestMessage.Content = new StringContent(stringbody);
-            }
-            else if (requestCreContext.MethodWrap.IsPOST())
-            {
-                httpRequestMessage.Content = new StringContent(stringbody);
-            }
-            else
-            {
-                throw new UnsupportException();
-            }
-
-            requestCreContext.httpRequestMessage = httpRequestMessage;
-            return httpRequestMessage;
-
-        }
     }
 }
 

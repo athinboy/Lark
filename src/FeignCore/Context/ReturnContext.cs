@@ -2,17 +2,23 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Feign.Core.Attributes;
+using Feign.Core.Enum;
 
 namespace Feign.Core.Context
 {
-    internal class ReturnContext:ContextBase
+    internal class ReturnContext : ContextBase
     {
         private ParameterInfo parameterInfo;
 
         public ReturnContext(ParameterInfo parameterInfo)
         {
             this.parameterInfo = parameterInfo;
+            this.SerializeType = DefaultConfig.DefaultSerilizeType;
         }
+
+
+        public SerializeTypes SerializeType { get; set; }
+
 
         static internal ReturnContext CreContext(ParameterInfo returnParameter)
         {
@@ -37,12 +43,12 @@ namespace Feign.Core.Context
 
         internal override void Clear()
         {
-           
+
         }
 
         internal override void CreateBind()
         {
-          
+
         }
     }
 }

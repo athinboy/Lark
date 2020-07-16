@@ -16,7 +16,7 @@ namespace Feign.Core.Context
     internal class ParameterWrapContext : ContextBase
     {
         public List<HeaderAttribute> HeaderAttributes { get; set; } = new List<HeaderAttribute>();
-        public List<HeaderBind> HeaderBindes { get; set; } = new List<HeaderBind>();
+        public List<ParameterHeaderBind> HeaderBindes { get; set; } = new List<ParameterHeaderBind>();
         public List<QueryStringBind> QueryStringBindes { get; set; } = new List<QueryStringBind>();
 
         public QueryStringAttribute QueryStringAttribute { get; set; } = null;
@@ -26,6 +26,22 @@ namespace Feign.Core.Context
         public ParameterInfo Parameter { get; set; }
 
         public bool AttributeBinded { get; set; } = false;
+
+        public SerializeTypes serializeType = SerializeTypes.none;
+
+
+        public SerializeTypes SerializeType
+        {
+            get
+            {
+                return this.serializeType == SerializeTypes.none ? this.MethodWrap.SerializeType : this.serializeType;
+            }
+            set
+            {
+                this.serializeType = value;
+            }
+        }
+
 
 
         public bool IsBody { get; set; } = false;
@@ -53,7 +69,7 @@ namespace Feign.Core.Context
             this.PathParaBindes = null;
             this.HeaderBindes.Clear();
             this.QueryStringBindes.Clear();
-            this.SerializeType = SerializeTypes.json;
+
             IsBody = false;
             this.QueryString = string.Empty;
             throw new NotImplementedException();
@@ -65,7 +81,7 @@ namespace Feign.Core.Context
 
 
             PathParaBind paraBind;
-            HeaderBind headerBind;
+            ParameterHeaderBind headerBind;
             QueryStringBind queryStringBind;
             string headername;
             List<FieldInfo> fieldInfos = new List<FieldInfo>(this.Parameter.ParameterType.GetFields());
@@ -85,7 +101,7 @@ namespace Feign.Core.Context
                     if (TypeReflector.IsPrivateValue(this.Parameter.ParameterType))
                     {
                         headername = string.IsNullOrEmpty(x.Name) ? this.Parameter.Name : x.Name;
-                        headerBind = new HeaderBind(headername, x.Unique);
+                        headerBind = new ParameterHeaderBind(this, headername, x.Unique);
                         headerBind.Prompt();
                         this.HeaderBindes.Add(headerBind);
                     }
@@ -93,13 +109,13 @@ namespace Feign.Core.Context
                     {
                         fieldInfos.ForEach(f =>
                         {
-                            headerBind = new HeaderBind(f.Name, f, x.Unique);
+                            headerBind = new ParameterHeaderBind(this, f.Name, f, x.Unique);
                             headerBind.Prompt();
                             this.HeaderBindes.Add(headerBind);
                         });
                         properties.ForEach(p =>
                         {
-                            headerBind = new HeaderBind(p.Name, p, x.Unique);
+                            headerBind = new ParameterHeaderBind(this, p.Name, p, x.Unique);
                             headerBind.Prompt();
                             this.HeaderBindes.Add(headerBind);
                         });
@@ -145,7 +161,7 @@ namespace Feign.Core.Context
 
                 }
                 AttributeBinded = true;
-            }         
+            }
 
 
         }
@@ -180,6 +196,7 @@ namespace Feign.Core.Context
             else
             {
                 //bind to body
+                this.MethodWrap.bodyBind.AddPara(this);
 
             }
 
@@ -303,16 +320,7 @@ namespace Feign.Core.Context
             }
         }
 
-        internal override void AddHeader(RequestCreContext requestCreContext)
-        {
-            this.HeaderBindes.ForEach(x =>
-            {
-                x.AddParameterHeader(requestCreContext, this);
-            });
-
-        }
-
-        internal override void AddQueryString(RequestCreContext requestCreContext)
+        internal void AddQueryString(RequestCreContext requestCreContext)
         {
             this.QueryStringBindes.ForEach(x =>
             {
@@ -321,12 +329,25 @@ namespace Feign.Core.Context
         }
 
 
+        internal string Serial(RequestCreContext requestCreContext)
+        {
+
+            return Serial(requestCreContext.ParameterValues.Value[this.Parameter.Position]);
+
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns> null when value is null </returns>
         internal string Serial(object value)
         {
 
             if (value == null)
             {
-                return string.Empty;
+                return null;
             }
             Type type = value.GetType();
 

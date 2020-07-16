@@ -41,11 +41,9 @@ namespace Feign.Core
 
                 MethodItem methodItem = interfaceItem.WrapContext.MethodCache[methodInfo];
 
-                RequestCreContext requestCreContext = new RequestCreContext();
-                requestCreContext.InfaceContext = interfaceItem.WrapContext;
-                requestCreContext.MethodWrap = methodItem.WrapContext;
-                requestCreContext.WrapInstance = wrapBase;
-                requestCreContext.ParaValues = args;
+                //todo need a pool of RequestCreContext
+                RequestCreContext requestCreContext = RequestCreContext.Create(interfaceItem.WrapContext, methodItem.WrapContext, wrapBase);
+                requestCreContext.ParameterValues.Value = args;
 
                 return HttpCreater.Create(requestCreContext).DealResponse(methodInfo.ReturnType);
 

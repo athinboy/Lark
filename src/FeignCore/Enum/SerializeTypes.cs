@@ -2,6 +2,6 @@ namespace Feign.Core.Enum
 {
     public enum SerializeTypes
     {
-        json,xml,tostring        
+        json,xml,tostring,none        
     }
 }

@@ -1,17 +1,28 @@
 using Feign.Core;
-using Feign.Core.Attributes.RequestService;
 using Feign.Core.Context;
-using Feign.Core.Reflect;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Reflection;
-using System.Text;
 
 namespace FeignCore.ValueBind
 {
-    public class HeaderBind : BindBase
+    public class HeaderBind : BindBase, ICloneable
     {
+
+        public enum Source
+        {
+            FromInterface,
+            FromMethod,
+            FromParameter
+        }
+
+        private Source source;
+
+
+        public bool FromInterface { get { return this.source == Source.FromInterface; } private set { } }
+        public bool FromMethod { get { return this.source == Source.FromMethod; } private set { } }
+        public bool FromParameter { get { return this.source == Source.FromParameter; } private set { } }
+        public bool Enable { get; set; } = true;
 
         /// <summary>
         /// header name;
@@ -25,9 +36,8 @@ namespace FeignCore.ValueBind
         /// <value></value>
         public string Value { get; set; } = null;
 
-        public FieldInfo Field;
 
-        public PropertyInfo Property;
+
 
 
         /// <summary>
@@ -40,91 +50,49 @@ namespace FeignCore.ValueBind
         public bool Unique { get; set; } = DefaultConfig.HeaderUnique;
 
 
-        public HeaderBind()
+        public HeaderBind(Source source)
         {
             Unique = DefaultConfig.HeaderUnique;
+            this.source = source;
         }
 
 
-        public HeaderBind(string name) : this()
+        public HeaderBind(Source source, string name) : this(source)
         {
             Name = name;
 
         }
-        public HeaderBind(string name, bool unique) : this()
-        {
-            Name = name;
-            Unique = unique;
-        }
 
 
 
-        public HeaderBind(string name, string value, bool unique) : this()
+
+        public HeaderBind(Source source, string name, string value, bool unique) : this(source)
         {
             Name = name;
             Value = value;
             Unique = unique;
         }
 
-        public HeaderBind(string name, FieldInfo field, bool unique) : this()
-        {
-            Name = name;
-            this.Field = field;
-            Unique = unique;
-        }
 
-
-        public HeaderBind(string name, PropertyInfo property, bool unique) : this()
-        {
-            Name = name;
-            this.Property = property;
-            Unique = unique;
-        }
-
-        private string Serial(object o)
+        protected string Serial(object o)
         {
             return o == null ? "" : o.ToString();
         }
 
-        private void AddParaValueHeader(RequestCreContext requestCreContext, ParameterWrapContext parameterWrap, object paraValue)
+
+        internal virtual void AddHeader(RequestCreContext requestCreContext)
         {
-            if (paraValue == null)
-            {
-                AddHeader(requestCreContext, this.Name, "");
-                return;
-            }
-
-            object pValue;
-            string pValueStr = Serial(paraValue);
-
-            if (this.Field != null)
-            {
-                pValue = this.Field.GetValue(paraValue);
-                AddHeader(requestCreContext, this.Name, pValueStr);
-                return;
-
-            }
-            if (this.Property != null)
-            {
-                pValue = this.Property.GetValue(paraValue);
-                AddHeader(requestCreContext, this.Name, pValueStr);
-                return;
-            }
-            AddHeader(requestCreContext, this.Name, pValueStr);
-
-        }
-
-        internal void AddHeader(RequestCreContext requestCreContext)
-        {
+            if (false == Enable) return;
             AddHeader(requestCreContext, this.Name, this.Value);
 
         }
 
-        private void AddHeader(RequestCreContext requestCreContext, string name, string value)
+        internal void AddHeader(RequestCreContext requestCreContext, string name, string value)
         {
+            if (false == Enable) return;
             HttpContent httpContext = requestCreContext.httpRequestMessage.Content;
             if (this.Unique)
-            {                 
+            {
                 httpContext.Headers.Remove(this.Name);
                 httpContext.Headers.Add(this.Name, value);
             }
@@ -134,16 +102,21 @@ namespace FeignCore.ValueBind
             }
         }
 
-        internal void AddParameterHeader(RequestCreContext requestCreContext, ParameterWrapContext parameterWrapContext)
-        {
-            object value = requestCreContext.ParaValues[parameterWrapContext.Parameter.Position];
-            AddParaValueHeader(requestCreContext, parameterWrapContext, value);
 
-        }
 
         public override string ToString()
         {
             return "HeaderBind:" + (this.Name ?? "");
+        }
+
+        public object Clone()
+        {
+            HeaderBind headerBind = new HeaderBind(this.source);
+            headerBind.Name = this.Name;
+            headerBind.Value = this.Value;
+            headerBind.Priority = this.Priority;
+            headerBind.Unique = this.Unique;
+            return headerBind;
         }
     }
 }

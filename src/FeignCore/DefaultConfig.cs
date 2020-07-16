@@ -12,6 +12,6 @@ namespace Feign.Core
 
         internal static SerializeTypes DefaultSerilizeType = SerializeTypes.json;
 
-        internal static HttpContentTypes DefaultHttpContentType=HttpContentTypes.text;
+        internal static HttpContentTypes DefaultHttpContentType=HttpContentTypes.json;
     }
 }

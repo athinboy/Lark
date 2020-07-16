@@ -39,7 +39,7 @@ namespace FeignCore.ValueBind
         internal void AddParameterQueryString(RequestCreContext requestCreContext, ParameterWrapContext parameterWrap)
         {
             HttpContent httpContext = requestCreContext.httpRequestMessage.Content;
-            object paraValue = requestCreContext.ParaValues[parameterWrap.Parameter.Position];
+            object paraValue = requestCreContext.ParameterValues.Value[parameterWrap.Parameter.Position];
 
             if (TypeReflector.IsPrivateValue(parameterWrap.Parameter.ParameterType))
             {

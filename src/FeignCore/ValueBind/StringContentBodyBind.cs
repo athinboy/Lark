@@ -1,10 +1,11 @@
 using System.Net.Http;
+using Feign.Core.Context;
 
 namespace FeignCore.ValueBind
 {
-    public class StringContentBodyBind : BodyBind
+    internal class StringContentBodyBind : BodyBind
     {
-        public override HttpContent Bindbody()
+        internal override HttpContent Bindbody(RequestCreContext requestCreContext)
         {
             StringContent  stringContent=new StringContent("");            
             throw new System.NotImplementedException();

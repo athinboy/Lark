@@ -14,17 +14,20 @@ namespace Feign.Core.Context
     internal class InterfaceWrapContext : ContextBase
     {
 
-   
+
 
         public string HttpMethod = null;
 
         public HttpContentTypes ContentType { get; set; }
+
+        public SerializeTypes SerializeType { get; set; }
 
 
         internal InterfaceWrapContext()
         {
             this.HttpMethod = DefaultConfig.DefaultHttpMethod;
             this.ContentType = DefaultConfig.DefaultHttpContentType;
+            this.SerializeType = DefaultConfig.DefaultSerilizeType;
         }
 
 
@@ -102,10 +105,7 @@ namespace Feign.Core.Context
         }
 
 
-        internal override void AddHeader(RequestCreContext requestCreContext)
-        {
-            this.HeaderBindes.ForEach(x => { x.AddHeader(requestCreContext); });
-        }
+
 
         private void Validate()
         {
@@ -115,7 +115,7 @@ namespace Feign.Core.Context
         {
             this.HeaderAttributes.ForEach(x =>
             {
-                this.HeaderBindes.Add(new HeaderBind(x.Name, x.Value, x.Unique));
+                this.HeaderBindes.Add(new HeaderBind(HeaderBind.Source.FromInterface, x.Name, x.Value, x.Unique));
             });
         }
     }

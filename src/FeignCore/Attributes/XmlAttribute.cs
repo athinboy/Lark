@@ -14,7 +14,7 @@ namespace Feign.Core.Attributes
     /// <summary>
     /// xml serialize.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.ReturnValue, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Method | AttributeTargets.Parameter | AttributeTargets.ReturnValue, AllowMultiple = false, Inherited = true)]
     public class XmlAttribute : BaseAttribute
     {
         internal override void SaveToParameterContext(ParameterWrapContext parameterWrapContext)
@@ -25,12 +25,15 @@ namespace Feign.Core.Attributes
 
         internal override void SaveToMethodContext(MethodWrapContext methodWrapContext)
         {
+            base.SaveToMethodContext(methodWrapContext);
+            methodWrapContext.SerializeType = SerializeTypes.xml;
 
         }
 
         internal override void SaveToInterfaceContext(InterfaceWrapContext interfaceWrapContext)
         {
-
+            base.SaveToInterfaceContext(interfaceWrapContext);
+            interfaceWrapContext.SerializeType = SerializeTypes.xml;
         }
         internal override void SaveToReturnContext(ReturnContext returnContext)
         {
