@@ -26,7 +26,7 @@ namespace TestAspNet.Controllers
             return "Hello!";
         }
 
-        //http://localhost:5000/api/student/add?Name=56156156156156
+        //http://localhost:5000/api/student/add?Name=56156156156156      
         [HttpGet("add")]
         public string Add([FromQuery] Student s)
         {
@@ -55,7 +55,7 @@ namespace TestAspNet.Controllers
             return s == null ? "null" : Newtonsoft.Json.JsonConvert.SerializeObject(s);
         }
         [HttpPost("addform")]
-        public string AddPostForm([FromForm]Student s)
+        public string AddPostForm([FromForm] Student s)
         {
             return s == null ? "null" : Newtonsoft.Json.JsonConvert.SerializeObject(s);
         }
@@ -124,5 +124,10 @@ namespace TestAspNet.Controllers
         }
 
 
+        [HttpPost("add2")]
+        public string AddPost2(string Name)
+        {
+            return Name;
+        }
     }
 }

@@ -30,7 +30,7 @@ namespace CoreTest.ReflectTest
         public void Test1()
         {
 
-            Dictionary<string, object> values = DeconstructUtil.Deconstruct(new Student() { ID = 2, Name = "nnnnn", rank = 234 });
+            List<KeyValuePair<string, object>> values = DeconstructUtil.Deconstruct(new Student() { ID = 2, Name = "nnnnn", rank = 234 });             
             System.Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(values));
 
 

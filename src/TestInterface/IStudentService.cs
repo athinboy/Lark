@@ -1,10 +1,16 @@
 ﻿using Feign.Core.Attributes;
-using Microsoft.AspNetCore.Mvc;
+using FeignCore.Attributes; 
 
 
+/// <summary>
+/// 
+/// </summary>
 namespace TestInterface
 {
 
+/// <summary>
+/// 此类不应该引用 Microsoft.AspNetCore.Mvc。
+/// </summary> 
     [Path("/api/student")]
     [Header(Name = "appcode", Value = "appcode12312523523554", Unique = true)]
     [Header(Name = "supportversion", Value = "1.0", Unique = false)]
@@ -50,21 +56,30 @@ namespace TestInterface
         }
 
         [Path("add")]
-        [Method("GET")]
+        [GetMethod]
+        // [HttpGet("add")]
         string Add(Student student);
 
+
+
         [Path("add2")]
-        [Method("GET")]
+        [GetMethod]
         string Add2(Student s, [QueryString] StudentClass studentClass, [QueryString("Remark")] Remark remark);
 
 
-        [Method("POST")]
+        [PostMethod]
         [Path("add")]
         string AddPost(Student s);
 
-        [Method("POST")]
+        [PostMethod]
+        [Path("add2")]
+        string AddPost2(string Name);
+
+
+        [PostMethod]
         [Path("addform")]
-        string AddPostForm([FromBody]Student s);
+        [FormBody]
+        string AddPostForm(Student s);
 
 
         [Path("/QueryName")]
@@ -75,9 +90,9 @@ namespace TestInterface
 
 
         [Path("/QueryById")]
-        Student QueryById(int id);
-
+        Student QueryById(int id);        
         [Path("/{id}/{name}/{age}/del")]
+        // [HttpGet("/{id}/{name}/{age}/del")]
         Student DelById(int id, [PathPara("name")] string theName, [PathPara] int age);
 
     }

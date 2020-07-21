@@ -1,9 +1,10 @@
 using System.IO;
 using System.Net.Http;
 using System.Text;
-using AspectCore.Extensions.Reflection;
+
 using Feign.Core.Context;
 using Feign.Core.Exception;
+using Feign.Core.Reflect;
 using Newtonsoft.Json;
 
 namespace FeignCore.ValueBind
@@ -24,17 +25,17 @@ namespace FeignCore.ValueBind
                 {
                     throw new FeignException("parameter value can not be null!");
                 }
-                if (string.IsNullOrEmpty(parameterWrapContext.Name))
+                if (string.IsNullOrEmpty(parameterWrapContext.Name) && TypeReflector.IsComplextClass(parameterWrapContext.Parameter.ParameterType))
                 {
                     jsonWriter.WriteRaw(valueStr);
                 }
                 else
                 {
                     jsonWriter.WriteStartObject();
-                    jsonWriter.WritePropertyName(parameterWrapContext.Name);
+                    jsonWriter.WritePropertyName(parameterWrapContext.DataName);
                     if (valueStr != null)
                     {
-                        jsonWriter.WriteRaw(valueStr);
+                        jsonWriter.WriteRawValue(valueStr);
                     }
 
                     jsonWriter.WriteEndObject();
@@ -45,7 +46,7 @@ namespace FeignCore.ValueBind
                 jsonWriter.WriteStartObject();
                 this.parameterWraps.ForEach(x =>
                 {
-                    jsonWriter.WritePropertyName(string.IsNullOrEmpty(x.Name) ? x.Parameter.Name : x.Name);
+                    jsonWriter.WritePropertyName(x.DataName);
                     object value = requestCreContext.ParameterValues.Value[x.Parameter.Position];
                     string valueStr = x.Serial(value);
                     if (valueStr != null)

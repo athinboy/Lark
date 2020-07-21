@@ -46,6 +46,9 @@ namespace Feign.Core.Context
 
         public bool IsBody { get; set; } = false;
         public string Name { get; set; } = string.Empty;
+
+        public string DataName { get { return string.IsNullOrEmpty(this.Name) ? this.Parameter.Name : this.Name; } private set { } }
+
         public string QueryString { get; internal set; } = string.Empty;
 
         public PathParaAttribute pathParaAttribute;
@@ -168,26 +171,22 @@ namespace Feign.Core.Context
 
 
         private void PresumeBind()
-        {
+        { 
+
             if (true == AttributeBinded)
             {
                 return;
             }
-            //bind to path para
-            if (this.PresumePathParaBind())
-            {
-                return;
-            }
-            else
-            {
-                //bind to querystring
-                this.PresumeQueryStringBind();
-            }
-            if (this.MethodWrap.IsGet())
+            //bind to path para //bind to querystring
+            if (this.PresumePathParaBind() || this.PresumeQueryStringBind())
             {
                 return;
             }
 
+            if (this.MethodWrap.IsGet())
+            {
+                return;
+            }
 
             if (this.HeaderBindes.Count > 0 || this.PathParaBindes.Count > 0 || this.QueryStringBindes.Count > 0)
             {
@@ -195,9 +194,8 @@ namespace Feign.Core.Context
             }
             else
             {
-                //bind to body
+                //bind to body              
                 this.MethodWrap.bodyBind.AddPara(this);
-
             }
 
         }
@@ -205,6 +203,10 @@ namespace Feign.Core.Context
         private bool PresumePathParaBind()
         {
 
+            if (false == this.MethodWrap.NeedPathPara(this.Parameter.Name))
+            {
+                return false;
+            }
             PathParaBind paraBind;
             if (TypeReflector.IsPrivateValue(this.Parameter.ParameterType))
             {
@@ -261,9 +263,7 @@ namespace Feign.Core.Context
             }
             return false;
         }
-
-
-
+ 
         internal override void CreateBind()
         {
             PresumeBind();

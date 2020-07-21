@@ -3,7 +3,7 @@
 ## 1.0V
 
 * 优先支持完善的pathpara和querystring。
-* 只支持字符串（xml/json/text）内容的请求体,不考虑form请求。
+* 只支持字符串（xml/json/text）内容的请求体。
 * 只支持GET、POST请求。
 * 用于接口类的HeaderAttribute/QueryStringAttribute：
 * 用于方法的HeaderAttribute/QueryStringAttribute: 只支持字符串常量，不支持动态解析求值.

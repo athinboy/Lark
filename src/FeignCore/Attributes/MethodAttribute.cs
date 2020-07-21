@@ -13,10 +13,10 @@ namespace Feign.Core.Attributes
     /// </summary>
     [System.AttributeUsage(AttributeTargets.Method | AttributeTargets.Interface,
         Inherited = true, AllowMultiple = false)]
-    public sealed class MethodAttribute : BaseAttribute
+    public abstract class MethodAttribute : BaseAttribute
     {
 
-        public string Method { get; set; } = HttpMethod.Get.Method;
+        protected string Method { get; set; } = HttpMethod.Get.Method;
 
         public MethodAttribute(string httpmethod)
         {
@@ -25,7 +25,6 @@ namespace Feign.Core.Attributes
 
         internal override void SaveToParameterContext(ParameterWrapContext parameterItem)
         {
-            
         }
 
         internal override void SaveToMethodContext(MethodWrapContext methodWrapContext)
@@ -37,6 +36,7 @@ namespace Feign.Core.Attributes
         {
             interfaceWrapContext.HttpMethod = this.Method.ToUpper();
         }
+
 
 
 

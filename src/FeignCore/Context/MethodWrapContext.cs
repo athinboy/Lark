@@ -260,12 +260,7 @@ namespace Feign.Core.Context
 
         public PathParaBind GetPathParaBind(string paraName)
         {
-            paraName = paraName.ToLower();
-            if (false == this.PathParaNames.Contains(paraName))
-            {
-                return null;
-            }
-
+            paraName = paraName.ToLower();          
             ParameterWrapContext parameterWrapContext;
             PathParaBind pathParaBind;
             for (int i = 0; i < this.ParameterCache.Count; i++)
@@ -286,6 +281,14 @@ namespace Feign.Core.Context
 
 
         }
+
+
+        public bool NeedPathPara(string paraName)
+        {
+            paraName = paraName.ToLower(); 
+            return this.PathParaNames.Contains(paraName);
+        }
+
 
 
         public string MethodPath
