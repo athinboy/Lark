@@ -1,5 +1,6 @@
-﻿using Feign.Core.Attributes;
-using FeignCore.Attributes; 
+﻿using System.Collections.Generic;
+using Feign.Core.Attributes;
+using FeignCore.Attributes;
 
 
 /// <summary>
@@ -8,9 +9,9 @@ using FeignCore.Attributes;
 namespace TestInterface
 {
 
-/// <summary>
-/// 此类不应该引用 Microsoft.AspNetCore.Mvc。
-/// </summary> 
+    /// <summary>
+    /// 此类不应该引用 Microsoft.AspNetCore.Mvc。
+    /// </summary> 
     [Path("/api/student")]
     [Header(Name = "appcode", Value = "appcode12312523523554", Unique = true)]
     [Header(Name = "supportversion", Value = "1.0", Unique = false)]
@@ -90,10 +91,32 @@ namespace TestInterface
 
 
         [Path("/QueryById")]
-        Student QueryById(int id);        
+        Student QueryById(int id);
         [Path("/{id}/{name}/{age}/del")]
         // [HttpGet("/{id}/{name}/{age}/del")]
         Student DelById(int id, [PathPara("name")] string theName, [PathPara] int age);
+
+
+
+        [Path("addlist")]
+        [PostMethod]
+        string AddList([QueryString] List<Student> ss, List<StudentClass> studentClasses);
+
+
+
+        [Path("addlist")]
+        [PostMethod]
+        string AddPostList(List<Student> ss);
+
+        [Path("addlist2")]
+        [PostMethod]
+        string AddPostList2(List<Student> ss, [QueryString] List<StudentClass> studentClasses);
+
+
+        [Path("addformlist")]
+        [PostMethod]
+        [FormBody]
+        string AddPostFormList(List<Student> ss);
 
     }
 

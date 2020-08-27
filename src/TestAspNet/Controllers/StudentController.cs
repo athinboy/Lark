@@ -3,8 +3,6 @@ using Feign.Core.Attributes;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using TestInterface;
 using static TestInterface.IStudentService;
 
@@ -42,10 +40,10 @@ namespace TestAspNet.Controllers
         }
 
         [HttpGet("addlist")]
-        public OkObjectResult AddList([FromQuery] List<Student> ss, [FromQuery] List<StudentClass> studentClasses)
+        public string AddList([FromQuery] List<Student> ss, [FromQuery] List<StudentClass> studentClasses)
         {
-            return Ok(Newtonsoft.Json.JsonConvert.SerializeObject(ss)
-            + Newtonsoft.Json.JsonConvert.SerializeObject(studentClasses));
+            return Newtonsoft.Json.JsonConvert.SerializeObject(ss)
+            + Newtonsoft.Json.JsonConvert.SerializeObject(studentClasses);
         }
 
 
@@ -61,20 +59,25 @@ namespace TestAspNet.Controllers
         }
 
 
-        [HttpPost("addlist")]
-        public OkObjectResult AddPostList(List<Student> ss)
+        [HttpPost("addformlist")]
+        public string AddPostFormList([FromForm] List<Student> ss)
         {
-            return Ok(ss);
+            return ss == null ? "null" : Newtonsoft.Json.JsonConvert.SerializeObject(ss);
+        }
+
+
+
+        [HttpPost("addlist")]
+        public string AddPostList(List<Student> ss)
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject(ss);
         }
         [HttpPost("addlist2")]
-        public OkObjectResult AddPostList2(List<Student> ss, [FromQuery] List<StudentClass> studentClasses)
+        public string AddPostList2(List<Student> ss, [FromQuery] List<StudentClass> studentClasses)
         {
-            return Ok(Newtonsoft.Json.JsonConvert.SerializeObject(ss)
+            return Newtonsoft.Json.JsonConvert.SerializeObject(ss)
             + Newtonsoft.Json.JsonConvert.SerializeObject(studentClasses));
         }
-
-
-
 
         [HttpGet("getnow2")]
         public string GetNow2()
@@ -129,5 +132,7 @@ namespace TestAspNet.Controllers
         {
             return Name;
         }
+
+ 
     }
 }
