@@ -16,8 +16,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestAspNet", "src\TestAspNe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestInterface", "src\TestInterface\TestInterface.csproj", "{633A58E4-B92C-472C-9DA2-229580EC1D79}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{ADD791F5-8095-4566-A991-F7A34A7AF8F6}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreTest", "src\CoreTest\CoreTest.csproj", "{756E7036-FA94-477E-B664-BBE28963BA9D}"
 EndProject
 Global
@@ -49,9 +47,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{756E7036-FA94-477E-B664-BBE28963BA9D} = {ADD791F5-8095-4566-A991-F7A34A7AF8F6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {96E933C0-ACF9-4129-BCF5-DE4020BAE165}
