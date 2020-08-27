@@ -17,45 +17,41 @@ namespace Feign.Core
         public static object Invoke(Type interfacetype, WrapBase wrapBase, MethodInfo methodInfo, List<Object> args)
         {
 
-            if (false == Feign.InterfaceWrapCache.ContainsKey(interfacetype))
+            // if (InternalConfig.EmitTestCode)
+            // {
+            //     Console.WriteLine("InvokeProxy args:");
+            //     args.ForEach(x=>{
+            //         Console.WriteLine((x??new object()).ToString());
+            //     });
+            // }
+
+            try
             {
-                throw new FeignException("运行时异常：wrapcache不存在！");
+
+                if (false == Feign.InterfaceWrapCache.ContainsKey(interfacetype))
+                {
+                    throw new FeignException("RuntimeException：wrapcache is not exists！");
+                }
+                InterfaceItem interfaceItem = Feign.InterfaceWrapCache[interfacetype];
+
+                if (false == interfaceItem.WrapContext.MethodCache.ContainsKey(methodInfo))
+                {
+                    throw new FeignException("RuntimeException：MethodCache is not exists！");
+                }
+
+                MethodItem methodItem = interfaceItem.WrapContext.MethodCache[methodInfo];
+
+                //todo need a pool of RequestCreContext
+                RequestCreContext requestCreContext = RequestCreContext.Create(interfaceItem.WrapContext, methodItem.WrapContext, wrapBase);
+                requestCreContext.ParameterValues.Value = args;
+
+                return HttpCreater.Create(requestCreContext).DealResponse(methodInfo.ReturnType);
+
             }
-            InterfaceItem interfaceItem = Feign.InterfaceWrapCache[interfacetype];
-
-            if (false == interfaceItem.WrapContext.MethodCache.ContainsKey(methodInfo))
+            catch (System.Exception ex)
             {
-                throw new FeignException("运行时异常：MethodCache不存在！");
-            }
-
-            MethodItem methodItem = interfaceItem.WrapContext.MethodCache[methodInfo];
-
-             
-
-            RequestCreContext requestCreContext = new RequestCreContext();
-
-            requestCreContext.InfaceContext = interfaceItem.WrapContext;
-
-            requestCreContext.MethodWrap = methodItem.WrapContext;
-
-            requestCreContext.WrapInstance = wrapBase;
-
-
-            string resultStr = HttpCreater.Create(requestCreContext, args);
-
-
-            if (typeof(void) == methodInfo.ReturnType)
-            {
-                return null;
-            }
-            else if (typeof(string) == methodInfo.ReturnType)
-            {
-                return resultStr;
-            }
-            else
-            {
-
-                return resultStr;
+                System.Console.WriteLine(ex.ToString());
+                throw ex;
             }
 
         }

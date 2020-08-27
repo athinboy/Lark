@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Feign.Core;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,6 +9,9 @@ using TestInterface;
 
 namespace TestAspNet
 {
+    ///<summary>
+    /// set response header "probeInfo", for debug propose 。      
+    ///</summary>
     public class ProbeMiddleware : IMiddleware
     {
         public Task InvokeAsync(HttpContext context, RequestDelegate next)
@@ -52,6 +56,8 @@ namespace TestAspNet
             }
 
             httpResponse.Headers.Add("probeInfo", System.Text.Encodings.Web.HtmlEncoder.Default.Encode(Newtonsoft.Json.JsonConvert.SerializeObject(probeInfo)));
+
+
 
             return next.Invoke(context);
 

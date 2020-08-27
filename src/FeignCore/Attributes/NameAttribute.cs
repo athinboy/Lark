@@ -10,11 +10,10 @@ using System.Text;
 namespace Feign.Core.Attributes
 {
     /// <summary>
-    /// query string name or form name.
+    ///   name of form or json or xml element .
     /// </summary>
-    [AttributeUsage(AttributeTargets.Parameter,
-        Inherited = true, AllowMultiple = false)]
-    public class NameAttribute : FeignAttribute
+    [AttributeUsage(AttributeTargets.Parameter, Inherited = true, AllowMultiple = false)]
+    public class NameAttribute : BaseAttribute
     {
 
         public String Name { get; set; } = "";
@@ -32,6 +31,17 @@ namespace Feign.Core.Attributes
             parameterItem.Name = this.Name;
         }
  
+
+        internal override void SaveToMethodContext(MethodWrapContext methodWrapContext)
+        {
+           
+        }
+
+        internal override void SaveToInterfaceContext(InterfaceWrapContext interfaceWrapContext)
+        {
+         
+        }
+
 
     }
 

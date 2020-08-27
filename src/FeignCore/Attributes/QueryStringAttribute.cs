@@ -3,30 +3,49 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Net.Http;
+using System.Reflection;
 using System.Text;
-
+using Feign.Core.Context;
+using Feign.Core.Reflect;
+using Feign.Core.Enum;
+using System.Linq;
 
 namespace Feign.Core.Attributes
 {
 
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
-    public class QueryStringAttribute : FeignAttribute
+    [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = true)]
+    public class QueryStringAttribute : BaseAttribute
     {
+        /// <summary>
+        /// 对于复杂类型，如果指定了Name，则整个对象进行字符串化。否则对其进行解构。
+        /// </summary>
+        /// <value></value>
         public string Name { get; set; }
 
-        public string Value { get; set; }
-
-        public QueryStringAttribute(string name, string value)
+        public QueryStringAttribute()
         {
-            Name = ((name ?? "").Trim().Length == 0 ? null : name) ??
-                throw new ArgumentNullException(nameof(name));
-            Value = (value.Trim().Length == 0 ? null : value) ?? "";
+
         }
 
-        public string GetQueryString()
+        public QueryStringAttribute(string name)
         {
-            return this.Name + "=" + this.Value;
+            Name = name;
         }
+
+        internal override void Validate()
+        {
+
+
+        } 
+
+        internal override void SaveToParameterContext(ParameterWrapContext parameterWrapContext)
+        {
+            parameterWrapContext.QueryStringAttribute=this;          
+        }
+ 
+
+
 
 
 

@@ -1,24 +1,40 @@
-namespace Feign.Core {
+namespace Feign.Core
+{
 
     /// <summary>
     /// internal config. for test/debug propose.
     /// </summary>
-    public class InternalConfig {
+    public class InternalConfig
+    {
         /// <summary>
         /// Emit test code 
         /// eg,
         /// methodILGenerator.EmitWriteLine ("current method is " + methodInfo.Name);
         /// </summary>
-        static public bool EmitTestCode = false;
+        public static bool EmitTestCode { get; set; } = false;
 
         /// <summary>
-        /// log the request parameter .
+        /// log the request info .
         /// </summary>
-        static public bool LogRequestParameter = false;
+        public static bool LogRequest { get; set; } = false;
+
+        /// <summary>
+        /// log the response info .
+        /// </summary>
+        public static bool LogResponse { get; set; } = false;
 
 
-        static public bool SaveResponse = false;
+        /// <summary>
+        ///   save the original response ,porpose to debug/test .
+        /// </summary>
+        public static bool SaveResponse { get; set; } = false;
 
+        /// <summary>
+        ///   Don't send Request,porpose to debug/test .
+        /// </summary>
+        public static bool NotRequest { get; set; } = false;
+
+        public static bool SaveRequest { get; set; } = false;
     }
 
 }

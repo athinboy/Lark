@@ -1,77 +1,133 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Reflection;
 using System.Text;
 using Feign.Core.Attributes;
 using Feign.Core.Cache;
+using Feign.Core.Enum;
 using Feign.Core.Exception;
+using FeignCore.ValueBind;
 
 namespace Feign.Core.Context
 {
-    internal class MethodWrapContext
+    internal sealed class MethodWrapContext : ContextBase
     {
         public Type interfaceType { get; set; }
 
         public MethodInfo methodInfo { get; set; }
 
-        private string httpMethod;
 
-        private string url = null;
+
+        private HttpContentTypes contentType = HttpContentTypes.none;
+
+        public SerializeTypes serializeType = SerializeTypes.none;
+
+
+        public SerializeTypes SerializeType
+        {
+            get
+            {
+                return this.serializeType == SerializeTypes.none ? this.interfaceWrapContext.SerializeType : this.serializeType;
+            }
+            set
+            {
+                this.serializeType = value;
+            }
+        }
+
+
+        internal HttpContentTypes ContentType
+        {
+            get
+            {
+                return this.contentType == HttpContentTypes.none ? this.interfaceWrapContext.ContentType : this.contentType;
+            }
+            set
+            {
+                this.contentType = value;
+            }
+        }
+
+
+        private List<string> pathParaNames = null;
+        public List<string> PathParaNames
+        {
+            get
+            {
+                if (pathParaNames == null)
+                {
+                    pathParaNames = new List<string>(Util.GetPathParaName(this.MethodPath));
+                }
+                return pathParaNames;
+            }
+
+        }
+
+
+
+        private string httpMethod = null;
+
+        public string HttpMethod
+        {
+            get
+            {
+                return this.httpMethod ?? this.interfaceWrapContext.HttpMethod;
+            }
+            set
+            {
+                this.httpMethod = value;
+            }
+
+        }
+
+
+
+        private string methodPath = null;
 
         /// <summary>
-        /// 接口URL 特性
+        /// URL Path.
         /// </summary>
-        public URLAttribute URLAttribute { get; set; }
+        public string Path { get; set; }
 
         public List<HeaderAttribute> HeaderAttributes { get; set; } = new List<HeaderAttribute>();
 
-        public List<FeignAttribute> MyFeignAttributes { get; set; } = new List<FeignAttribute>();
 
+        public List<HeaderBind> HeaderBindes { get; set; } = new List<HeaderBind>();
 
         public List<ParameterWrapContext> ParameterCache { get; set; } = new List<ParameterWrapContext>();
 
+        public BodyBind bodyBind = null;
 
         /// <summary>
         /// 方法的URL
         /// </summary>
-        public URLAttribute MethodURLAttribute { get; set; }
+        public PathAttribute MethodPathAttribute { get; set; }
 
         private InterfaceWrapContext interfaceWrapContext = null;
 
+        public ReturnContext ReturnContext { get; private set; }
 
-
-        private static void SaveParameter(MethodWrapContext methodWrapContext)
+        internal override void Clear()
         {
-            ParameterInfo parameterInfo;
-            MethodInfo methodInfo = methodWrapContext.methodInfo;
-            ParameterInfo[] parameterInfos = methodInfo.GetParameters();
-            Attribute attribute;
-            ParameterWrapContext parameterContext;
-            FeignAttribute feignAttribute;
+            throw new NotImplementedException();
+        }
 
+        private void SaveParameter()
+        {
+            ParameterInfo parameter;
+            ParameterInfo[] parameterInfos = this.methodInfo.GetParameters();
+            ParameterWrapContext parameterWrap;
             for (int i = 0; i < parameterInfos.Length; i++)
             {
-                parameterInfo = parameterInfos[i];
-                parameterContext = new ParameterWrapContext(parameterInfo);
-                IEnumerable<Attribute> attributes = parameterInfo.GetCustomAttributes();
-                IEnumerator<Attribute> enumerator = attributes.GetEnumerator();
-                while (enumerator.MoveNext())
-                {
-                    attribute = enumerator.Current;
-                    if (false == typeof(FeignAttribute).IsInstanceOfType(attribute))
-                    {
-                        continue;
-                    }
-
-                    feignAttribute = attribute as FeignAttribute;
-                    parameterContext.MyFeignAttributes.Add(feignAttribute);
-                    feignAttribute.SaveToParameterContext(parameterContext);
-
-                }
-                methodWrapContext.ParameterCache.Add(parameterContext);
-
-
+                parameter = parameterInfos[i];
+                parameterWrap = ParameterWrapContext.GetContext(this, parameter);
+                ParameterCache.Add(parameterWrap);
             }
+            ParameterCache.ForEach(x =>
+            {
+                x.CreateBind();
+            });
 
         }
 
@@ -82,61 +138,29 @@ namespace Feign.Core.Context
             methodWrapContext.interfaceType = interfaceWrapContext.InterfaceType;
             methodWrapContext.methodInfo = methodInfo;
             methodWrapContext.interfaceWrapContext = interfaceWrapContext;
+            methodWrapContext.ReturnContext = ReturnContext.CreContext(methodInfo.ReturnParameter);
 
 
             object[] cas = methodInfo.GetCustomAttributes(true);
-            FeignAttribute feignAttribute;
-
-
+            BaseAttribute feignAttribute;
 
             object ca;
             List<string> headers = new List<string>();
-            HeaderAttribute headerAttribute;
             for (int i = 0; i < cas.Length; i++)
             {
                 ca = cas[i];
-
-
-                if (false == typeof(FeignAttribute).IsInstanceOfType(ca))
+                if (false == typeof(BaseAttribute).IsInstanceOfType(ca))
                 {
 
                     continue;
                 }
-
-                feignAttribute = ca as FeignAttribute;
-                methodWrapContext.MyFeignAttributes.Add(feignAttribute);
-
+                feignAttribute = ca as BaseAttribute;
                 feignAttribute.SaveToMethodContext(methodWrapContext);
-
-                if (typeof(URLAttribute).IsInstanceOfType(ca))
-                {
-                    methodWrapContext.MethodURLAttribute = ca as URLAttribute;
-                    continue;
-                }
-
-                if (typeof(HeaderAttribute).IsInstanceOfType(ca))
-                {
-                    headerAttribute = ca as HeaderAttribute;
-                    if (headers.Contains(headerAttribute.Name))
-                    {
-                        throw new FeignException("重复的Header Name:" + headerAttribute.Name);
-                    }
-                    else
-                    {
-                        headers.Add(headerAttribute.Name);
-                        methodWrapContext.HeaderAttributes.Add(headerAttribute);
-                        continue;
-                    }
-
-                }
-                if (typeof(MethodAttribute).IsInstanceOfType(ca))
-                {
-                    methodWrapContext.httpMethod = (ca as MethodAttribute).Method;
-                }
-
             }
 
-            SaveParameter(methodWrapContext);
+            methodWrapContext.CreateBind();
+
+            methodWrapContext.SaveParameter();
 
             methodWrapContext.Validate();
 
@@ -144,40 +168,153 @@ namespace Feign.Core.Context
 
         }
 
-        private void Validate()
+        private void PresumeBodyBind()
         {
-
-            if (this.MethodURLAttribute == null
-                && string.IsNullOrEmpty(this.httpMethod)
-                && this.interfaceWrapContext.URLAttribute != null)
+            if (this.ContentType == HttpContentTypes.formdata)
             {
-                throw new FeignException("URL and Method Attribute can not be both Null ！");
+                this.bodyBind = new FormContentBodyBind();
+            }
+            if (this.ContentType == HttpContentTypes.textstr)
+            {
+                this.bodyBind = new StringContentBodyBind();
+            }
+            if (this.ContentType == HttpContentTypes.json)
+            {
+                this.bodyBind = new JsonContentBodyBind();
+            }
+            if (this.ContentType == HttpContentTypes.xml)
+            {
+                this.bodyBind = new XmlContentBodyBind();
             }
 
         }
 
+        internal override void CreateBind()
+        {
+            this.HeaderAttributes.ForEach(x =>
+            {
+                this.HeaderBindes.Add(new HeaderBind(HeaderBind.Source.FromMethod, x.Name, x.Value, x.Unique));
+            });
+            if (this.IsPOST())
+            {
+                this.PresumeBodyBind();
+            }
+        }
 
-        public string Url
+        private void Validate()
+        {
+
+            if (this.MethodPathAttribute == null
+                && string.IsNullOrEmpty(this.HttpMethod)
+                && string.IsNullOrEmpty(this.interfaceWrapContext.Path))
+            {
+                throw new FeignException("URL and Method Attribute can not be both Null ！");
+            }
+            if (false == DefaultConfig.SupportHttpMethod.Contains(this.HttpMethod))
+            {
+                throw new FeignException("Just support GET/POST now！");
+            }
+            this.ValidateParameterBind();
+
+        }
+
+
+        //todo need to complete
+        private void ValidateParameterBind()
+        {
+
+            ParameterWrapContext parameterWrapContextA;
+            ParameterWrapContext parameterWrapContextB;
+            for (int i = 0; i < this.ParameterCache.Count; i++)
+            {
+                parameterWrapContextA = ParameterCache[i];
+                for (int j = i + 1; j < this.ParameterCache.Count; j++)
+                {
+                    parameterWrapContextB = this.ParameterCache[j];
+
+                    parameterWrapContextA.HeaderBindes.ForEach(x =>
+                    {
+                        parameterWrapContextB.HeaderBindes.ForEach(y =>
+                        {
+                        });
+
+                    });
+                    parameterWrapContextA.QueryStringBindes.ForEach(x =>
+                    {
+                        parameterWrapContextB.QueryStringBindes.ForEach(y =>
+                        {
+                            if (x.Name == y.Name)
+                            {
+                                throw new System.Exception(string.Format("参数:{0}、{1}具有相同的查询参数:{2}", parameterWrapContextA.Parameter.Name, parameterWrapContextB.Parameter.Name, x.Name));
+                            }
+                        });
+
+                    });
+                }
+
+            }
+
+
+
+        }
+
+        public PathParaBind GetPathParaBind(string paraName)
+        {
+            paraName = paraName.ToLower();          
+            ParameterWrapContext parameterWrapContext;
+            PathParaBind pathParaBind;
+            for (int i = 0; i < this.ParameterCache.Count; i++)
+            {
+                parameterWrapContext = ParameterCache[i];
+                for (int j = 0; j < parameterWrapContext.PathParaBindes.Count; j++)
+                {
+                    pathParaBind = parameterWrapContext.PathParaBindes[j];
+                    if (paraName.ToLower() == pathParaBind.Name)
+                    {
+                        return pathParaBind;
+                    }
+
+                }
+
+            }
+            return null;
+
+
+        }
+
+
+        public bool NeedPathPara(string paraName)
+        {
+            paraName = paraName.ToLower(); 
+            return this.PathParaNames.Contains(paraName);
+        }
+
+
+
+        public string MethodPath
         {
             get
             {
-                if (url == null)
+                if (methodPath == null)
                 {
-                    url = Util.NormalizeURL(this.interfaceWrapContext.URLAttribute == null ? null : this.interfaceWrapContext.URLAttribute.Url);
-                    url += Util.NormalizeURL(this.URLAttribute == null ? null : this.URLAttribute.Url);
+                    methodPath = Util.NormalizeURL(this.interfaceWrapContext.Path ?? "") + Util.NormalizeURL(this.Path ?? "");
                 }
-                return url;
+                return methodPath;
             }
             private set { }
 
 
         }
 
-        public string HttpMethod()
-        {
-            return httpMethod;
-        }
 
+        public bool IsGet()
+        {
+            return this.HttpMethod == "GET";
+        }
+        public bool IsPOST()
+        {
+            return this.HttpMethod == "POST";
+        }
 
 
 

@@ -19,7 +19,7 @@ namespace Feign.Core
 
         }
 
-        //todo 会有多线程访问的问题 System.Collections.Concurrent.ConcurrentDictionary
+        //TODO 会有多线程访问的问题 System.Collections.Concurrent.ConcurrentDictionary
         internal static Dictionary<Type, InterfaceItem> InterfaceWrapCache = new Dictionary<Type, InterfaceItem>();
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace Feign.Core
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        //todo 会有多线程访问的问题 System.Collections.Concurrent.ConcurrentDictionary
+        //TODO 会有多线程访问的问题 System.Collections.Concurrent.ConcurrentDictionary
         public static T Wrap<T>(string url) where T : class
         {
 

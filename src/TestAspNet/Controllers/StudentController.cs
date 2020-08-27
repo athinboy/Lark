@@ -1,10 +1,10 @@
 ﻿
+using Feign.Core.Attributes;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using TestInterface;
+using static TestInterface.IStudentService;
 
 namespace TestAspNet.Controllers
 {
@@ -12,30 +12,71 @@ namespace TestAspNet.Controllers
     [Route("/api/[controller]")]
     public class StudentController : ControllerBase, IStudentService
     {
-        [HttpGet("sayhello")]
-        [HttpPost("sayhello")] 
-        public string SayHello()
-        {
-            return "Hello!";
-        }
-
         [HttpGet]
         public string GetNow()
         {
             return DateTime.Now.ToLongTimeString();
         }
 
-        //http://localhost:5000/api/student/add?Name=56156156156156
-        [HttpGet("add")]
-        public string Add([FromQuery]Student s)
+        [HttpGet("sayhello")]
+        public string SayHello()
         {
-            return Newtonsoft.Json.JsonConvert.SerializeObject(s ?? new Student { Name = "name", Age = 234 });
+            return "Hello!";
         }
+
+        //http://localhost:5000/api/student/add?Name=56156156156156      
+        [HttpGet("add")]
+        public string Add([FromQuery] Student s)
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject(s);
+        }
+
+        [HttpGet("add2")]
+        public string Add2([FromQuery] Student s, [FromQuery] StudentClass studentClass, [FromQuery] Remark remark)
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject(s)
+            + Newtonsoft.Json.JsonConvert.SerializeObject(studentClass)
+            + Newtonsoft.Json.JsonConvert.SerializeObject(remark);
+        }
+
+        [HttpGet("addlist")]
+        public string AddList([FromQuery] List<Student> ss, [FromQuery] List<StudentClass> studentClasses)
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject(ss)
+            + Newtonsoft.Json.JsonConvert.SerializeObject(studentClasses);
+        }
+
 
         [HttpPost("add")]
         public string AddPost(Student s)
         {
-            return Newtonsoft.Json.JsonConvert.SerializeObject(s ?? new Student { Name = "name", Age = 234 });
+            return s == null ? "null" : Newtonsoft.Json.JsonConvert.SerializeObject(s);
+        }
+        [HttpPost("addform")]
+        public string AddPostForm([FromForm] Student s)
+        {
+            return s == null ? "null" : Newtonsoft.Json.JsonConvert.SerializeObject(s);
+        }
+
+
+        [HttpPost("addformlist")]
+        public string AddPostFormList([FromForm] List<Student> ss)
+        {
+            return ss == null ? "null" : Newtonsoft.Json.JsonConvert.SerializeObject(ss);
+        }
+
+
+
+        [HttpPost("addlist")]
+        public string AddPostList(List<Student> ss)
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject(ss);
+        }
+        [HttpPost("addlist2")]
+        public string AddPostList2(List<Student> ss, [FromQuery] List<StudentClass> studentClasses)
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject(ss)
+            + Newtonsoft.Json.JsonConvert.SerializeObject(studentClasses));
         }
 
         [HttpGet("getnow2")]
@@ -61,6 +102,35 @@ namespace TestAspNet.Controllers
         public string AddStr(string name)
         {
             return name;
+        }
+
+
+        public string QueryEmpty2(object ss)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string QueryName(int id, [Header(Name = "case", Value = "low", Unique = false)] string stringcase, [Header(Name = "prefix", Value = "2", Unique = true)] string length)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Student QueryById(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpGet("/{id}/{name}/{age}/del")]
+        public Student DelById([FromQuery] int id, [FromQuery(Name = "name")] string theName, int age)
+        {
+            return new Student() { ID = id, Name = theName, Age = age };
+        }
+
+
+        [HttpPost("add2")]
+        public string AddPost2(string Name)
+        {
+            return Name;
         }
 
  

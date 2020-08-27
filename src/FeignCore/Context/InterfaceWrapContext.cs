@@ -1,50 +1,75 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Reflection;
 using System.Text;
 using Feign.Core.Attributes;
 using Feign.Core.Cache;
+using Feign.Core.Enum;
 using Feign.Core.Exception;
+using FeignCore.ValueBind;
 
 namespace Feign.Core.Context
 {
-    internal class InterfaceWrapContext
+    internal class InterfaceWrapContext : ContextBase
     {
+
+
+
+        public string HttpMethod = null;
+
+        public HttpContentTypes ContentType { get; set; }
+
+        public SerializeTypes SerializeType { get; set; }
+
+
+        internal InterfaceWrapContext()
+        {
+            this.HttpMethod = DefaultConfig.DefaultHttpMethod;
+            this.ContentType = DefaultConfig.DefaultHttpContentType;
+            this.SerializeType = DefaultConfig.DefaultSerilizeType;
+        }
+
+
         public Type InterfaceType { get; set; }
 
 
-        //todo 会有多线程访问的问题 System.Collections.Concurrent.ConcurrentDictionary
+        //TODO 会有多线程访问的问题 System.Collections.Concurrent.ConcurrentDictionary
         public Dictionary<MethodInfo, MethodItem> MethodCache { get; set; } = new Dictionary<MethodInfo, MethodItem>();
 
-        public List<HeaderAttribute> HeaderAttributes { get; set; } = new List<HeaderAttribute>();
-
-        public List<FeignAttribute> MyFeignAttributes { get; set; } = new List<FeignAttribute>();
+        public List<HeaderBind> HeaderBindes { get; set; } = new List<HeaderBind>();
 
 
 
         /// <summary>
-        /// 接口URL 特性
+        /// 接口URL Path. 
         /// </summary>
-        public URLAttribute URLAttribute { get; set; }
+        public string Path { get; set; }
+        public List<HeaderAttribute> HeaderAttributes { get; private set; } = new List<HeaderAttribute>();
 
+        internal override void Clear()
+        {
+            throw new NotImplementedException();
+        }
 
-        internal static void SaveMethod(InterfaceWrapContext interfaceWrapContext)
+        internal void SaveMethod()
         {
 
             MethodWrapContext methodWrapContext;
-            MethodInfo[] interfacemethods = interfaceWrapContext.InterfaceType.GetMethods();
+            MethodInfo[] interfacemethods = this.InterfaceType.GetMethods();
             MethodInfo interfacemethodInfo;
             MethodItem methodItem;
             for (int i = 0; i < interfacemethods.Length; i++)
             {
                 interfacemethodInfo = interfacemethods[i];
-                methodWrapContext = MethodWrapContext.GetContext(interfaceWrapContext, interfacemethodInfo);
+                methodWrapContext = MethodWrapContext.GetContext(this, interfacemethodInfo);
                 methodItem = new MethodItem(interfacemethodInfo, methodWrapContext);
-                interfaceWrapContext.MethodCache[interfacemethodInfo] = methodItem;
+                this.MethodCache[interfacemethodInfo] = methodItem;
             }
         }
 
 
+        //todo add cache
         internal static InterfaceWrapContext GetContext(Type interfacetype)
         {
 
@@ -54,61 +79,44 @@ namespace Feign.Core.Context
 
             object[] interfaceAttibuts = interfacetype.GetCustomAttributes(true);
 
-            List<string> headers = new List<string>();
-            FeignAttribute feignAttribute;
+
+            BaseAttribute feignAttribute;
 
             for (int i = 0; i < interfaceAttibuts.Length; i++)
             {
-
-
                 Object o = interfaceAttibuts[i];
 
-
-                if (false == typeof(FeignAttribute).IsInstanceOfType(o))
+                if (false == typeof(BaseAttribute).IsInstanceOfType(o))
                 {
                     continue;
                 }
-                feignAttribute = o as FeignAttribute;
-                interfaceWrapContext.MyFeignAttributes.Add(feignAttribute);
+                feignAttribute = o as BaseAttribute;
                 feignAttribute.SaveToInterfaceContext(interfaceWrapContext);
-
-
-                if (typeof(HeaderAttribute).IsInstanceOfType(o))
-                {
-                    HeaderAttribute newHeader = o as HeaderAttribute;
-
-                    if (headers.Contains(newHeader.Name))
-                    {
-                        throw new FeignException("接口:{0}重复的Header Name:{1}", interfacetype.Name, newHeader.Name);
-                    }
-                    else
-                    {
-                        headers.Add(newHeader.Name);
-
-                    }
-                    interfaceWrapContext.HeaderAttributes.Add(newHeader);
-                    continue;
-                }
-
-                if (typeof(URLAttribute).IsInstanceOfType(o))
-                {
-                    interfaceWrapContext.URLAttribute = (o as URLAttribute);
-                }
 
             }
 
-            SaveMethod(interfaceWrapContext);
+            interfaceWrapContext.CreateBind();
 
-
+            interfaceWrapContext.SaveMethod();
 
             interfaceWrapContext.Validate();
 
             return interfaceWrapContext;
         }
 
+
+
+
         private void Validate()
         {
         }
 
+        internal override void CreateBind()
+        {
+            this.HeaderAttributes.ForEach(x =>
+            {
+                this.HeaderBindes.Add(new HeaderBind(HeaderBind.Source.FromInterface, x.Name, x.Value, x.Unique));
+            });
+        }
     }
 }

@@ -1,3 +1,5 @@
 {
+    "testExplorer.addToEditorContextMenu": true,
+    "dotnet-test-explorer.testProjectPath": "**\\Test*.csproj"
 
 }

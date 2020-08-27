@@ -1,6 +1,7 @@
 ﻿using Feign.Core.Attributes.RequestService;
 using Feign.Core.Cache;
 using Feign.Core.Context;
+using Feign.Core.Enum;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -12,12 +13,27 @@ namespace Feign.Core.Attributes
     /// json serialize .
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.ReturnValue, AllowMultiple = false, Inherited = true)]
-    public class JsonAttribute : FeignAttribute
+    public class JsonAttribute : BaseAttribute
     {
         internal override void SaveToParameterContext(ParameterWrapContext parameterItem)
         {
-            base.SaveToParameterContext(parameterItem);
-            parameterItem.JsonSerialize = true;
+
+            parameterItem.SerializeType = SerializeTypes.json;
+        }
+
+
+        internal override void SaveToMethodContext(MethodWrapContext methodWrapContext)
+        {
+
+        }
+
+        internal override void SaveToInterfaceContext(InterfaceWrapContext interfaceWrapContext)
+        {
+
+        }
+        internal override void SaveToReturnContext(ReturnContext returnContext)
+        {
+            returnContext.SerializeType = SerializeTypes.json;
         }
 
 
