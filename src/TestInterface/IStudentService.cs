@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using Feign.Core.Attributes;
-using FeignCore.Attributes;
+using Lark.Core.Attributes;
+using LarkCore.Attributes;
 
 
 /// <summary>

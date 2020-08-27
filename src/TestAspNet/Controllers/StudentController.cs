@@ -1,5 +1,4 @@
-﻿
-using Feign.Core.Attributes;
+﻿using Lark.Core.Attributes;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -76,7 +75,7 @@ namespace TestAspNet.Controllers
         public string AddPostList2(List<Student> ss, [FromQuery] List<StudentClass> studentClasses)
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(ss)
-            + Newtonsoft.Json.JsonConvert.SerializeObject(studentClasses));
+            + Newtonsoft.Json.JsonConvert.SerializeObject(studentClasses);
         }
 
         [HttpGet("getnow2")]

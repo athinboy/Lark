@@ -1,8 +1,7 @@
-using Feign.Core.ProxyFactory;
+using Lark.Core.ProxyFactory;
 using NUnit.Framework;
 using TestInterface;
 using System;
-using Feign.Core;
 using System.Net.Http.Headers;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -16,8 +15,8 @@ namespace TestClient.Test.AttributeTest
         [SetUp]
         public void BaseSetup1()
         {
-            //Feign.Core.InternalConfig.NotRequest = true;
-            Feign.Core.InternalConfig.SaveRequest=true;
+            //Lark.Core.InternalConfig.NotRequest = true;
+            Lark.Core.InternalConfig.SaveRequest=true;
             
         }
         [NUnit.Framework.Test]
@@ -25,7 +24,7 @@ namespace TestClient.Test.AttributeTest
         {
             object responseResult;
 
-            IStudentService student = Feign.Core.Feign.Wrap<IStudentService>("http://localhost:6346");
+            IStudentService student = Lark.Core.Lark.Wrap<IStudentService>("http://localhost:6346");
             responseResult= student.QueryName(12, "upper", "234");
             System.Console.WriteLine(responseResult.ToString());
             WrapBase wrap = (WrapBase)student;

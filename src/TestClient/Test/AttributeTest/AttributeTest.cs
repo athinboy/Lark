@@ -4,8 +4,8 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.Encodings.Web;
-using Feign.Core.Attributes;
-using Feign.Core.ProxyFactory;
+using Lark.Core.Attributes;
+using Lark.Core.ProxyFactory;
 using NUnit.Framework;
 using TestInterface;
 
@@ -26,9 +26,9 @@ namespace TestClient.Test.AttributeTest
         [SetUp]
         public void Setup()
         {
-            Feign.Core.InternalConfig.EmitTestCode = true;
-            Feign.Core.InternalConfig.SaveResponse = true;
-            Feign.Core.InternalConfig.LogRequest = true; 
+            Lark.Core.InternalConfig.EmitTestCode = true;
+            Lark.Core.InternalConfig.SaveResponse = true;
+            Lark.Core.InternalConfig.LogRequest = true; 
  
         }
 
@@ -37,11 +37,11 @@ namespace TestClient.Test.AttributeTest
         //[Test]
         public void WrapTest_One()
         {
-            IStudentService student = Feign.Core.Feign.Wrap<IStudentService>("");
+            IStudentService student = Lark.Core.Lark.Wrap<IStudentService>("");
 
             for (int i = 0; i < 1; i++)
             {
-                student = Feign.Core.Feign.Wrap<IStudentService>(BaseUrl);
+                student = Lark.Core.Lark.Wrap<IStudentService>(BaseUrl);
                 WrapBase wrap = (WrapBase)student;
                 // Assert.IsTrue("Hello!" == student.SayHello("myid","testheader",null));
                 HttpResponseMessage responseMessage = wrap.OriginalResponseMessage;

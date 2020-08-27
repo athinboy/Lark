@@ -4,8 +4,8 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.Encodings.Web;
-using Feign.Core.Attributes;
-using Feign.Core.ProxyFactory;
+using Lark.Core.Attributes;
+using Lark.Core.ProxyFactory;
 using NUnit.Framework;
 using TestInterface;
 
@@ -22,8 +22,8 @@ namespace TestClient.Test.AttributeTest
         [SetUp]
         public void BaseSetup()
         {
-            Feign.Core.InternalConfig.EmitTestCode = true;
-            Feign.Core.InternalConfig.SaveResponse = true;      
+            Lark.Core.InternalConfig.EmitTestCode = true;
+            Lark.Core.InternalConfig.SaveResponse = true;      
         }
     }
 }

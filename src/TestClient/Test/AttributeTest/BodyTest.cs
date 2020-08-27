@@ -1,5 +1,4 @@
-using Feign.Core;
-using Feign.Core.ProxyFactory;
+using Lark.Core.ProxyFactory;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using TestInterface;
@@ -11,18 +10,18 @@ namespace TestClient.Test.AttributeTest
         [SetUp]
         public void BaseSetup1()
         {
-            Feign.Core.InternalConfig.NotRequest = false;
-            Feign.Core.InternalConfig.SaveRequest = true;
-            Feign.Core.InternalConfig.EmitTestCode = true;
-            Feign.Core.InternalConfig.SaveResponse = true;
-            Feign.Core.InternalConfig.LogRequest = true;
+            Lark.Core.InternalConfig.NotRequest = false;
+            Lark.Core.InternalConfig.SaveRequest = true;
+            Lark.Core.InternalConfig.EmitTestCode = true;
+            Lark.Core.InternalConfig.SaveResponse = true;
+            Lark.Core.InternalConfig.LogRequest = true;
         }
 
         [NUnit.Framework.Test]
         public void Test()
         {
 
-            IStudentService student = Feign.Core.Feign.Wrap<IStudentService>("http://localhost:6346");
+            IStudentService student = Lark.Core.Lark.Wrap<IStudentService>("http://localhost:6346");
 
             IStudentService.Student s1 = new IStudentService.Student() { Name = "studnetName" };
 
@@ -42,7 +41,7 @@ namespace TestClient.Test.AttributeTest
         [NUnit.Framework.Test]
         public void TestForm()
         {
-            IStudentService student = Feign.Core.Feign.Wrap<IStudentService>("http://localhost:6346");
+            IStudentService student = Lark.Core.Lark.Wrap<IStudentService>("http://localhost:6346");
             IStudentService.Student s1 = new IStudentService.Student() { Name = "studnetName" };
             string resultstr;
             resultstr = student.AddPostForm(s1);

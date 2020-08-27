@@ -1,8 +1,8 @@
-using Feign.Core.ProxyFactory;
+using Lark.Core.ProxyFactory;
 using NUnit.Framework;
 using TestInterface;
 using System;
-using Feign.Core;
+using Lark.Core;
 using System.Net.Http.Headers;
 using System.Net.Http;
 
@@ -15,19 +15,19 @@ namespace TestClient.Test.AttributeTest
         [SetUp]
         public void BaseSetup1()
         {
-            Feign.Core.InternalConfig.NotRequest = true;
-            Feign.Core.InternalConfig.EmitTestCode = true;
-            Feign.Core.InternalConfig.SaveResponse = true;
-            Feign.Core.InternalConfig.LogRequest = true;
-            Feign.Core.InternalConfig.LogResponse = true;
-            Feign.Core.InternalConfig.SaveRequest=true;
+            Lark.Core.InternalConfig.NotRequest = true;
+            Lark.Core.InternalConfig.EmitTestCode = true;
+            Lark.Core.InternalConfig.SaveResponse = true;
+            Lark.Core.InternalConfig.LogRequest = true;
+            Lark.Core.InternalConfig.LogResponse = true;
+            Lark.Core.InternalConfig.SaveRequest=true;
         }
 
 
         [NUnit.Framework.Test]
         public void Test()
         {
-            IStudentService student = Feign.Core.Feign.Wrap<IStudentService>("http://localhost:6346");
+            IStudentService student = Lark.Core.Lark.Wrap<IStudentService>("http://localhost:6346");
             student.DelById(111, "nnnnname", 98);
             WrapBase wrap = (WrapBase)student;
             Assert.IsTrue(wrap.Url == BaseUrl);
@@ -40,7 +40,7 @@ namespace TestClient.Test.AttributeTest
         public void Test2()
         {
 
-            IStudentService student = Feign.Core.Feign.Wrap<IStudentService>("http://localhost:6346");
+            IStudentService student = Lark.Core.Lark.Wrap<IStudentService>("http://localhost:6346");
             student.Add(new IStudentService.Student() { ID = 1, Name = "name", rank = 23 });
 
             WrapBase wrap = (WrapBase)student;

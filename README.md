@@ -1,6 +1,6 @@
-# Feign4Net
+# Lark4Net
 
-a feign project corresponding to Feign(<https://github.com/OpenFeign/feign).>
+a Lark project corresponding to Lark(<https://github.com/OpenLark/Lark).>
 
 推荐使用项目：
 
